@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link rel="stylesheet" type="text/css" href="/public/css/styles.css">
+</head>
+
+<body>
+    <header>
+        <nav class="taskbar">
+            <!-- Left-aligned items -->
+            <div class="taskbar-left">
+                <a href="/">Home</a>
+                <a href="/events">Events</a>
+                <a href="/blogs">Blogs</a>
+                <a href="/books">Books</a>
+            </div>
+
+            <!-- Right-aligned items -->
+            <div class="taskbar-right">
+                <a href="/user/profile">
+                    <img src="user-icon.png" alt="User Profile" class="user-icon">
+                </a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        {{{body}}}
+    </main>
+    <script src="/public/js/client_side_validation.js"></script>
+</body>
+
+</html>
