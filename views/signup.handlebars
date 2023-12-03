@@ -1,0 +1,56 @@
+{{!--
+
+registration handelbars
+
+--}}
+
+<h1>Sign Up</h1>
+<form method="POST" action="/register" id="registration-form">
+    <div class="div-padding">
+        <label for="firstNameInput">First Name</label>
+        <input type="text" id="firstNameInput" name="firstNameInput" placeholder="First Name Here" />
+        <span class="error" , aria-live="polite"></span>
+    </div>
+    <div class="div-padding">
+        <label for="lastNameInput">Last Name</label>
+        <input type="text" id="lastNameInput" name="lastNameInput" placeholder="Last Name Here" />
+        <span class="error" , aria-live="polite"></span>
+    </div>
+    <div class="div-padding">
+        <label for="dobInput">Date of Birth</label>
+        <input type="date" id="dobInput" name="dobInput">
+        <span class="error" , aria-live="polite"></span>
+    </div>
+    <div class="div-padding">
+        <label for="phoneNumberInput">Phone Number</label>
+        <input type="tel" id="phoneNumberInput" name="phoneNumberInput" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+            placeholder="XXX-XXX-XXXX">
+        <span class="error" , aria-live="polite"></span>
+    </div>
+    <div class="div-padding">
+        <label for="emailAddressInput">Email Address</label>
+        <input type="email" id="emailAddressInput" name="emailAddressInput" placeholder="email address" />
+        <span class="error" , aria-live="polite"></span>
+    </div>
+    <div class="div-padding">
+        <label for="passwordInput">Password</label>
+        <input type="password" id="passwordInput" name="passwordInput" placeholder="Password" />
+        <span class="error" , aria-live="polite"></span>
+    </div>
+    <div class="div-padding">
+        <label for="confirmPasswordInput">Retype Password</label>
+        <input type="password" id="confirmPasswordInput" name="confirmPasswordInput" placeholder="retype password" />
+        <span class="error" , aria-live="polite"></span>
+    </div>
+    <div class="div-padding">
+        <label for="roleInput">Choose a role:</label>
+        <select name="roleInput" id="roleInput">
+            <option value="user">User</option>
+            <option value="admin">Librarian</option>
+        </select>
+    </div>
+
+    <button class="buttonSignup" type="submit" name="submitButton" id="submitButton">Create an account</button>
+    <div class="alert">{{error}}</div>
+</form>
+<a href="/login">Already have an account? Click here to log-in</a>
