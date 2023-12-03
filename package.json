@@ -1,0 +1,41 @@
+{
+	"name": "library_project",
+	"version": "1.0.0",
+	"description": "Web application for library",
+	"main": "app.js",
+	"scripts": {
+		"test": "node app.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Littlefj33/library_project.git"
+	},
+	"author": "Frank Orlando, Jacqueline Lulaj, Raqeebullah Hasan, Yuchen Peng",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/Littlefj33/library_project/issues"
+	},
+	"homepage": "https://github.com/Littlefj33/library_project#readme",
+	"devDependencies": {
+		"eslint": "^8.55.0",
+		"husky": "^8.0.3",
+		"lint-staged": "^15.2.0",
+		"prettier": "^3.1.0"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	},
+	"lint-staged": {
+		"*.{js,jsx}": [
+			"prettier --write",
+			"eslint --fix",
+			"git add"
+		],
+		"*.{html,css,less,ejs}": [
+			"prettier --write",
+			"git add"
+		]
+	}
+}
