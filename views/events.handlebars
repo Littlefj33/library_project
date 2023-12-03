@@ -1,47 +1,53 @@
+<h1>{{title}}</h1>
+
 <section class="events-section">
-    {{!-- Search bar with filter dropdown --}}
-    <form action="/events/search" method="GET" class="search-form">
-        <input type="text" name="search" placeholder="Search events..." aria-label="Search events">
+  {{!-- Search bar with filter dropdown --}}
+  <form action="/events/search" method="GET" class="search-form">
+    <input
+      type="text"
+      name="search"
+      placeholder="Search events..."
+      aria-label="Search events"
+    />
 
-        {{!-- Filter dropdown --}}
-        <select name="filter" aria-label="Filter by">
-            <option value="title">By Title</option>
-            <option value="author">By Author</option>
-        </select>
-        <button type="submit">Search</button>
-    </form>
+    {{!-- Filter dropdown --}}
+    <select name="filter" aria-label="Filter by">
+      <option value="title">By Title</option>
+      <option value="author">By Author</option>
+    </select>
+    <button type="submit">Search</button>
+  </form>
 
-    {{!-- The attributes of the event like title, date_time, .... will be replaced auto --}}
-    {{!-- We do need to register a helper function "getOrganizer(ObjectId var) return string " --}}
-    {{#each events}}
-    <article class="event-list-item {{#if canceled}}canceled{{/if}}">
-        <h2>{{title}}</h2>
-        <p class="date-time">{{date_time}}</p>
-        <div class="location">
-            <p>{{location.address}}, {{location.state}}, {{location.zip}}</p>
-        </div>
-        <p class="description">{{event.description}}</p>
-        <p class="details">
-            Organized by: {{getOrganizer organizer_id}} <br>
-            Attending Fee: ${{attending_fee}} <br>
-            Capacity: {{capacity}} people <br>
-            Age Limit: {{age_limit}}+ years
-        </p>
-        <p class="attendees-count">{{attendees.length}} people attending</p>
-        <div class="comments-section">
-            <p>{{comments.length}} comments</p>
-            {{#if comments}}
-            <ul class="comments-list">
-                {{#each comments}}
-                <li>{{content}}</li>
-                {{/each}}
-            </ul>
-            {{/if}}
-        </div>
-        {{#unless canceled}}
-        <a href="/events/{{_id}}/register" class="register-button">Register</a>
-        {{/unless}}
-    </article>
-    {{/each}}
-
+  {{!-- The attributes of the event like title, date_time, .... will be replaced
+  auto --}} {{!-- We do need to register a helper function
+  "getOrganizer(ObjectId var) return string " --}} {{#each events}}
+  <article class="event-list-item {{#if canceled}}canceled{{/if}}">
+    <h2>{{title}}</h2>
+    <p class="date-time">{{date_time}}</p>
+    <div class="location">
+      <p>{{location.address}}, {{location.state}}, {{location.zip}}</p>
+    </div>
+    <p class="description">{{event.description}}</p>
+    <p class="details">
+      Organized by: {{getOrganizer organizer_id}} <br />
+      Attending Fee: ${{attending_fee}} <br />
+      Capacity: {{capacity}} people <br />
+      Age Limit: {{age_limit}}+ years
+    </p>
+    <p class="attendees-count">{{attendees.length}} people attending</p>
+    <div class="comments-section">
+      <p>{{comments.length}} comments</p>
+      {{#if comments}}
+      <ul class="comments-list">
+        {{#each comments}}
+        <li>{{content}}</li>
+        {{/each}}
+      </ul>
+      {{/if}}
+    </div>
+    {{#unless canceled}}
+    <a href="/events/{{_id}}/register" class="register-button">Register</a>
+    {{/unless}}
+  </article>
+  {{/each}}
 </section>
