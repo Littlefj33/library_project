@@ -1,20 +1,19 @@
-import { dbConnection } from './mongoConnection.js';
+import { dbConnection } from "./mongoConnection.js";
 
 const getCollectionFn = (collection) => {
-    let _col = undefined;
+  let _col = undefined;
 
-    return async () => {
-        if (!_col) {
-            const db = await dbConnection();
-            _col = await db.collection(collection);
-        }
+  return async () => {
+    if (!_col) {
+      const db = await dbConnection();
+      _col = await db.collection(collection);
+    }
 
-        return _col;
-    };
+    return _col;
+  };
 };
 
-
-export const books = getCollectionFn('books');
-export const authors = getCollectionFn('authors');
-export const users = getCollectionFn('users');
-export const blogs = getCollectionFn('blogs')
+export const authors = getCollectionFn("authors");
+export const blogs = getCollectionFn("blogs");
+export const books = getCollectionFn("books");
+export const users = getCollectionFn("users");
