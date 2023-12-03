@@ -1,0 +1,69 @@
+.dashboard {
+  background: #fbd1a2;
+  color: black;
+  display: flex;
+  width: 100%;
+}
+
+.dashboard ul {
+  list-style-type: none;
+  height: 25px;
+  line-height: 50px;
+  padding: 0;
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+}
+
+.dashboard ul li.logo {
+  display: flex;
+  float: left;
+  position: relative;
+  padding: 0;
+  margin-left: 10px;
+  margin-right: 20%;
+}
+.dashboard ul li.logo img {
+  height: 50px;
+}
+
+.dashboard ul li.nav {
+  flex: auto;
+  justify-content: center;
+  text-align: center;
+}
+
+.dashboard ul li.nav a {
+  color: black;
+}
+
+.dashboard ul li.profile {
+  display: flex;
+  float: right;
+  position: relative;
+  padding: 0;
+  margin-right: 10px;
+  margin-left: 20%;
+}
+.dashboard ul li.profile img {
+  height: 50px;
+}
+
+.dashboard ul li.nav:not(#blogsNav) {
+  border: 1px solid black;
+  border-width: 0 1px 0 0;
+}
+
+.dashboard ul li.nav a {
+  display: block;
+  padding: 0 10px;
+  font-size: 16px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  text-decoration: none;
+}
+
+.dashboard ul li.nav:hover {
+  background: #d8dcff;
+  cursor: pointer;
+}
