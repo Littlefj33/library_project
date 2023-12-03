@@ -1,0 +1,30 @@
+<section class="blogs-section">
+    {{!-- Search bar with filter dropdown --}}
+    <form action="/blogs/search" method="GET" class="search-form">
+        <input type="text" name="search" placeholder="Search blogs..." aria-label="Search blogs">
+
+        {{!-- Filter dropdown --}}
+        <select name="filter" aria-label="Filter by">
+            <option value="title">By Title</option>
+            <option value="author">By Author</option>
+        </select>
+
+        <button type="submit">Search</button>
+    </form>
+
+    {{!-- Needs a helper function getAuthor(Object_id) and truncatedContent(String) --}}
+    {{#each blogs}}
+    <article class="blog-post-summary">
+        <h2>{{title}}</h2>
+        <p class="author">By {{getAuthor author_id}}</p>
+        <p class="date-posted">{{date_posted}}</p>
+        <div class="content-preview">
+            {{truncatedContent content}}...
+        </div>
+        <a href="/blogs/{{this._id}}" class="read-more">Read more</a>
+        <p class="comments-count">{{comments.length}} comments</p>
+    </article>
+    {{/each}}
+
+    {{!-- The rest of the blogs page content goes here --}}
+</section>
