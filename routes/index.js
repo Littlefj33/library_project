@@ -1,21 +1,19 @@
-import express from "express";
-import path from "path";
-import { engine as handlebars } from "express-handlebars";
-import { fileURLToPath } from "url";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+import homeRoutes from "./home.js";
+import bookRoutes from "./books.js";
+import eventRoutes from "./events.js";
+import blogRoutes from "./blogs.js";
+import profileRoutes from "./profile.js";
 
 const constructorMethod = (app) => {
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: true }));
+  app.use("/", homeRoutes);
+  app.use("/books", bookRoutes);
+  app.use("/events", eventRoutes);
+  app.use("/blogs", blogRoutes);
+  app.use("/profile", profileRoutes);
 
-    // Register the public folder
-    app.use("/public", express.static(__dirname + "/../public"));
+  app.use("*", (req, res) => {
+    return res.status(404).json({ error: "Not found" });
+  });
+};
 
-    // Set up the express-handlebars view engine
-    app.engine("handlebars", handlebars({ defaultLayout: "main" }));
-    app.set("view engine", "handlebars");
-    app.set("views", path.join(__dirname, "../views"));
-}
-
-export default constructorMethod
+export default constructorMethod;
