@@ -83,6 +83,18 @@
                     return false;
                 }
                 break;
+            case 'dobInput':
+                if (new Date(inputElement.value) > new Date()) {
+                    errorElement.textContent = "Cannot put a future or today's date!"
+                    errorElement.className = "error active";
+                }
+                break;
+            case "phoneNumberInput":
+                if (!/[0-9]{3}-[0-9]{3}-[0-9]{4}/.test(inputElement.value)) {
+                    errorElement.textContent = "Invalid Phone Number format!"
+                    errorElement.className = "error active";
+                }
+                break;
             case 'passwordInput':
                 if (inputElement.value.length < 8 || !/[A-Z]/.test(inputElement.value) || !/\d/.test(inputElement.value) || !/\W/.test(inputElement.value)) {
                     errorElement.textContent = "Password must be at least 8 characters long, include an uppercase letter, a number, and a special character.";
@@ -97,6 +109,7 @@
                     return false;
                 }
                 break;
+
 
         }
         errorElement.textContent = "";
