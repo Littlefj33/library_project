@@ -35,7 +35,7 @@ export const registerUser = async (
     const user = {
         firstName: firstName,
         lastName: lastName,
-        dateOfBirth: dateOfBirth,
+        dateOfBirth: new Date(dateOfBirth),
         phoneNumber: phoneNumber,
         emailAddress: emailAddress,
         password: await bcrypt.hash(password, 16),
