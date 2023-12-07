@@ -1,18 +1,28 @@
-<h1>Log In</h1>
+<h1>{{title}}</h1>
 <form method="POST" action="/login" id="login-form">
-    <div class="div-padding">
-        <label for="emailAddressInput">Username</label>
-        <input type="email" id="emailAddressInput" name="emailAddressInput" placeholder="Type username here" />
-        <span class="error" , aria-live="polite"></span>
-    </div>
-    <div class="div-padding">
-        <label for="passwordInput">Password</label>
-        <input type="password" id="passwordInput" name="passwordInput" placeholder="Type password here" />
-        <span class="error" , aria-live="polite"></span>
-    </div>
-    <button class="btnLogin" type="submit" name="submitBtn" id="submitBtn">Sign In</button>
-    <div class="alert">
-        {{error}}
-    </div>
+  <div class="div-padding">
+    <label for="emailAddressInput">Username</label>
+    <input
+      type="email"
+      id="emailAddressInput"
+      name="emailAddressInput"
+      placeholder="Type username here"
+    />
+    <span class="error" , aria-live="polite"></span>
+  </div>
+  <div class="div-padding">
+    <label for="passwordInput">Password</label>
+    <input
+      type="password"
+      id="passwordInput"
+      name="passwordInput"
+      placeholder="Type password here"
+    />
+    <span class="error" , aria-live="polite"></span>
+  </div>
+  <button class="btnLogin" type="submit" name="submitBtn" id="submitBtn">
+    Sign In
+  </button>
+  <div class="alert">{{error}}</div>
 </form>
 <a href="/register">New User? Sign up here.</a>
