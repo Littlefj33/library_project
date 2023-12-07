@@ -40,7 +40,7 @@ export const validateInput = (firstName, lastName, dateOfBirth, phoneNumber, ema
     }
     firstName = firstName.trim()
     lastName = lastName.trim()
-    if (firstName < 2 || lastName < 2 || firstName > 25 || lastName > 25) {
+    if (firstName.length < 2 || lastName.length < 2 || firstName.length > 25 || lastName.length > 25) {
         throw new Error("users: The last name and first name must be in between 2 and 25 characters (inclusively).")
     }
     if (new Date() <= new Date(dateOfBirth)) {
