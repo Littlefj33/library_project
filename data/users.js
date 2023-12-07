@@ -6,15 +6,19 @@ import { validate } from "email-validator"
 export const registerUser = async (
     firstName,
     lastName,
+    dateOfBirth,
+    phoneNumber,
     emailAddress,
     password,
     role
 ) => {
 
     try {
-        const validatedInput = validateInput(firstName, lastName, emailAddress, password, role)
+        const validatedInput = validateInput(firstName, lastName, dateOfBirth, phoneNumber, emailAddress, password, role)
         firstName = validatedInput.firstName
         lastName = validatedInput.lastName
+        dateOfBirth = validateInput.dateOfBirth
+        phoneNumber = validateInput.phoneNumber
         emailAddress = validatedInput.emailAddress
         password = validatedInput.password
         role = validatedInput.role
@@ -31,6 +35,8 @@ export const registerUser = async (
     const user = {
         firstName: firstName,
         lastName: lastName,
+        dateOfBirth: dateOfBirth,
+        phoneNumber: phoneNumber,
         emailAddress: emailAddress,
         password: await bcrypt.hash(password, 16),
         role: role
