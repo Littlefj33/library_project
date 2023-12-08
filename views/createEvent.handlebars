@@ -2,31 +2,40 @@
 
 <form action="/create-event" method="POST" class="event-form">
     <label for="title">Event Title:</label>
-    <input type="text" id="title" name="title">
+    <input type="text" id="title" name="title" required>
+    <span class="error" , aria-live="polite"></span>
 
     <label for="date_time">Date and Time:</label>
-    <input type="datetime-local" id="date_time" name="date_time">
+    <input type="datetime-local" id="date_time" name="date_time" required>
+    <span class="error" , aria-live="polite"></span>
 
     <label for="address">Address:</label>
-    <input type="text" id="address" name="address">
+    <input type="text" id="address" name="address" required>
+    <span class="error" , aria-live="polite"></span>
 
     <label for="state">State:</label>
-    <input type="text" id="state" name="state" pattern="[A-Z]{2}">
+    <input type="text" id="state" name="state" pattern="[A-Z]{2}" required>
+    <span class="error" , aria-live="polite"></span>
 
     <label for="zip">Zip Code:</label>
-    <input type="text" id="zip" name="zip" pattern="\d{5}">
+    <input type="text" id="zip" name="zip" pattern="\d{5}" required>
+    <span class="error" , aria-live="polite"></span>
 
     <label for="description">Description:</label>
-    <textarea id="description" name="description"></textarea>
+    <textarea id="description" name="description" required></textarea>
+    <span class="error" , aria-live="polite"></span>
 
     <label for="attending_fee">Attending Fee ($):</label>
     <input type="number" id="attending_fee" name="attending_fee" min="0">
+    <span class="error" , aria-live="polite"></span>
 
     <label for="capacity">Capacity:</label>
-    <input type="number" id="capacity" name="capacity">
+    <input type="number" id="capacity" name="capacity" min="1" required>
+    <span class="error" , aria-live="polite"></span>
 
     <label for="age_limit">Age Limit:</label>
-    <input type="number" id="age_limit" name="age_limit" min="0">
+    <input type="number" id="age_limit" name="age_limit" min="0" required>
+    <span class="error" , aria-live="polite"></span>
 
     <button type="submit">Create Event</button>
 </form>
