@@ -15,21 +15,7 @@ export const dbTool = async (collection, field, keyword, proj, action) => {
     let query = {}
     let queryResult = undefined
     query[field] = { $regex: `/${keyword}/` }
-    try {
-        queryResult = await collection.find(
-            query,
-            proj
-        )
-    } catch (e) {
-        throw new Error(e.message)
-    }
 
-    if (typeof (queryResult) === "undefined") {
-        throw new Error("Mongo: Could not fetch the document!")
-    }
-    if (queryResult.count() === 0) {
-        return null
-    }
 
     if (action) {
         if (action.set) {
@@ -65,6 +51,22 @@ export const dbTool = async (collection, field, keyword, proj, action) => {
                 throw new Error(e.message)
             }
         }
+    } else {
+        try {
+            queryResult = await collection.find(
+                query,
+                proj
+            )
+        } catch (e) {
+            console.error(e)
+            throw new Error(e.message)
+        }
+        if (queryResult.count() === 0) {
+            return null
+        }
+    }
+    if (typeof (queryResult) === "undefined") {
+        throw new Error("Mongo: Could not fetch the document!")
     }
 
     return queryResult
