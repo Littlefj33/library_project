@@ -12,6 +12,10 @@ const app = express();
 
 Handlebars.registerHelper("getAuthor", getUser)
 Handlebars.registerHelper("getOrganizer", getUser)
+Handlebars.registerHelper('join', function (array, separator) {
+  return array.join(separator);
+});
+
 
 
 const __filename = fileURLToPath(import.meta.url);
