@@ -78,7 +78,7 @@ app.get("/register", async (req, res, next) => {
   }
 });
 
-app.get("/books/request", async (req, res, next) => {
+app.get("/profile", async (req, res, next) => {
   const user = req.session.user;
   if (!user) {
     return res.redirect("/login");
@@ -87,46 +87,12 @@ app.get("/books/request", async (req, res, next) => {
   }
 });
 
-app.get("/books/reviews/create", async (req, res, next) => {
+app.get("/admin", async (req, res, next) => {
   const user = req.session.user;
   if (!user) {
     return res.redirect("/login");
-  } else {
-    next();
-  }
-});
-
-app.get("/events/create", async (req, res, next) => {
-  const user = req.session.user;
-  if (!user) {
-    return res.redirect("/login");
-  } else {
-    next();
-  }
-});
-
-app.get("/events/comments/create", async (req, res, next) => {
-  const user = req.session.user;
-  if (!user) {
-    return res.redirect("/login");
-  } else {
-    next();
-  }
-});
-
-app.get("/blogs/create", async (req, res, next) => {
-  const user = req.session.user;
-  if (!user) {
-    return res.redirect("/login");
-  } else {
-    next();
-  }
-});
-
-app.get("/blogs/comments/create", async (req, res, next) => {
-  const user = req.session.user;
-  if (!user) {
-    return res.redirect("/login");
+  } else if (user.role !== "admin") {
+    return res.redirect("/error");
   } else {
     next();
   }
@@ -134,8 +100,8 @@ app.get("/blogs/comments/create", async (req, res, next) => {
 
 app.get("/logout", async (req, res, next) => {
   const user = req.session.user;
-  if (!user) {
-    return res.redirect("/login");
+  if (user) {
+    return res.redirect("/");
   } else {
     next();
   }
