@@ -20,25 +20,117 @@ const rewriteUnsupportedBrowserMethods = (req, res, next) => {
   next();
 };
 
+app.engine(
+  "handlebars",
+  exphbs.engine({ defaultLayout: "main", partialsDir: ["views/partials/"] })
+);
+app.set("view engine", "handlebars");
 app.use("/public", staticDir);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(rewriteUnsupportedBrowserMethods);
+
 app.use(cookieParser());
 app.use(
   session({
     name: "AuthState",
-    secret: "some secret string!",
+    secret: "A secret string that only we know!",
     resave: false,
     saveUninitialized: false,
-  }),
+  })
 );
 
-app.engine(
-  "handlebars",
-  exphbs.engine({ defaultLayout: "main", partialsDir: ["views/partials/"] }),
-);
-app.set("view engine", "handlebars");
+/* Used for testing - Can delete at later time */
+app.use("/", async (req, res, next) => {
+  // 1a
+  const curTime = new Date().toUTCString();
+  const method = req.method;
+  const route = req.originalUrl;
+  const user = req.session.user;
+
+  let auth = "";
+  if (!user) {
+    auth = "(Non-Authenticated User)";
+  } else if (user.role === "admin" || user.role === "user") {
+    auth = "(Authenticated User)";
+  } else {
+    auth = "(Non-Authenticated User)";
+  }
+  console.log(`${curTime}: ${method} ${route} ${auth}`);
+  next();
+});
+
+app.get("/login", async (req, res, next) => {
+  const user = req.session.user;
+  if (user) {
+    return res.redirect("/home");
+  } else {
+    next();
+  }
+});
+
+app.get("/register", async (req, res, next) => {
+  const user = req.session.user;
+  if (user) {
+    return res.redirect("/home");
+  } else {
+    next();
+  }
+});
+
+app.get("/books/request", async (req, res, next) => {
+  const user = req.session.user;
+  if (!user) {
+    return res.redirect("/login");
+  } else {
+    next();
+  }
+});
+
+app.get("/books/reviews/create", async (req, res, next) => {
+  const user = req.session.user;
+  if (!user) {
+    return res.redirect("/login");
+  } else {
+    next();
+  }
+});
+
+app.get("/events/create", async (req, res, next) => {
+  const user = req.session.user;
+  if (!user) {
+    return res.redirect("/login");
+  } else {
+    next();
+  }
+});
+
+app.get("/events/comments/create", async (req, res, next) => {
+  const user = req.session.user;
+  if (!user) {
+    return res.redirect("/login");
+  } else {
+    next();
+  }
+});
+
+app.get("/blogs/create", async (req, res, next) => {
+  const user = req.session.user;
+  if (!user) {
+    return res.redirect("/login");
+  } else {
+    next();
+  }
+});
+
+app.get("/blogs/comments/create", async (req, res, next) => {
+  const user = req.session.user;
+  if (!user) {
+    return res.redirect("/login");
+  } else {
+    next();
+  }
+});
 
 configRoutes(app);
 app.listen(3000, () => {
