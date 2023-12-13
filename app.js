@@ -132,6 +132,15 @@ app.get("/blogs/comments/create", async (req, res, next) => {
   }
 });
 
+app.get("/logout", async (req, res, next) => {
+  const user = req.session.user;
+  if (!user) {
+    return res.redirect("/login");
+  } else {
+    next();
+  }
+});
+
 configRoutes(app);
 app.listen(3000, () => {
   console.log("We've now got a server!");
