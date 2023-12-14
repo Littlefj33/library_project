@@ -1,6 +1,7 @@
 export const dbTool = async (collection, field, keyword, proj, action) => {
   // since filter will be selected from a dropdown window, no validation is necessary
   if (!collection || typeof collection !== "object") {
+    console.log(collection)
     throw new Error("Warning: No/Invalid Collection is suplied in the routes!");
   }
   if (!proj) {
@@ -13,7 +14,7 @@ export const dbTool = async (collection, field, keyword, proj, action) => {
 
   let query = {};
   let queryResult = undefined;
-  query[field] = { $regex: `/${keyword}/` };
+  query[field] = { $regex: new RegExp(keyword) };
 
   if (action) {
     if (action.set) {
@@ -49,12 +50,12 @@ export const dbTool = async (collection, field, keyword, proj, action) => {
     }
   } else {
     try {
-      queryResult = await collection.find(query, proj);
+      queryResult = await collection.find(query, { projection: proj }).toArray();
     } catch (e) {
       console.error(e);
       throw new Error(e.message);
     }
-    if (queryResult.count() === 0) {
+    if (!queryResult) {
       return null;
     }
   }
