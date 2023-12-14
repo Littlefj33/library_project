@@ -1,1 +1,26 @@
 <h1>{{title}}</h1>
+
+{{!-- show saved information and give choice to edit info. this is not even a
+skeleton --}}
+<form method="POST" action="/profile" id="profile-form">
+  <div class="div-padding">
+    <label for="firstNameInput">First Name</label>
+    <input
+      type="text"
+      id="firstNameInput"
+      name="firstNameInput"
+      placeholder="First Name Here"
+    />
+    <span class="error" , aria-live="polite"></span>
+  </div>
+
+  <button
+    class="updateProfile"
+    type="submit"
+    name="updateProfileButton"
+    id="updateProfileButton"
+  >
+    Update Details
+  </button>
+  <div class="alert">{{error}}</div>
+</form>
