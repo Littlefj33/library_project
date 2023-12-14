@@ -11,7 +11,7 @@ router
   .get(async (req, res) => {
     const user = req.session.user;
     if (user) {
-      return res.redirect("/home");
+      return res.redirect("/");
     } else {
       return res.render("login", { title: "Login" });
     }
@@ -26,7 +26,7 @@ router
         emailAddress: results.emailAddress,
         role: results.role,
       };
-      return res.redirect("/home");
+      return res.redirect("/");
     } catch (e) {
       return res.status(400).render("login", { title: "Login", error: e });
     }
@@ -37,7 +37,7 @@ router
   .get(async (req, res) => {
     const user = req.session.user;
     if (user) {
-      return res.redirect("/home");
+      return res.redirect("/");
     } else {
       return res.render("register", { title: "Register" });
     }
@@ -53,8 +53,8 @@ router
       const results = await users.registerUser(
         body.firstNameInput,
         body.lastNameInput,
-        body.dateOfBirth,
-        body.phoneNumber,
+        body.dobInput,
+        body.phoneNumberInput,
         body.emailAddressInput,
         body.passwordInput,
         body.roleInput
