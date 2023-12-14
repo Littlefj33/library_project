@@ -51,6 +51,8 @@ router
       const results = await users.registerUser(
         body.firstNameInput,
         body.lastNameInput,
+        body.dateOfBirth,
+        body.phoneNumber,
         body.emailAddressInput,
         body.passwordInput,
         body.roleInput
@@ -87,13 +89,14 @@ router.route("/logout").get(async (req, res) => {
 
 router.route("/admin").get(async (req, res) => {
   const user = req.session.user;
-
   if (!user) {
     return res.redirect("/login");
   } else if (user.role !== "admin") {
     return res
       .status(403)
       .render("error", { title: "ERROR Page", error: "Access Denied" });
+  } else {
+    return res.render("admin", { title: "Admin" });
   }
 });
 

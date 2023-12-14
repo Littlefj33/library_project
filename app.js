@@ -50,9 +50,8 @@ app.use(
 
 /* Middleware */
 
-/* Used for testing - Can delete at later time */
 app.use("/", async (req, res, next) => {
-  // 1a
+  /* Used for testing - Can delete at later time */
   const curTime = new Date().toUTCString();
   const method = req.method;
   const route = req.originalUrl;
