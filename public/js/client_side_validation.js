@@ -86,7 +86,7 @@
   if (loginForm) {
     email.addEventListener("input", () => validateInput(email, emailError));
     password.addEventListener("input", () =>
-      validateInput(password, passwordError),
+      validateInput(password, passwordError)
     );
 
     loginForm.addEventListener("submit", (event) => {
@@ -105,6 +105,54 @@
       errorElement.className = "error active";
       return false;
     }
+
+    if (registrationForm) {
+      email.addEventListener("input", () => validateInput(email, emailError));
+      password.addEventListener("input", () =>
+        validateInput(password, passwordError)
+      );
+      firstName.addEventListener("input", () =>
+        validateInput(firstName, firstNameError)
+      );
+      lastName.addEventListener("input", () =>
+        validateInput(lastName, lastNameError)
+      );
+      dateOfBirth.addEventListener("input", () =>
+        validateInput(dateOfBirth, dateOfBirthError)
+      );
+      phoneNumber.addEventListener("input", () =>
+        validateInput(phoneNumber, phoneNumberError)
+      );
+      confirmPassword.addEventListener("input", () =>
+        validateInput(confirmPassword, confirmPasswordError)
+      );
+
+      registrationForm.addEventListener("submit", (event) => {
+        const isEmailValid = validateInput(email, emailError);
+        const isPasswordValid = validateInput(password, passwordError);
+        const isFirstNameValid = validateInput(firstName, firstNameError);
+        const isLastNameValid = validateInput(lastName, lastNameError);
+        const isDobValid = validateInput(dateOfBirth, dateOfBirthError);
+
+        if (
+          isEmailValid ||
+          isPasswordValid ||
+          isFirstNameValid ||
+          isLastNameValid ||
+          isDobValid
+        ) {
+          event.preventDefault();
+        }
+      });
+    }
+
+    const validateInput = (inputElement, errorElement) => {
+      if (!inputElement.value.trim()) {
+        // This applies to all the forms, so you don't have to worry about empty input checking
+        errorElement.textContent = "This field is required.";
+        errorElement.className = "error active";
+        return false;
+      }
 
     if (registrationForm) {
       email.addEventListener("input", () => validateInput(email, emailError));
