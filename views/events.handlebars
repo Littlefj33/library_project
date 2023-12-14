@@ -27,7 +27,7 @@
     <div class="location">
       <p>{{location.address}}, {{location.state}}, {{location.zip}}</p>
     </div>
-    <p class="description">{{event.description}}</p>
+    <p class="description">{{description}}</p>
     <p class="details">
       Organized by: {{getOrganizer organizer_id}} <br />
       Attending Fee: ${{attending_fee}} <br />
@@ -45,9 +45,13 @@
       </ul>
       {{/if}}
     </div>
-    {{#unless canceled}}
-    <a href="/events/{{_id}}/register" class="register-button">Register</a>
-    {{/unless}}
+    {{#unless canceled}} {{#ifCond capacity "gt" 0}}
+    <form action="/event/{{this._id}}" method="POST">
+      <button type="submit">RSVP Here</button>
+    </form>
+    {{else}}
+    <p>Capacity Reached</p>
+    {{/ifCond}} {{/unless}}
   </article>
   {{/each}}
 </section>

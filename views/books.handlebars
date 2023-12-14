@@ -1,1 +1,29 @@
 <h1>{{title}}</h1>
+
+<form action="/books/search" method="GET" class="search-form">
+  <input
+    type="text"
+    name="search"
+    placeholder="Search books..."
+    aria-label="Search books"
+  />
+  <button type="submit">Search</button>
+</form>
+
+{{!-- Need a helper a func join --}}
+<div id="book-list">
+  {{#each books}}
+  <div class="book" data-genre="{{genre}}">
+    <h3>{{title}}</h3>
+    <p class="author">Authors: {{join authors ", "}}</p>
+    <p class="genre">Genre: {{join genre ", "}}</p>
+    <p class="date-posted">{{publication_date}}</p>
+    <p>ISBN: {{isbn}}</p>
+    <p>In Stock: {{in_stock}}</p>
+    {{!-- in_stock field needs to be added --}}
+    <div class="content-preview">{{truncatedContent summary}}...</div>
+    <a href="/books/{{this._id}}" class="read-more">More details</a>
+    <!-- Add other book details if you want to display them -->
+  </div>
+  {{/each}}
+</div>

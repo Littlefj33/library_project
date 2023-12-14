@@ -5,8 +5,16 @@ import session from "express-session";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import configRoutes from "./routes/index.js";
+import { getUser } from "./helpers.js";
+import Handlebars from "handlebars";
 
 const app = express();
+
+Handlebars.registerHelper("getAuthor", getUser);
+Handlebars.registerHelper("getOrganizer", getUser);
+Handlebars.registerHelper("join", function (array, separator) {
+  return array.join(separator);
+});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
