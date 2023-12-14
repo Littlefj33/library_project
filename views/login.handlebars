@@ -1,12 +1,12 @@
 <h1>{{title}}</h1>
 <form method="POST" action="/login" id="login-form">
   <div class="div-padding">
-    <label for="emailAddressInput">Username</label>
+    <label for="emailAddressInput">Email</label>
     <input
       type="email"
       id="emailAddressInput"
       name="emailAddressInput"
-      placeholder="Type username here"
+      placeholder="Enter email..."
     />
     <span class="error" , aria-live="polite"></span>
   </div>
@@ -16,7 +16,7 @@
       type="password"
       id="passwordInput"
       name="passwordInput"
-      placeholder="Type password here"
+      placeholder="Enter password..."
     />
     <span class="error" , aria-live="polite"></span>
   </div>
@@ -25,4 +25,4 @@
   </button>
   <div class="alert">{{error}}</div>
 </form>
-<a href="/register">New User? Sign up here.</a>
+<a id="newUserLink" href="/register">New User? Sign up here.</a>
