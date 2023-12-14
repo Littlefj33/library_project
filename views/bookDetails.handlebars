@@ -1,4 +1,4 @@
-<div id="book-details">
+<div class="books" id="book-details">
   <h1>{{book.title}}</h1>
   {{#ifCond book.in_stock "gt" 0}}
   <form action="/borrow-book/{{book._id}}" method="POST">
