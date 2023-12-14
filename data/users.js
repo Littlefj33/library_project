@@ -1,7 +1,5 @@
 import { users } from "../config/mongoCollections.js";
 import bcrypt from "bcrypt";
-import { validatePassword, validateInput } from "../helpers.js";
-import { validate } from "email-validator";
 
 export const registerUser = async (
   firstName,
@@ -12,96 +10,203 @@ export const registerUser = async (
   password,
   role
 ) => {
+  if (
+    firstName === undefined ||
+    lastName === undefined ||
+    dateOfBirth === undefined ||
+    phoneNumber === undefined ||
+    emailAddress === undefined ||
+    password === undefined ||
+    role === undefined
+  )
+    throw "ERROR: Need all inputs";
+
+  const containsNumRegex = /([0-9])/;
+  const containsCapLetRegex = /([A-Z])/;
+  /* List of all special characters found from OWASP: https://owasp.org/www-community/password-special-characters */
+  const containsSpecialRegex = /([!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~])/;
+  const containsWhitespaceRegex = /(\s)/;
+
+  /* Email address regex found from Stack Overflow: https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript */
+  const validEmailRegex =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  /* First Name */
+  if (typeof firstName !== "string")
+    throw "ERROR: First name must be of type String";
+  firstName = firstName.trim();
+  if (firstName.length < 2 || firstName.length > 25)
+    throw "ERROR: First name must contain between 2 and 25 characters & cannot be empty";
+  if (containsNumRegex.test(firstName))
+    throw "ERROR: First name cannot contain numbers";
+
+  /* Last Name */
+  if (typeof lastName !== "string")
+    throw "ERROR: Last name must be of type String";
+  lastName = lastName.trim();
+  if (lastName.length < 2 || lastName.length > 25)
+    throw "ERROR: Last name must contain between 2 and 25 characters & cannot be empty";
+  if (containsNumRegex.test(lastName))
+    throw "ERROR: Last name cannot contain numbers";
+
+  /* Date of Birth */
+  if (typeof dateOfBirth !== "string")
+    throw "ERROR: Date of Birth must be of type String";
+  dateOfBirth = dateOfBirth.trim();
+  let DOB;
   try {
-    const validatedInput = validateInput(
-      firstName,
-      lastName,
-      dateOfBirth,
-      phoneNumber,
-      emailAddress,
-      password,
-      role
-    );
-    firstName = validatedInput.firstName;
-    lastName = validatedInput.lastName;
-    dateOfBirth = validateInput.dateOfBirth;
-    phoneNumber = validateInput.phoneNumber;
-    emailAddress = validatedInput.emailAddress;
-    password = validatedInput.password;
-    role = validatedInput.role;
+    DOB = new Date(dateOfBirth);
   } catch (e) {
-    throw new Error(e.message);
+    throw "ERROR: Invalid date input";
   }
+  if (new Date() <= DOB)
+    throw "ERROR: Date of birth cannot be the current day or future time";
 
-  const usersCollection = await users();
+  /* Phone Number */
+  if (typeof phoneNumber !== "string")
+    throw "ERROR: Phone number must be of type String";
+  phoneNumber = phoneNumber.trim();
+  if (!/[0-9]{3}-[0-9]{3}-[0-9]{4}/.test(phoneNumber))
+    throw "ERROR: Phone number does not have a valid input";
 
-  const emailSearch = await usersCollection.findOne({
-    emailAddress: emailAddress,
+  /* Email Address */
+  if (typeof emailAddress !== "string")
+    throw "ERROR: Email address must be of type String";
+  emailAddress = emailAddress.toLowerCase().trim();
+  if (!validEmailRegex.test(emailAddress)) throw "ERROR: Invalid email address";
+
+  const userCollection = await users();
+  let userList = await userCollection
+    .find({}, { projection: { _id: 0, emailAddress: 1 } })
+    .toArray();
+  if (!userList) throw "ERROR: Could not get all users";
+  userList.forEach((elem) => {
+    if (emailAddress.toLowerCase() === elem.emailAddress.toLowerCase())
+      throw "ERROR: Email address already exists in the database";
   });
 
-  if (emailSearch !== null) {
-    throw new Error("users: Email already used!");
-  }
+  /* Password */
+  if (typeof password !== "string")
+    throw "ERROR: Password must be of type String";
+  password = password.trim();
+  if (password.length < 8)
+    throw "ERROR: Password must contain at least 8 characters & cannot be empty";
+  if (
+    !(
+      containsNumRegex.test(password) &&
+      containsCapLetRegex.test(password) &&
+      containsSpecialRegex.test(password)
+    )
+  )
+    throw "ERROR: Password must contain at least one uppercase letter, one number, and one special character";
+  if (containsWhitespaceRegex.test(password))
+    throw "ERROR: Password cannot contain whitespace";
 
-  const user = {
-    firstName: firstName,
-    lastName: lastName,
-    dateOfBirth: new Date(dateOfBirth),
-    phoneNumber: phoneNumber,
-    emailAddress: emailAddress,
-    password: await bcrypt.hash(password, 16),
-    role: role,
+  /* Role */
+  if (typeof role !== "string") throw "ERROR: Role must be of type String";
+  role = role.toLowerCase().trim();
+  if (!(role === "admin" || role === "user"))
+    throw "ERROR: Role must be admin or user";
+
+  /* Hash Password & Insert User */
+  const saltRounds = 16;
+  const passwordHash = await bcrypt.hash(password, saltRounds);
+
+  const newUserInfo = {
+    firstName,
+    lastName,
+    dateOfBirth,
+    phoneNumber,
+    emailAddress,
+    password: passwordHash,
+    role,
   };
+  const insertUser = await userCollection.insertOne(newUserInfo);
+  if (!insertUser.acknowledged || !insertUser.insertedId)
+    throw "ERROR: Could not add user to collection";
 
-  const insertStatus = await usersCollection.insertOne(user);
-  if (insertStatus.acknowledged || insertStatus.insertedId) {
-    return { insertedUser: true };
-  } else {
-    return { insertedUser: false };
-  }
+  return { insertedUser: true };
 };
 
 export const loginUser = async (emailAddress, password) => {
-  emailAddress = emailAddress.trim().toLowerCase();
+  if (emailAddress === undefined || password === undefined)
+    throw "ERROR: Need all inputs";
+
+  const validEmailRegex =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  if (typeof emailAddress !== "string")
+    throw "ERROR: Email address must be of type String";
+  emailAddress = emailAddress.toLowerCase().trim();
+  if (!validEmailRegex.test(emailAddress)) throw "ERROR: Invalid email address";
+
+  const containsNumRegex = /([0-9])/;
+  const containsCapLetRegex = /([A-Z])/;
+  const containsSpecialRegex = /([!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~])/;
+  const containsWhitespaceRegex = /(\s)/;
+
+  if (typeof password !== "string")
+    throw "ERROR: Password must be of type String";
   password = password.trim();
+  if (password.length < 8)
+    throw "ERROR: Password must contain at least 8 characters & cannot be empty";
+  if (
+    !(
+      containsNumRegex.test(password) &&
+      containsCapLetRegex.test(password) &&
+      containsSpecialRegex.test(password)
+    )
+  )
+    throw "ERROR: Password must contain at least one uppercase letter, one number, and one special character";
+  if (containsWhitespaceRegex.test(password))
+    throw "ERROR: Password cannot contain whitespace";
 
-  try {
-    validatePassword(password);
-  } catch (e) {
-    throw new Error(e.message);
-  }
+  const userCollection = await users();
+  let userList = await userCollection
+    .find(
+      {},
+      {
+        projection: {
+          _id: 1,
+          firstName: 1,
+          lastName: 1,
+          emailAddress: 1,
+          password: 1,
+          role: 1,
+        },
+      }
+    )
+    .toArray();
+  if (!userList) throw "ERROR: Could not get all users";
 
-  if (!validate(emailAddress)) {
-    throw new Error("users: emailAddress is not valid!");
-  }
+  let passwordsMatch = false;
+  let foundPasswordHash = "";
+  let foundUser = {};
 
-  const usersCollection = await users();
-
-  const emailSearch = await usersCollection.findOne({
-    emailAddress: emailAddress,
-  });
-  if (emailSearch === undefined) {
-    throw new Error("Either the email address or password is invalid");
-  }
-
-  // console.log(emailSearch.password)
-
-  try {
-    const comparePass = await bcrypt.compare(password, emailSearch.password);
-    if (!comparePass) {
-      throw new Error("Either the email address or password is invalid");
+  userList.forEach((elem) => {
+    if (emailAddress.toLowerCase() === elem.emailAddress.toLowerCase()) {
+      foundPasswordHash = elem.password;
+      foundUser = elem;
     }
+  });
+
+  if (foundPasswordHash === "")
+    throw "Either the email address or password is invalid";
+
+  try {
+    passwordsMatch = await bcrypt.compare(password, foundPasswordHash);
   } catch (e) {
-    console.error(e);
-    throw new Error(e.message);
+    throw "ERROR: Problem with matching credentials";
   }
 
-  // console.log(emailSearch)
-
-  return {
-    firstName: emailSearch.firstName,
-    lastName: emailSearch.lastName,
-    emailAddress: emailSearch.emailAddress,
-    role: emailSearch.role,
-  };
+  if (passwordsMatch) {
+    return {
+      firstName: foundUser.firstName,
+      lastName: foundUser.lastName,
+      emailAddress: foundUser.emailAddress,
+      role: foundUser.role,
+    };
+  } else {
+    throw `Either the email address or password is invalid`;
+  }
 };
