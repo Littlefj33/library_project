@@ -40,6 +40,8 @@ app.use(
   })
 );
 
+/* Middleware */
+
 /* Used for testing - Can delete at later time */
 app.use("/", async (req, res, next) => {
   // 1a
@@ -63,7 +65,7 @@ app.use("/", async (req, res, next) => {
 app.get("/login", async (req, res, next) => {
   const user = req.session.user;
   if (user) {
-    return res.redirect("/home");
+    return res.redirect("/");
   } else {
     next();
   }
@@ -72,7 +74,7 @@ app.get("/login", async (req, res, next) => {
 app.get("/register", async (req, res, next) => {
   const user = req.session.user;
   if (user) {
-    return res.redirect("/home");
+    return res.redirect("/");
   } else {
     next();
   }
@@ -91,8 +93,6 @@ app.get("/admin", async (req, res, next) => {
   const user = req.session.user;
   if (!user) {
     return res.redirect("/login");
-  } else if (user.role !== "admin") {
-    return res.redirect("/error");
   } else {
     next();
   }
@@ -100,7 +100,7 @@ app.get("/admin", async (req, res, next) => {
 
 app.get("/logout", async (req, res, next) => {
   const user = req.session.user;
-  if (user) {
+  if (!user) {
     return res.redirect("/");
   } else {
     next();
