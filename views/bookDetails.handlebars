@@ -7,14 +7,14 @@
   {{else}}
   <p>Out of Stock!</p>
   {{/ifCond}}
-  <p><strong>Author(s):</strong> {{join book.authors ", "}}</p>
-  <p><strong>Genre:</strong> {{join book.genre ", "}}</p>
-  <p><strong>Publication Date:</strong> {{book.publication_date}}</p>
-  <p><strong>ISBN:</strong> {{book.isbn}}</p>
-  <p><strong>Page Count:</strong> {{book.page_count}}</p>
-  <p><strong>Language:</strong> {{book.language}}</p>
-  <p><strong>In Stock:</strong> {{book.in_stock}}</p>
-  <p><strong>Summary:</strong> {{book.summary}}</p>
+  <p>Author(s): {{join book.authors ", "}}</p>
+  <p>Genre: {{join book.genre ", "}}</p>
+  <p>Publication Date: {{book.publication_date}}</p>
+  <p>ISBN: {{book.isbn}}</p>
+  <p>Page Count: {{book.page_count}}</p>
+  <p>Language: {{book.language}}</p>
+  <p>In Stock: {{book.in_stock}}</p>
+  <p>Summary: {{book.summary}}</p>
   <h2>Reviews</h2>
   {{#each book.reviews}}
   <div class="review">
