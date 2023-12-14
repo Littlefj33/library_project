@@ -17,6 +17,9 @@ export const dbTool = async (collection, field, keyword, proj, action) => {
   let query = {};
   let queryResult = undefined;
   if (field === "_id") {
+    if (!ObjectId.isValid(keyword)) {
+      throw new Error("Invalid ObjectId!");
+    }
     query[field] = new ObjectId(keyword);
   } else {
     query[field] = { $regex: new RegExp(keyword) };
