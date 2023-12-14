@@ -37,7 +37,7 @@ export const registerUser = async (
   firstName = firstName.trim();
   if (firstName.length < 2 || firstName.length > 25)
     throw "ERROR: First name must contain between 2 and 25 characters & cannot be empty";
-  if (firstName.test(containsNumRegex))
+  if (containsNumRegex.test(firstName))
     throw "ERROR: First name cannot contain numbers";
 
   /* Last Name */
@@ -46,7 +46,7 @@ export const registerUser = async (
   lastName = lastName.trim();
   if (lastName.length < 2 || lastName.length > 25)
     throw "ERROR: Last name must contain between 2 and 25 characters & cannot be empty";
-  if (lastName.test(containsNumRegex))
+  if (containsNumRegex.test(lastName))
     throw "ERROR: Last name cannot contain numbers";
 
   /* Date of Birth */
@@ -73,7 +73,7 @@ export const registerUser = async (
   if (typeof emailAddress !== "string")
     throw "ERROR: Email address must be of type String";
   emailAddress = emailAddress.toLowerCase().trim();
-  if (!emailAddress.test(validEmailRegex)) throw "ERROR: Invalid email address";
+  if (!validEmailRegex.test(emailAddress)) throw "ERROR: Invalid email address";
 
   const userCollection = await users();
   let userList = await userCollection
@@ -93,13 +93,13 @@ export const registerUser = async (
     throw "ERROR: Password must contain at least 8 characters & cannot be empty";
   if (
     !(
-      password.test(containsNumRegex) &&
-      password.test(containsCapLetRegex) &&
-      password.test(containsSpecialRegex)
+      containsNumRegex.test(password) &&
+      containsCapLetRegex.test(password) &&
+      containsSpecialRegex.test(password)
     )
   )
     throw "ERROR: Password must contain at least one uppercase letter, one number, and one special character";
-  if (password.test(containsWhitespaceRegex))
+  if (containsWhitespaceRegex.test(password))
     throw "ERROR: Password cannot contain whitespace";
 
   /* Role */
@@ -138,7 +138,7 @@ export const loginUser = async (emailAddress, password) => {
   if (typeof emailAddress !== "string")
     throw "ERROR: Email address must be of type String";
   emailAddress = emailAddress.toLowerCase().trim();
-  if (!emailAddress.test(validEmailRegex)) throw "ERROR: Invalid email address";
+  if (!validEmailRegex.test(emailAddress)) throw "ERROR: Invalid email address";
 
   const containsNumRegex = /([0-9])/;
   const containsCapLetRegex = /([A-Z])/;
@@ -152,13 +152,13 @@ export const loginUser = async (emailAddress, password) => {
     throw "ERROR: Password must contain at least 8 characters & cannot be empty";
   if (
     !(
-      password.test(containsNumRegex) &&
-      password.test(containsCapLetRegex) &&
-      password.test(containsSpecialRegex)
+      containsNumRegex.test(password) &&
+      containsCapLetRegex.test(password) &&
+      containsSpecialRegex.test(password)
     )
   )
     throw "ERROR: Password must contain at least one uppercase letter, one number, and one special character";
-  if (password.test(containsWhitespaceRegex))
+  if (containsWhitespaceRegex.test(password))
     throw "ERROR: Password cannot contain whitespace";
 
   const userCollection = await users();

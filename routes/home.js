@@ -1,5 +1,6 @@
 import { Router } from "express";
 const router = Router();
+import * as users from "../data/users.js";
 
 router.route("/").get(async (req, res) => {
   return res.render("home", { title: "Home" });
@@ -43,6 +44,7 @@ router
   })
   .post(async (req, res) => {
     const body = req.body;
+    console.log(body);
     try {
       if (body.confirmPasswordInput === undefined)
         throw "ERROR: Must enter password confirmation";
