@@ -3,7 +3,6 @@ import { ObjectId } from "mongodb";
 export const dbTool = async (collection, field, keyword, proj, action) => {
   // since filter will be selected from a dropdown window, no validation is necessary
   if (!collection || typeof collection !== "object") {
-    console.log(collection)
     throw new Error("Warning: No/Invalid Collection is suplied in the routes!");
   }
   if (!proj) {
