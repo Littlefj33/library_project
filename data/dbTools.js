@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+
 export const dbTool = async (collection, field, keyword, proj, action) => {
   // since filter will be selected from a dropdown window, no validation is necessary
   if (!collection || typeof collection !== "object") {
@@ -6,14 +8,21 @@ export const dbTool = async (collection, field, keyword, proj, action) => {
   if (!proj) {
     proj = {};
   }
-  keyword = keyword.trim().toLowerCase();
+  keyword = keyword.trim();
   if (!keyword.length) {
     throw new Error({ InvalidArgument: true });
   }
 
   let query = {};
   let queryResult = undefined;
-  query[field] = { $regex: `/${keyword}/` };
+  if (field === "_id") {
+    if (!ObjectId.isValid(keyword)) {
+      throw new Error("Invalid ObjectId!");
+    }
+    query[field] = new ObjectId(keyword);
+  } else {
+    query[field] = { $regex: new RegExp(keyword) };
+  }
 
   if (action) {
     if (action.set) {
@@ -23,6 +32,7 @@ export const dbTool = async (collection, field, keyword, proj, action) => {
           { $set: action.set },
           {
             projection: proj,
+            returnDocument: "after",
           }
         );
       } catch (e) {
@@ -35,6 +45,7 @@ export const dbTool = async (collection, field, keyword, proj, action) => {
           { $push: action.push },
           {
             projection: proj,
+            returnDocument: "after",
           }
         );
       } catch (e) {
@@ -49,18 +60,19 @@ export const dbTool = async (collection, field, keyword, proj, action) => {
     }
   } else {
     try {
-      queryResult = await collection.find(query, proj);
+      queryResult = await collection.find(query, { projection: proj }).toArray();
     } catch (e) {
       console.error(e);
       throw new Error(e.message);
     }
-    if (queryResult.count() === 0) {
+    if (!queryResult) {
       return null;
     }
   }
   if (typeof queryResult === "undefined") {
     throw new Error("Mongo: Could not fetch the document!");
   }
+
 
   return queryResult;
 };
