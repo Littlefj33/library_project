@@ -19,7 +19,7 @@ export const createBlog = async (author_email, title, content) => {
     let author_id = undefined;
 
     try {
-        author_id = await dbTool(userCollection, "emailAddress", author_email, { _id: 1 })[0];
+        author_id = await dbTool(userCollection, "emailAddress", author_email, { _id: 1 });
     } catch (e) {
         throw "error in finding author using dbTool";
     }
@@ -29,7 +29,7 @@ export const createBlog = async (author_email, title, content) => {
 
     const blogCollection = await blogs();
     const newBlog = {
-        author_id: new ObjectId(author_id._id),
+        author_id: new ObjectId((author_id[0])._id),
         title: title.trim(),
         content: content.trim(),
         date: new Date(),
