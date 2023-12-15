@@ -10,7 +10,6 @@
   <body>
     {{> header}}
     <main>{{{body}}}</main>
-    {{> footer}}
-    <script src="/public/js/client_side_validation.js"></script>
+    {{> footer}} {{#if partial}} {{> (lookup . 'partial')}} {{/if}}
   </body>
 </html>

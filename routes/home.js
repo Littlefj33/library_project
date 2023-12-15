@@ -13,7 +13,10 @@ router
     if (user) {
       return res.redirect("/");
     } else {
-      return res.render("login", { title: "Login" });
+      return res.render("login", {
+        title: "Login",
+        partial: "loginValidation",
+      });
     }
   })
   .post(async (req, res) => {
@@ -28,7 +31,11 @@ router
       };
       return res.redirect("/");
     } catch (e) {
-      return res.status(400).render("login", { title: "Login", error: e });
+      return res.status(400).render("login", {
+        title: "Login",
+        partial: "loginValidation",
+        error: e,
+      });
     }
   });
 
@@ -39,12 +46,14 @@ router
     if (user) {
       return res.redirect("/");
     } else {
-      return res.render("register", { title: "Register" });
+      return res.render("register", {
+        title: "Register",
+        partial: "registerValidation",
+      });
     }
   })
   .post(async (req, res) => {
     const body = req.body;
-    console.log(body);
     try {
       if (body.confirmPasswordInput === undefined)
         throw "ERROR: Must enter password confirmation";
@@ -68,7 +77,11 @@ router
         });
       }
     } catch (e) {
-      return res.status(400).render("error", { title: "ERROR Page", error: e });
+      return res.status(400).render("register", {
+        title: "Register",
+        partial: "registerValidation",
+        error: e,
+      });
     }
   });
 
