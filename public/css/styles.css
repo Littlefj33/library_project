@@ -43,6 +43,10 @@ a {
   font-size: 17px;
 }
 
-button {
+.btnDiv {
   text-align: center;
+}
+
+.eventBtnDiv {
+  text-align: right;
 }
