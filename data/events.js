@@ -44,7 +44,7 @@ const create = async (
   let dateInfo = helpers.checkValidDateTime(date_time)
   // description more than 25 character
   if (description.length < 25) {
-    throw new Error("'description' should be at least 25 character!")
+    throw new Error("Event description should be at least 25 character!")
   }
   
   // check numbers
