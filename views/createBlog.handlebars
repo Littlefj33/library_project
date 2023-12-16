@@ -1,0 +1,13 @@
+<h1>Create New Blog</h1>
+
+<form action="/blogs/create" method="POST" class="blog-form">
+  <label for="blogTitle">Blog Title:</label>
+  <input type="text" id="blogTitle" name="blogTitle" required />
+
+  <label for="description">Description:</label>
+  <textarea id="description" name="description" required></textarea>
+
+  <button type="submit">Create Blog</button>
+</form>
+
+<p class="error" id="error">{{#if error}} {{error}} {{/if}}</p>
