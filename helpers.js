@@ -34,10 +34,11 @@ export function checkValidString(str, name="") {
 
 export function checkValidDateTime(str) {
   let eventDate = new Date(str);
+  let now = new Date()
   if(isNaN(eventDate.getTime())) {
-    throw new Error = 'The date and time is invalid!';
+    throw new Error('The date and time is invalid!')
   }
-  let diff = Date(str).getTime() - Date().getTime();
+  let diff = eventDate.getTime() - now.getTime();
   if(diff/ 60 / 1000 <= 30) {
     throw new Error(`Event start time must be at least 30 minutes in the future.`)
   }

@@ -1,5 +1,6 @@
 import {events} from '../config/mongoCollections.js'
-const create = async (
+import * as helpers from '../helpers.js'
+export const create = async (
   organizer_id,
   title, 
   date_time,
@@ -50,7 +51,7 @@ const create = async (
   // check numbers
   let capacityVal = helpers.checkValidNumber(capacity,'max capacity')
   let attending_feeVal = helpers.checkValidNumber(attending_fee,'Attending fee')
-  let age_limitVal = helpers.checkValidNumber(attending_fee,'Attending fee')
+  let age_limitVal = helpers.checkValidNumber(age_limit,'Age limit')
   if (!capacityVal || capacityVal <= 0 || !Number.isInteger(capacityVal)) {
     throw new Error('Capacity should be a positive integer and the value should be greater than 0');
   }
