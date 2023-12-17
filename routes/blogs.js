@@ -56,7 +56,7 @@ router.route("/:blogId").get(async (req, res) => {
   let data;
   try {
     let blogData = await dbTool(blogCollection, "_id", blogId, {
-      _id: 0,
+      _id: 1,
       author_id: 1,
       title: 1,
       content: 1,

@@ -1,5 +1,6 @@
 import { events, users } from "../config/mongoCollections.js";
 import { dbTool } from "./dbTools.js";
+import { ObjectId } from "mongodb";
 
 import * as helpers from "../helpers.js";
 export const createEvent = async (
@@ -133,4 +134,94 @@ export const createEvent = async (
     throw new Error("Could not add event!");
   }
   return { insertedEvent: true, id: insertInfo.insertedId };
+};
+
+export const addComment = async (eventId, user_email_address, content) => {
+  if (
+    user_email_address === undefined ||
+    typeof user_email_address !== "string" ||
+    user_email_address.trim().length === 0
+  )
+    throw "Author email missing or invalid";
+
+  if (!content || typeof content !== "string" || content.trim().length === 0)
+    throw "Content missing or invalid";
+
+  eventId = eventId.trim();
+  if (!ObjectId.isValid(eventId)) throw "ERROR: Invalid object ID";
+
+  user_email_address = user_email_address.toLowerCase().trim();
+  content = content.trim();
+
+  const eventCollection = await events();
+  const userCollection = await users();
+  let authorInfo;
+  try {
+    authorInfo = await dbTool(
+      userCollection,
+      "emailAddress",
+      user_email_address,
+      { _id: 1, firstName: 1, lastName: 1, emailAddress: 1 }
+    );
+  } catch (e) {
+    throw "ERROR: Cannot find author";
+  }
+  const authorId = authorInfo[0]["_id"];
+
+  const updatedEventInfo = await eventCollection.findOneAndUpdate(
+    { _id: new ObjectId(eventId) },
+    { $push: { comment: { authorId, content } } },
+    { returnDocument: "after" }
+  );
+  if (!updatedEventInfo) throw "ERROR: User update failed";
+
+  delete authorInfo[0]["_id"];
+
+  return { insertedEvent: true, authorInfo: authorInfo[0] };
+};
+
+export const addAttendee = async (eventId, user_email_address) => {
+  if (
+    user_email_address === undefined ||
+    typeof user_email_address !== "string" ||
+    user_email_address.trim().length === 0
+  )
+    throw "Author email missing or invalid";
+
+  eventId = eventId.trim();
+  if (!ObjectId.isValid(eventId)) throw "ERROR: Invalid object ID";
+
+  user_email_address = user_email_address.toLowerCase().trim();
+
+  const eventCollection = await events();
+  const userCollection = await users();
+
+  let userInfo;
+  try {
+    userInfo = await dbTool(
+      userCollection,
+      "emailAddress",
+      user_email_address,
+      { _id: 1 }
+    );
+  } catch (e) {
+    throw "ERROR: Cannot find user";
+  }
+  const userId = userInfo[0]["_id"];
+
+  const updatedEventInfo = await eventCollection.findOneAndUpdate(
+    { _id: new ObjectId(eventId) },
+    { $push: { attendees: userId } },
+    { returnDocument: "after" }
+  );
+  if (!updatedEventInfo) throw "ERROR: User update failed";
+
+  const updatedUserInfo = await userCollection.findOneAndUpdate(
+    { _id: userId },
+    { $push: { events_joined: eventId } },
+    { returnDocument: "after" }
+  );
+  if (!updatedUserInfo) throw "ERROR: User update failed";
+
+  return { insertedEvent: true };
 };
