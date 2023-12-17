@@ -4,13 +4,45 @@ import { Router } from "express";
 import { addReview, requestBook, returnBook } from "../data/books.js";
 import xss from 'xss';
 const router = Router();
-
-router.
-  route("/")
+router.route("/")
   .get(async (req, res) => {
-    return res.render("books", { title: "Books" });
-  })
-  .post(async (req, res) => {
+  try {
+    const booksCollection = await books();
+    let booksList = await booksCollection
+      .find(
+        {},
+        {
+          projection: {
+            _id: 1,
+            title: 1,
+            authors: 1,
+            publication_date: 1,
+            summary: 1,
+            language: 1,
+            genres: 1,
+            page_count: 1,
+            isbn: 1,
+            condition_status: 1,
+            liability_cost: 1,
+            total_stock: 1,
+            current_stock: 1,
+            current_borrowers: 1,
+            reviews: 1,
+            comments: 1,
+          },
+        }
+      )
+      .toArray();
+    if (!booksList) throw "ERROR: Could not get all books";
+    return res.render("books", { title: "Books", data: booksList });
+  } catch (e) {
+    return res.status(500).render("error", {
+      title: "ERROR Page",
+      error: "Internal Server Error",
+    });
+  }
+})
+.post(async (req, res) => {
     const bookId = xss(req.body.bookId);
     const userEmail = xss(req.body.userEmail);
 

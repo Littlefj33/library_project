@@ -44,7 +44,8 @@ a {
 }
 
 a.toEventDetails,
-a.toBlogDetails {
+a.toBlogDetails,
+a.toBookDetails {
   text-align: left;
 }
 

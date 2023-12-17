@@ -80,10 +80,10 @@ export const registerUser = async (
     .find({}, { projection: { _id: 0, emailAddress: 1 } })
     .toArray();
   if (!userList) throw "ERROR: Could not get all users";
-  userList.forEach((elem) => {
+  for (let elem of userList) {
     if (emailAddress.toLowerCase() === elem.emailAddress.toLowerCase())
       throw "ERROR: Email address already exists in the database";
-  });
+  }
 
   /* Password */
   if (typeof password !== "string")
@@ -183,12 +183,12 @@ export const loginUser = async (emailAddress, password) => {
   let foundPasswordHash = "";
   let foundUser = {};
 
-  userList.forEach((elem) => {
+  for (let elem of userList) {
     if (emailAddress.toLowerCase() === elem.emailAddress.toLowerCase()) {
       foundPasswordHash = elem.password;
       foundUser = elem;
     }
-  });
+  }
 
   if (foundPasswordHash === "")
     throw "Either the email address or password is invalid";
