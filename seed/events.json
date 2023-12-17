@@ -1,8 +1,8 @@
 [
   {
-    "_id": { "$oid": "65428caf408f2a2f42f8cc89" },
+    "_id": "65428caf408f2a2f42f8cc89",
     "title": "The title here",
-    "organizer_id": { "$oid": "65428caf408f2a2f42f8cc17" },
+    "organizer_id": "65428caf408f2a2f42f8cc17",
     "date_time": "2021-11-11T00:00:00.000Z",
     "location": {
       "address": "street address here",
@@ -13,19 +13,19 @@
     "attending_fee": 89,
     "capacity": 10,
     "age_limit": 10,
-    "attendees": [{ "$oid": "65428caf408f2a2f42f8cc17" }],
+    "attendees": ["65428caf408f2a2f42f8cc17"],
     "comments": [
       {
-        "_id": { "$oid": "65428caf408f2a2f42f8cc17" },
+        "_id": "65428caf408f2a2f42f8cc17",
         "content": "comment content here"
       }
     ],
     "canceled": false
   },
   {
-    "_id": { "$oid": "65428caf408f2a2f42f8cc90" },
+    "_id": "65428caf408f2a2f42f8cc90",
     "title": "Another Event Title",
-    "organizer_id": { "$oid": "65428caf408f2a2f42f8cc18" },
+    "organizer_id": "65428caf408f2a2f42f8cc18",
     "date_time": "2021-12-11T00:00:00.000Z",
     "location": {
       "address": "another street address here",
@@ -36,10 +36,10 @@
     "attending_fee": 50,
     "capacity": 20,
     "age_limit": 18,
-    "attendees": [{ "$oid": "65428caf408f2a2f42f8cc18" }],
+    "attendees": ["65428caf408f2a2f42f8cc18"],
     "comments": [
       {
-        "_id": { "$oid": "65428caf408f2a2f42f8cc18" },
+        "_id": "65428caf408f2a2f42f8cc18",
         "content": "another comment content here"
       }
     ],
