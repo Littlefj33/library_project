@@ -1,6 +1,6 @@
 <h1>Create New Blog</h1>
 
-<form action="/blogs/create" method="POST" class="blog-form">
+<form action="/blogs/create" method="POST" id="blog-form">
   <label for="blogTitle">Blog Title:</label>
   <input
     type="text"
@@ -10,11 +10,11 @@
     required
   />
 
-  <label for="description">Description:</label>
+  <label for="content">Content:</label>
   <textarea
-    id="description"
-    name="description"
-    placeholder="Description..."
+    id="content"
+    name="content"
+    placeholder="content..."
     required
   ></textarea>
 
