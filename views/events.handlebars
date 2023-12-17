@@ -16,7 +16,17 @@
       <option value="author">By Author</option>
     </select>
     <button type="submit">Search</button>
+    <div class="alert">{{error}}</div>
   </form>
+
+  <button
+    class="eventBtnDiv"
+    type="submit"
+    name="createEventButton"
+    id="createEventButton"
+  >
+    Create New Event
+  </button>
 
   {{!-- The attributes of the event like title, date_time, .... will be replaced
   auto --}} {{!-- We do need to register a helper function
