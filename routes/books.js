@@ -1,12 +1,30 @@
 import { dbTool } from "../data/dbTools.js";
 import { books } from "../config/mongoCollections.js";
 import { Router } from "express";
-import { addReview, requestBook } from "../data/books.js";
+import { addReview, requestBook, returnBook } from "../data/books.js";
+import xss from 'xss';
 const router = Router();
 
-router.route("/").get(async (req, res) => {
-  return res.render("books", { title: "Books" });
-});
+router.
+  route("/")
+  .get(async (req, res) => {
+    return res.render("books", { title: "Books" });
+  })
+  .post(async (req, res) => {
+    const bookId = xss(req.body.bookId);
+    const userEmail = xss(req.body.userEmail);
+
+    if (!bookId || !userEmail) {
+      return res.status(400).render("error", { error: 'Book ID and user email are required' });
+    }
+
+    try {
+      await returnBook(bookId, userEmail);
+      return res.status(200).json({ message: 'Book returned successfully' });
+    } catch (error) {
+      return res.status(500).render("error", { error: error.toString() });
+    }
+  });
 
 router.route("/:bookId").get(async (req, res) => {
   const bookId = req.params.bookId.trim();
@@ -73,5 +91,7 @@ router.route("/:bookId/request").get(async (req, res) => {
     }
   }
 });
+
+
 
 export default router;
