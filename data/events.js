@@ -1,5 +1,6 @@
-import { events } from "../config/mongoCollections.js";
-import { users } from '../config/mongoCollections.js'
+import { events, users } from "../config/mongoCollections.js";
+import { dbTool } from "./dbTools.js";
+
 import * as helpers from "../helpers.js";
 export const createEvent = async (
   user_email_address,
@@ -66,7 +67,7 @@ export const createEvent = async (
   }
 
   if (
-    !attending_feeVal ||
+    attending_feeVal === undefined ||
     attending_feeVal < 0 ||
     !Number.isInteger(attending_feeVal * 100)
   ) {
@@ -100,14 +101,18 @@ export const createEvent = async (
   }
   // Get the organizer's ID from the database using their email address
   user_email_address = user_email_address.trim().toLowerCase();
+
   const userCollection = await users();
-  const queryResult = await userCollection.findOne({email: user_email_address });
-  if (queryResult === null) {
-    throw new Error("Cannot find user with this email address!");
-  }
+  let organizerInfo = await dbTool(
+    userCollection,
+    "emailAddress",
+    user_email_address,
+    { _id: 1 }
+  );
+
   let newEvent = {
     title,
-    organizer_id: queryResult._id,
+    organizer_id: organizerInfo[0]["_id"],
     date_time: dateInfo,
     location: {
       address,
