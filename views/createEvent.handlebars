@@ -1,6 +1,6 @@
 <h1>Create New Event</h1>
 
-<form action="/events/create" method="POST" class="event-form">
+<form action="/events/create" method="POST" id="event-form">
   <label for="title">Event Title:</label>
   <input
     type="text"
@@ -45,10 +45,11 @@
   <label for="attending_fee">Attending Fee ($):</label>
   <input
     type="number"
+    step="0.01"
     id="attending_fee"
     name="attending_fee"
-    min="0"
     placeholder="Fee..."
+    required
   />
 
   <label for="capacity">Capacity:</label>
@@ -56,7 +57,6 @@
     type="number"
     id="capacity"
     name="capacity"
-    min="1"
     placeholder="Capacity..."
     required
   />
@@ -66,7 +66,6 @@
     type="number"
     id="age_limit"
     name="age_limit"
-    min="0"
     placeholder="Age limit..."
     required
   />
