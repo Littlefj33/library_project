@@ -3,7 +3,7 @@
     "_id": "65428caf408f2a2f42f8cc89",
     "title": "The title here",
     "organizer_id": "65428caf408f2a2f42f8cc17",
-    "date_time": "2021-11-11T00:00:00.000Z",
+    "date_time": "2021-11-11T10:05:00.000Z",
     "location": {
       "address": "street address here",
       "state": "NJ",
@@ -26,7 +26,7 @@
     "_id": "65428caf408f2a2f42f8cc90",
     "title": "Another Event Title",
     "organizer_id": "65428caf408f2a2f42f8cc18",
-    "date_time": "2021-12-11T00:00:00.000Z",
+    "date_time": "2021-12-11T03:12:00.000Z",
     "location": {
       "address": "another street address here",
       "state": "A-Z&&A-Z",
