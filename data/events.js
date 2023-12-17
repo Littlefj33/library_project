@@ -1,4 +1,5 @@
 import { events } from "../config/mongoCollections.js";
+import { users } from '../config/mongoCollections.js'
 import * as helpers from "../helpers.js";
 export const createEvent = async (
   user_email_address,
@@ -97,9 +98,16 @@ export const createEvent = async (
   if (!/^[0-9]{5}$/.test(zip)) {
     throw new Error(`Invalid zip code:"${zip}"!`);
   }
+  // Get the organizer's ID from the database using their email address
+  user_email_address = user_email_address.trim().toLowerCase();
+  const userCollection = await users();
+  const queryResult = await userCollection.findOne({email: user_email_address });
+  if (queryResult === null) {
+    throw new Error("Cannot find user with this email address!");
+  }
   let newEvent = {
     title,
-    user_email_address,
+    organizer_id: queryResult._id,
     date_time: dateInfo,
     location: {
       address,
