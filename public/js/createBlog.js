@@ -1,4 +1,4 @@
-/* Client-side validation for login page */
+/* Client-side validation for create blog page */
 
 /* Form */
 const createBlogForm = document.getElementById("blog-form");
