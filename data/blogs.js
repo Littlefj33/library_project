@@ -53,7 +53,7 @@ export const createBlog = async (author_email, title, content) => {
 
   if (!updatedUserInfo) throw "ERROR: User update failed";
 
-  return { insertedEvent: true, id: insertInfo.insertedId };
+  return { insertedBlog: true, id: insertInfo.insertedId };
 };
 
 export const addComment = async (blogId, user_email_address, content) => {
@@ -97,5 +97,5 @@ export const addComment = async (blogId, user_email_address, content) => {
 
   delete authorInfo[0]["_id"];
 
-  return { insertedEvent: true, authorInfo: authorInfo[0] };
+  return { insertedBlog: true, authorInfo: authorInfo[0] };
 };

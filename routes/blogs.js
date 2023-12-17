@@ -22,8 +22,8 @@ router.route("/").get(async (req, res) => {
         }
       )
       .toArray();
-    if (!blogList) throw "ERROR: Could not get all events";
-    return res.render("events", { title: "Events", data: blogList });
+    if (!blogList) throw "ERROR: Could not get all blogs";
+    return res.render("blogs", { title: "Blogs", data: blogList });
   } catch (e) {
     return res.status(500).render("error", {
       title: "ERROR Page",
@@ -55,7 +55,7 @@ router
       try {
         // prettier-ignore
         const results = await createBlog(user.emailAddress, blogTitle, content);
-        if (results.insertedEvent === true) {
+        if (results.insertedBlog === true) {
           return res.redirect(`/blogs/${results.id}`);
         } else {
           return res.status(500).render("error", {
@@ -114,7 +114,7 @@ router.route("/:blogId/comment").post(async (req, res) => {
     const blogId = req.params.blogId.trim();
     try {
       const results = await addComment(blogId, user.emailAddress, content);
-      if (results.insertedEvent === true) {
+      if (results.insertedBlog === true) {
         return res.redirect(`/blogs/${blogId}`);
       } else {
         return res.status(500).render("error", {
