@@ -2,8 +2,6 @@ import { books, users } from "../config/mongoCollections.js";
 import { dbTool } from "./dbTools.js";
 import { ObjectId } from "mongodb";
 
-/* TODO Add functionality in routes and test all functions */
-
 export const addReview = async (
   bookId,
   user_email_address,
