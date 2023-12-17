@@ -7,6 +7,10 @@ router.route("/").get(async (req, res) => {
   return res.render("blogs", { title: "Blogs" });
 });
 
+router.route("/create").get(async (req, res) => {
+  return res.render("createBlog", { title: "Blogs" });
+});
+
 router.route("/:blogId").get(async (req, res) => {
   const blogId = req.params.blogId.trim();
   const blogCollection = await blogs();
@@ -20,10 +24,6 @@ router.route("/:blogId").get(async (req, res) => {
 /* Maybe remove?? */
 router.route("/:blogId/comment").get(async (req, res) => {
   return res.render("blogComments", { title: "Blogs" });
-});
-
-router.route("/create").get(async (req, res) => {
-  return res.render("createBlog", { title: "Blogs" });
 });
 
 export default router;
