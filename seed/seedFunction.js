@@ -32,6 +32,17 @@ function convertToObjectId(doc) {
     return doc;
 }
 
+function convertToDate(doc) {
+    if (doc.date_joined) {
+        doc.date_joined = new Date(doc.date_joined);
+    }
+    if (doc.birth_date) {
+        doc.birth_date = new Date(doc.birth_date);
+    }
+    return doc;
+
+}
+
 export async function usersBlogsEventsSeed(bookIds) {
     const usersCollection = await users();
     const blogsCollection = await blogs();
@@ -43,6 +54,7 @@ export async function usersBlogsEventsSeed(bookIds) {
         const seedDataRaw1 = JSON.parse(await readFile('users.json', 'utf8'))
         let seedData1 = seedDataRaw1.map(convertToObjectId);
         seedData1 = seedData1.map(doc => addingBookIds(doc, bookIds));
+        seedData1 = seedData1.map(convertToDate);
         await usersCollection.insertMany(seedData1)
         const seedDataRaw2 = JSON.parse(await readFile('blogs.json', 'utf8'))
         const seedData2 = seedDataRaw2.map(convertToObjectId);
