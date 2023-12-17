@@ -39,10 +39,10 @@
 
 <div class="comments-section">
   <p>{{data.comments.length}} comments</p>
-  {{#if comments}}
+  {{#if data.comments}}
   <ul class="comments-list">
-    {{#each comments}}
-    <li>{{data.content}}</li>
+    {{#each data.comments}}
+    <li>{{this.content}}</li>
     {{/each}}
   </ul>
   {{/if}}
