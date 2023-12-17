@@ -28,13 +28,33 @@
 
 <p class="attendees-count">{{data.attendees.length}} people attending</p>
 
-<form
-  action="/events/{{this._id}}/comment"
-  method="POST"
-  id="comment-event-form"
->
-  <button type="submit">Comment on Event</button>
-</form>
+<button class="openCommentForm" onclick="openCommentForm()">
+  Comment on Event
+</button>
+<div class="form-popup">
+  <form
+    action="/events/{{this._id}}/comment"
+    method="POST"
+    id="comment-event-form"
+    class="form-container"
+  >
+    <h3>New Comment</h3>
+    <label for="content">Content:</label>
+    <textarea
+      id="content"
+      name="content"
+      placeholder="content..."
+      required
+    ></textarea>
+    <button
+      type="submit"
+      class="submitAndCloseComment"
+      onclick="closeCommentForm()"
+    >
+      Submit Comment
+    </button>
+  </form>
+</div>
 
 <form action="/events/{{data._id}}/join" method="POST" id="join-event-form">
   <button type="submit">Join Event</button>
