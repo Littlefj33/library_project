@@ -5,13 +5,16 @@ import session from "express-session";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import configRoutes from "./routes/index.js";
-import { getUser } from "./helpers.js";
+import { getUserName, getBookName, getUserEmail } from "./helpers.js";
 import Handlebars from "handlebars";
+
 
 const app = express();
 
-Handlebars.registerHelper("getAuthor", getUser);
-Handlebars.registerHelper("getOrganizer", getUser);
+Handlebars.registerHelper("getAuthor", getUserName);
+Handlebars.registerHelper("getReturnee", getUserEmail);
+Handlebars.registerHelper("getOrganizer", getUserName);
+Handlebars.registerHelper("getBookTitle", getBookName);
 Handlebars.registerHelper("join", function (array, separator) {
   return array.join(separator);
 });
