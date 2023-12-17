@@ -12,13 +12,20 @@ function addingBookIds(doc, bookIdsObject) {
 }
 
 function convertToObjectId(doc) {
-    if (doc._id && doc._id) {
+    if (doc._id) {
         doc._id = new ObjectId(doc._id);
     }
     if (doc.comments) {
         doc.comments.forEach(comment => {
-            if (comment._id && comment._id) {
+            if (comment._id) {
                 comment._id = new ObjectId(comment._id);
+            }
+        });
+    }
+    if (doc.attendees) {
+        doc.attendees.forEach(attendee => {
+            if (attendee._id) {
+                attendee._id = new ObjectId(attendee._id);
             }
         });
     }
