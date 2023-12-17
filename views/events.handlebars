@@ -31,11 +31,12 @@
       {{this.location.address}}, {{this.location.state}} {{this.location.zip}}
     </p>
     <p class="description">{{this.description}}</p>
+    <p>{{this.comments.length}} comments</p>
 
-    <button class="openCommentForm" onclick="openCommentForm()">
+    <button class="openCommentForm" onclick="toggleForm()">
       Comment on Event
     </button>
-    <div class="form-popup">
+    <div id="form-popup" class="form-popup">
       <form
         action="/events/{{this._id}}/comment"
         method="POST"
@@ -50,11 +51,7 @@
           placeholder="content..."
           required
         ></textarea>
-        <button
-          type="submit"
-          class="submitAndCloseComment"
-          onclick="closeCommentForm()"
-        >
+        <button type="submit" class="submitAndCloseComment">
           Submit Comment
         </button>
       </form>
