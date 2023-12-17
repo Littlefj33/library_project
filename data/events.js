@@ -170,7 +170,7 @@ export const addComment = async (eventId, user_email_address, content) => {
 
   const updatedEventInfo = await eventCollection.findOneAndUpdate(
     { _id: new ObjectId(eventId) },
-    { $push: { comment: { authorId, content } } },
+    { $push: { comments: { authorId, content } } },
     { returnDocument: "after" }
   );
   if (!updatedEventInfo) throw "ERROR: User update failed";
