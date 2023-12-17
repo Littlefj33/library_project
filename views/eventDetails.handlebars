@@ -15,23 +15,10 @@
 <p>Capacity: {{data.capacity}}</p>
 <p>Age Limit: {{data.age_limit}}</p>
 
-<div class="comments-section">
-  <p>{{data.comments.length}} comments</p>
-  {{#if comments}}
-  <ul class="comments-list">
-    {{#each comments}}
-    <li>{{data.content}}</li>
-    {{/each}}
-  </ul>
-  {{/if}}
-</div>
-
 <p class="attendees-count">{{data.attendees.length}} people attending</p>
 
-<button class="openCommentForm" onclick="openCommentForm()">
-  Comment on Event
-</button>
-<div class="form-popup">
+<button class="openCommentForm" onclick="toggleForm()">Comment on Event</button>
+<div id="form-popup" class="form-popup">
   <form
     action="/events/{{data._id}}/comment"
     method="POST"
@@ -46,14 +33,19 @@
       placeholder="content..."
       required
     ></textarea>
-    <button
-      type="submit"
-      class="submitAndCloseComment"
-      onclick="closeCommentForm()"
-    >
-      Submit Comment
-    </button>
+    <button type="submit" class="submitAndCloseComment">Submit Comment</button>
   </form>
+</div>
+
+<div class="comments-section">
+  <p>{{data.comments.length}} comments</p>
+  {{#if comments}}
+  <ul class="comments-list">
+    {{#each comments}}
+    <li>{{data.content}}</li>
+    {{/each}}
+  </ul>
+  {{/if}}
 </div>
 
 <form action="/events/{{data._id}}/join" method="POST" id="join-event-form">
