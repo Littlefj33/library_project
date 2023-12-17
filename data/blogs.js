@@ -93,7 +93,7 @@ export const addComment = async (blogId, user_email_address, content) => {
     { $push: { comments: { authorId, content } } },
     { returnDocument: "after" }
   );
-  if (!updatedBlogInfo) throw "ERROR: User update failed";
+  if (!updatedBlogInfo) throw "ERROR: Blog update failed";
 
   delete authorInfo[0]["_id"];
 
