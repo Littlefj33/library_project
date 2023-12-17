@@ -1,7 +1,7 @@
 import { dbTool } from "../data/dbTools.js";
 import { blogs, users } from "../config/mongoCollections.js";
 import { Router } from "express";
-import { createBlog } from "../data/blogs.js";
+import { createBlog, addComment } from "../data/blogs.js";
 const router = Router();
 
 router.route("/").get(async (req, res) => {
@@ -81,9 +81,30 @@ router.route("/:blogId").get(async (req, res) => {
   return res.render("blogDetails", { title: "Blog Info", data });
 });
 
-/* Maybe remove?? */
-router.route("/:blogId/comment").get(async (req, res) => {
-  return res.render("blogComments", { title: "Blogs" });
+router.route("/:blogId/comment").post(async (req, res) => {
+  const user = req.session.user;
+  if (!user) {
+    return res.redirect("/login");
+  } else {
+    const { content } = req.body;
+    const blogId = req.params.blogId.trim();
+    try {
+      const results = await addComment(blogId, user.emailAddress, content);
+      if (results.insertedEvent === true) {
+        return res.redirect(`/blogs/${blogId}`);
+      } else {
+        return res.status(500).render("error", {
+          title: "ERROR Page",
+          error: "Internal Server Error",
+        });
+      }
+    } catch (e) {
+      return res.status(400).render("error", {
+        title: "ERROR Page",
+        error: e,
+      });
+    }
+  }
 });
 
 export default router;

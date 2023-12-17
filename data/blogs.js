@@ -55,3 +55,47 @@ export const createBlog = async (author_email, title, content) => {
 
   return { insertedEvent: true, id: insertInfo.insertedId };
 };
+
+export const addComment = async (blogId, user_email_address, content) => {
+  if (
+    user_email_address === undefined ||
+    typeof user_email_address !== "string" ||
+    user_email_address.trim().length === 0
+  )
+    throw "Author email missing or invalid";
+
+  if (!content || typeof content !== "string" || content.trim().length === 0)
+    throw "Content missing or invalid";
+
+  blogId = blogId.trim();
+  if (!ObjectId.isValid(blogId)) throw "ERROR: Invalid object ID";
+
+  user_email_address = user_email_address.toLowerCase().trim();
+  content = content.trim();
+
+  const blogCollection = await blogs();
+  const userCollection = await users();
+  let authorInfo;
+  try {
+    authorInfo = await dbTool(
+      userCollection,
+      "emailAddress",
+      user_email_address,
+      { _id: 1, firstName: 1, lastName: 1, emailAddress: 1 }
+    );
+  } catch (e) {
+    throw "ERROR: Cannot find author";
+  }
+  const authorId = authorInfo[0]["_id"];
+
+  const updatedBlogInfo = await blogCollection.findOneAndUpdate(
+    { _id: new ObjectId(blogId) },
+    { $push: { comments: { authorId, content } } },
+    { returnDocument: "after" }
+  );
+  if (!updatedBlogInfo) throw "ERROR: User update failed";
+
+  delete authorInfo[0]["_id"];
+
+  return { insertedEvent: true, authorInfo: authorInfo[0] };
+};
