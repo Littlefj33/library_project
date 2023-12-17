@@ -1,1 +1,43 @@
 <h1>{{title}}</h1>
+
+<!-- Returned Book Requests Section -->
+<section>
+    <h2>Returned Book Requests</h2>
+    {{#each returnedBookRequests}}
+    <div>
+        <h3>User: {{getReturnee this.user_id}}</h3>
+        <ul>
+            {{#each this.books_ids}}
+            <li>
+                <p>Book: {{getBookTitle this}}</p>
+                <!-- Add a button or link to process the return for each book -->
+                <button onclick="processReturn('{{this}}', '{{getReturnee ../user_id}}')">Process Return</button>
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+    {{else}}
+    <p>No returned book requests.</p>
+    {{/each}}
+</section>
+
+<!-- Search and Update Section -->
+<section>
+    <h2>Search and Update Book</h2>
+    <form id="searchForm" action="/" method="POST">
+        <label for="isbn">ISBN:</label>
+        <input type="text" id="isbn" name="isbn" required>
+
+        <label for="stock">Stock:</label>
+        <input type="number" id="stock" name="stock" min="0">
+
+        <label for="quality">Quality:</label>
+        <select id="quality" name="quality">
+            <option value="good">Good</option>
+            <option value="fair">Fair</option>
+            <option value="bad">Bad</option>
+        </select>
+
+        <button type="submit">Update Book</button>
+    </form>
+</section>
