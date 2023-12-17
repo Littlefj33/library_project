@@ -1,4 +1,19 @@
 <h1>{{title}}</h1>
 
-{{!-- For testing purposes only right now: --}}
-<p>Title:{{data.title}}{{data.author_info.firstName}}</p>
+<p>Title: {{data.title}}</p>
+<p>Author: {{data.author_info.firstName}} {{data.author_info.lastName}}</p>
+<p>Blog: {{data.content}}</p>
+<p>Date Posted: {{data.date_posted}}</p>
+
+<div class="comments-section">
+  <p>{{data.comments.length}} comments</p>
+  {{#if comments}}
+  <ul class="comments-list">
+    {{#each comments}}
+    <li>{{data.content}}</li>
+    {{/each}}
+  </ul>
+  {{/if}}
+</div>
+
+<a id="backToBlogs" href="/blogs">Back to Blogs</a>
