@@ -1,24 +1,32 @@
 <h1>Create New Blog</h1>
 
 <form action="/blogs/create" method="POST" id="blog-form">
-  <label for="blogTitle">Blog Title:</label>
-  <input
-    type="text"
-    id="blogTitle"
-    name="blogTitle"
-    placeholder="Blog Title..."
-    required
-  />
+  <div class="div-padding">
+    <label for="blogTitle">Blog Title:</label>
+    <input
+      type="text"
+      id="blogTitle"
+      name="blogTitle"
+      placeholder="Blog Title..."
+      required
+    />
+  </div>
 
-  <label for="content">Content:</label>
-  <textarea
-    id="content"
-    name="content"
-    placeholder="content..."
-    required
-  ></textarea>
+  <div class="div-padding">
+    <label for="content">Content:</label>
+    <textarea
+      id="content"
+      name="content"
+      placeholder="content..."
+      required
+    ></textarea>
+  </div>
 
-  <button type="submit">Create Blog</button>
+  <div class="btnDiv">
+    <button type="submit">Create Blog</button>
+  </div>
 </form>
+
+<a id="backToBlogs" href="/blogs">Back to Blogs</a>
 
 <p class="error" id="error">{{#if error}} {{error}} {{/if}}</p>
