@@ -19,14 +19,9 @@
     <button type="submit">Search</button>
   </form>
 
-  <button
-    class="blogBtnDiv"
-    type="submit"
-    name="createBlogButton"
-    id="createBlogButton"
+  <a class="newBlogLink" id="newBlogLink" href="/blogs/create"
+    >Create New Blog</a
   >
-    Create New Blog
-  </button>
 
   {{!-- Needs a helper function getAuthor(Object_id) and
   truncatedContent(String) --}} {{#each blogs}}
