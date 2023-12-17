@@ -13,10 +13,11 @@ router.route("/").get(async (req, res) => {
         {
           projection: {
             _id: 1,
+            author_id: 1,
             title: 1,
+            content: 1,
             date_posted: 1,
-            description: 1,
-            location: 1,
+            comments: 1,
           },
         }
       )
