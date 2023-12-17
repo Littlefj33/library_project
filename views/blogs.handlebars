@@ -30,13 +30,15 @@
       Author: {{this.author_info.firstName}} {{this.author_info.lastName}}
     </p>
     <p class="content">{{this.content}}</p>
+    <p>{{this.comments.length}} comments</p>
+
     <p>
-      <button class="openCommentForm" onclick="openCommentForm()">
+      <button class="openCommentForm" onclick="toggleForm()">
         Comment on Blog
       </button>
     </p>
 
-    <div class="form-popup">
+    <div id="form-popup" class="form-popup">
       <form
         action="/blogs/{{this._id}}/comment"
         method="POST"
@@ -51,11 +53,7 @@
           placeholder="content..."
           required
         ></textarea>
-        <button
-          type="submit"
-          class="submitAndCloseComment"
-          onclick="closeCommentForm()"
-        >
+        <button type="submit" class="submitAndCloseComment">
           Submit Comment
         </button>
       </form>

@@ -5,21 +5,8 @@
 <p>Blog: {{data.content}}</p>
 <p>Date Posted: {{data.date_posted}}</p>
 
-<div class="comments-section">
-  <p>{{data.comments.length}} comments</p>
-  {{#if comments}}
-  <ul class="comments-list">
-    {{#each comments}}
-    <li>{{data.content}}</li>
-    {{/each}}
-  </ul>
-  {{/if}}
-</div>
-
-<button class="openCommentForm" onclick="openCommentForm()">
-  Comment on Event
-</button>
-<div class="form-popup">
+<button class="openCommentForm" onclick="toggleForm()">Comment on Event</button>
+<div id="form-popup" class="form-popup">
   <form
     action="/blogs/{{data._id}}/comment"
     method="POST"
@@ -34,14 +21,19 @@
       placeholder="content..."
       required
     ></textarea>
-    <button
-      type="submit"
-      class="submitAndCloseComment"
-      onclick="closeCommentForm()"
-    >
-      Submit Comment
-    </button>
+    <button type="submit" class="submitAndCloseComment">Submit Comment</button>
   </form>
+</div>
+
+<div class="comments-section">
+  <p>{{data.comments.length}} comments</p>
+  {{#if data.comments}}
+  <ul class="comments-list">
+    {{#each data.comments}}
+    <li>{{this.content}}</li>
+    {{/each}}
+  </ul>
+  {{/if}}
 </div>
 
 <a id="backToBlogs" href="/blogs">Back to Blogs</a>

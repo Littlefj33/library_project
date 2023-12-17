@@ -44,7 +44,8 @@ a {
 }
 
 a.toEventDetails,
-a.toBlogDetails {
+a.toBlogDetails,
+a.toBookDetails {
   text-align: left;
 }
 
@@ -80,7 +81,13 @@ a.toBlogDetails {
 
 /* The popup form - hidden by default */
 .form-popup {
-  /* display: none; */
+  display: none;
+  position: absolute;
+  border: 3px solid #f1f1f1;
+}
+
+.show-form {
+  display: block;
   position: absolute;
   border: 3px solid #f1f1f1;
 }

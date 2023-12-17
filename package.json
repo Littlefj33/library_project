@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "node app.js",
-    "start": "node app.js"
+    "start": "node app.js",
+    "seed": "node runSeeds.js"
   },
   "repository": {
     "type": "git",

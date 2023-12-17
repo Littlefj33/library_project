@@ -196,18 +196,43 @@ export const addAttendee = async (eventId, user_email_address) => {
   const eventCollection = await events();
   const userCollection = await users();
 
+  let eventInfo = await dbTool(eventCollection, "_id", eventId, {
+    _id: 0,
+    capacity: 1,
+    attendees: 1,
+    age_limit: 1,
+  });
+  if (eventInfo[0]["capacity"] <= eventInfo[0]["attendees"].length)
+    throw "ERROR: Cannot join event - Max capacity";
+
   let userInfo;
   try {
     userInfo = await dbTool(
       userCollection,
       "emailAddress",
       user_email_address,
-      { _id: 1 }
+      { _id: 1, dateOfBirth: 1 }
     );
   } catch (e) {
     throw "ERROR: Cannot find user";
   }
+
+  const userDOB = userInfo[0]["dateOfBirth"];
+  const eventAgeLimit = eventInfo[0]["age_limit"];
+  const curDate = new Date();
+  const allowedDate = new Date(
+    curDate.getFullYear() - eventAgeLimit,
+    curDate.getMonth(),
+    curDate.getDate()
+  );
+  if (!(allowedDate > userDOB))
+    throw "ERROR: Must be be above age limit to join event";
+
   const userId = userInfo[0]["_id"];
+  for (let attendee of eventInfo[0]["attendees"]) {
+    if (attendee.toString() === userId.toString())
+      throw "ERROR: User already joined this event";
+  }
 
   const updatedEventInfo = await eventCollection.findOneAndUpdate(
     { _id: new ObjectId(eventId) },
