@@ -5,7 +5,30 @@ import { createEvent } from "../data/events.js";
 const router = Router();
 
 router.route("/").get(async (req, res) => {
-  return res.render("events", { title: "Events" });
+  try {
+    const eventCollection = await events();
+    let eventList = await eventCollection
+      .find(
+        {},
+        {
+          projection: {
+            _id: 1,
+            title: 1,
+            date_time: 1,
+            description: 1,
+            location: 1,
+          },
+        }
+      )
+      .toArray();
+    if (!eventList) throw "ERROR: Could not get all events";
+    return res.render("events", { title: "Events", data: eventList });
+  } catch (e) {
+    return res.status(500).render("error", {
+      title: "ERROR Page",
+      error: "Internal Server Error",
+    });
+  }
 });
 
 router
