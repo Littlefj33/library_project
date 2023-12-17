@@ -1,0 +1,34 @@
+[
+  {
+    "_id": { "$oid": "65428caf408f2a2f42f8cc17" },
+    "first_name": "John",
+    "last_name": "Smith",
+    "birth_date": "01/01/1970",
+    "email": "johnsmith@gmail.com",
+    "username": "johnsmith",
+    "password_hash": "$2b$16$.GmtpQuBvKlRztNtd5clEerXXm2n.krYAYS/9MldDwft8acPaRRqC",
+    "favorite_books": [],
+    "checked_out_books": [],
+    "current_checked_out_books": [],
+    "phone_number": "201-746-9265",
+    "return_requests": [],
+    "date_joined": { "$date": "2023-12-03T00:00:00.000Z" },
+    "is_admin": false
+  },
+  {
+    "_id": { "$oid": "65428caf408f2a2f42f8cc18" },
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "birth_date": "01/01/1970",
+    "email": "test@gmail.com",
+    "username": "test",
+    "password_hash": "$2b$16$.GmtpQuBvKlRztNtd5clEerXXm2n.krYAYS/9MldDwft8acPaRRqC",
+    "favorite_books": [],
+    "checked_out_books": [],
+    "current_checked_out_books": [],
+    "phone_number": "201-746-9266",
+    "return_requests": [],
+    "date_joined": { "$date": "2023-12-03T00:00:00.000Z" },
+    "is_admin": true
+  }
+]
