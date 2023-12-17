@@ -51,7 +51,7 @@ export const addReview = async (
 
   delete authorInfo[0]["_id"];
 
-  return { insertedEvent: true, authorInfo: authorInfo[0] };
+  return { insertedBook: true, authorInfo: authorInfo[0] };
 };
 
 export const requestBook = async (bookId, user_email_address) => {
@@ -117,7 +117,7 @@ export const requestBook = async (bookId, user_email_address) => {
   } else {
     throw "ERROR: Book currently out of stock";
   }
-  return { insertedEvent: true };
+  return { insertedBook: true };
 };
 
 export const returnBook = async (bookId, user_email_address) => {
@@ -183,5 +183,5 @@ export const returnBook = async (bookId, user_email_address) => {
   } else {
     throw "ERROR: This book is already fully stocked";
   }
-  return { insertedEvent: true };
+  return { insertedBook: true };
 };

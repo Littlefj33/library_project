@@ -60,7 +60,9 @@ export const dbTool = async (collection, field, keyword, proj, action) => {
     }
   } else {
     try {
-      queryResult = await collection.find(query, { projection: proj }).toArray();
+      queryResult = await collection
+        .find(query, { projection: proj })
+        .toArray();
     } catch (e) {
       console.error(e);
       throw new Error(e.message);
@@ -72,7 +74,6 @@ export const dbTool = async (collection, field, keyword, proj, action) => {
   if (typeof queryResult === "undefined") {
     throw new Error("Mongo: Could not fetch the document!");
   }
-
 
   return queryResult;
 };

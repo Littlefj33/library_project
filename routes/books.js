@@ -10,8 +10,8 @@ router.route("/").get(async (req, res) => {
 
 router.route("/:bookId").get(async (req, res) => {
   const bookId = req.params.bookId.trim();
-  const eventCollection = await books();
-  const data = await dbTool(eventCollection, "_id", bookId, {
+  const bookCollection = await books();
+  const data = await dbTool(bookCollection, "_id", bookId, {
     _id: 1,
     title: 1,
   });
@@ -24,7 +24,7 @@ router.route("/:bookId/review").post(async (req, res) => {
     return res.redirect("/login");
   } else {
     const { content, rating } = req.body;
-    const bookId = req.params.eventId.trim();
+    const bookId = req.params.bookId.trim();
     try {
       const results = await addReview(
         bookId,
@@ -32,7 +32,7 @@ router.route("/:bookId/review").post(async (req, res) => {
         content,
         rating
       );
-      if (results.insertedEvent === true) {
+      if (results.insertedBook === true) {
         return res.redirect(`/books/${bookId}`);
       } else {
         return res.status(500).render("error", {
@@ -57,7 +57,7 @@ router.route("/:bookId/request").get(async (req, res) => {
     try {
       const bookId = req.params.bookId.trim();
       const results = await requestBook(bookId, user.emailAddress);
-      if (results.insertedEvent === true) {
+      if (results.insertedBook === true) {
         return res.redirect(`/books/${bookId}`);
       } else {
         return res.status(500).render("error", {
