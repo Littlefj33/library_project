@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 function toggleForm() {
   const formElem = document.getElementById("form-popup");
   if (formElem.style.display === "none") {
