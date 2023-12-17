@@ -47,8 +47,9 @@ a {
   text-align: center;
 }
 
-.eventBtnDiv {
-  text-align: right;
+.newEventLink,
+.newBlogLink {
+  text-align: left;
 }
 
 .welcomeDiv {

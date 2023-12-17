@@ -19,14 +19,9 @@
     <div class="alert">{{error}}</div>
   </form>
 
-  <button
-    class="eventBtnDiv"
-    type="submit"
-    name="createEventButton"
-    id="createEventButton"
+  <a class="newEventLink" id="newEventLink" href="/events/create"
+    >Create New Event</a
   >
-    Create New Event
-  </button>
 
   {{!-- The attributes of the event like title, date_time, .... will be replaced
   auto --}} {{!-- We do need to register a helper function
