@@ -26,12 +26,16 @@
   {{#each data}}
   <article class="blog-list-item">
     <a class="toBlogDetails" href="/blogs/{{this._id}}">{{this.title}}</a>
-    <p class="author">Author: {{this.author_id}}</p>
-    <p class="content">{{this.content}}</div>
+    <p class="author">
+      Author: {{this.author_info.firstName}} {{this.author_info.lastName}}
+    </p>
+    <p class="content">{{this.content}}</p>
+    <p>
+      <button class="openCommentForm" onclick="openCommentForm()">
+        Comment on Blog
+      </button>
+    </p>
 
-    <button class="openCommentForm" onclick="openCommentForm()">
-      Comment on Blog
-    </button>
     <div class="form-popup">
       <form
         action="/blogs/{{this._id}}/comment"
@@ -56,7 +60,6 @@
         </button>
       </form>
     </div>
-    
   </article>
   {{/each}}
 </section>
