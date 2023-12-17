@@ -33,7 +33,7 @@ router.route("/").get(async (req, res) => {
       )
       .toArray();
     if (!booksList) throw "ERROR: Could not get all books";
-    return res.render("books", { title: "Books", data: booksList });
+    return res.render("books", { title: "Books", data: booksList, partial: 'searchBook' });
   } catch (e) {
     return res.status(500).render("error", {
       title: "ERROR Page",
