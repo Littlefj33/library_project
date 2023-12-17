@@ -12,32 +12,48 @@ function addingBookIds(doc, bookIdsObject) {
 }
 
 function convertToObjectId(doc) {
-    if (doc._id) {
-        doc._id = new ObjectId(doc._id);
-    }
-    if (doc.comments) {
-        doc.comments.forEach(comment => {
-            if (comment._id) {
-                comment._id = new ObjectId(comment._id);
-            }
-        });
-    }
-    if (doc.attendees) {
-        doc.attendees.forEach(attendee => {
-            if (attendee._id) {
-                attendee._id = new ObjectId(attendee._id);
-            }
-        });
+    try {
+        if (doc._id) {
+            doc._id = new ObjectId(doc._id);
+        }
+        if (doc.comments) {
+            doc.comments.forEach(comment => {
+                if (comment._id) {
+                    comment._id = new ObjectId(comment._id);
+                }
+            });
+        }
+        if (doc.attendees) {
+            doc.attendees.forEach(attendee => {
+                if (attendee._id) {
+                    attendee._id = new ObjectId(attendee._id);
+                }
+            });
+        }
+    } catch (e) {
+        console.error(e)
+        throw "Error: converting to ObjectId failed!"
     }
     return doc;
 }
 
 function convertToDate(doc) {
-    if (doc.date_joined) {
-        doc.date_joined = new Date(doc.date_joined);
-    }
-    if (doc.birth_date) {
-        doc.birth_date = new Date(doc.birth_date);
+    try {
+        if (doc.date_joined) {
+            doc.date_joined = new Date(doc.date_joined);
+        }
+        if (doc.birth_date) {
+            doc.birth_date = new Date(doc.birth_date);
+        }
+        if (doc.date_time) {
+            doc.date_time = new Date(doc.date_time);
+        }
+        if (doc.date_posted) {
+            doc.date_posted = new Date(doc.date_posted);
+        }
+    } catch (e) {
+        console.error(e)
+        throw "Error: converting to Date failed!"
     }
     return doc;
 
@@ -57,10 +73,12 @@ export async function usersBlogsEventsSeed(bookIds) {
         seedData1 = seedData1.map(convertToDate);
         await usersCollection.insertMany(seedData1)
         const seedDataRaw2 = JSON.parse(await readFile('blogs.json', 'utf8'))
-        const seedData2 = seedDataRaw2.map(convertToObjectId);
+        let seedData2 = seedDataRaw2.map(convertToObjectId);
+        seedData2 = seedData2.map(convertToDate);
         await blogsCollection.insertMany(seedData2)
         const seedDataRaw3 = JSON.parse(await readFile('events.json', 'utf8'))
-        const seedData3 = seedDataRaw3.map(convertToObjectId);
+        let seedData3 = seedDataRaw3.map(convertToObjectId);
+        seedData3 = seedData3.map(convertToDate);
         await eventsCollection.insertMany(seedData3)
     } catch (e) {
         console.error(e)
