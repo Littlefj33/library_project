@@ -1,4 +1,63 @@
 <h1>{{title}}</h1>
 
 {{!-- For testing purposes only right now: --}}
-<p>ID:{{data._id}} Title:{{data.title}}</p>
+<p>Title: {{data.title}}</p>
+<p>
+  Organizer: {{data.organizer_info.firstName}} {{data.organizer_info.lastName}}
+</p>
+<p>Description: {{data.description}}</p>
+<p>
+  Location: {{data.location.address}}, {{data.location.state}}
+  {{data.location.zip}}
+</p>
+<p>Date and Time: {{data.date_time}}</p>
+<p>Fee: {{data.attending_fee}}</p>
+<p>Capacity: {{data.capacity}}</p>
+<p>Age Limit: {{data.age_limit}}</p>
+
+<div class="comments-section">
+  <p>{{data.comments.length}} comments</p>
+  {{#if comments}}
+  <ul class="comments-list">
+    {{#each comments}}
+    <li>{{data.content}}</li>
+    {{/each}}
+  </ul>
+  {{/if}}
+</div>
+
+<p class="attendees-count">{{data.attendees.length}} people attending</p>
+
+<button class="openCommentForm" onclick="openCommentForm()">
+  Comment on Event
+</button>
+<div class="form-popup">
+  <form
+    action="/events/{{data._id}}/comment"
+    method="POST"
+    id="comment-event-form"
+    class="form-container"
+  >
+    <h3>New Comment</h3>
+    <label for="content">Content:</label>
+    <textarea
+      id="content"
+      name="content"
+      placeholder="content..."
+      required
+    ></textarea>
+    <button
+      type="submit"
+      class="submitAndCloseComment"
+      onclick="closeCommentForm()"
+    >
+      Submit Comment
+    </button>
+  </form>
+</div>
+
+<form action="/events/{{data._id}}/join" method="POST" id="join-event-form">
+  <button type="submit">Join Event</button>
+</form>
+
+<a id="backToEvents" href="/events">Back to Events</a>

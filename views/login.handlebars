@@ -9,7 +9,6 @@
       name="emailAddressInput"
       placeholder="Enter email..."
     />
-    <span class="error" , aria-live="polite"></span>
   </div>
   <div class="div-padding">
     <label for="passwordInput">Password</label>
@@ -19,11 +18,12 @@
       name="passwordInput"
       placeholder="Enter password..."
     />
-    <span class="error" , aria-live="polite"></span>
   </div>
-  <button class="btnLogin" type="submit" name="submitBtn" id="submitBtn">
-    Sign In
-  </button>
+  <div class="btnDiv">
+    <button class="btnLogin" type="submit" name="submitBtn" id="submitBtn">
+      Sign In
+    </button>
+  </div>
 </form>
 
 <p class="error" id="error">{{#if error}} {{error}} {{/if}}</p>

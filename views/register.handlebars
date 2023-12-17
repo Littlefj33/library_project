@@ -8,7 +8,6 @@
       name="firstNameInput"
       placeholder="First Name Here"
     />
-    <span class="error" , aria-live="polite"></span>
   </div>
   <div class="div-padding">
     <label for="lastNameInput">Last Name</label>
@@ -18,12 +17,10 @@
       name="lastNameInput"
       placeholder="Last Name Here"
     />
-    <span class="error" , aria-live="polite"></span>
   </div>
   <div class="div-padding">
     <label for="dobInput">Date of Birth</label>
     <input type="date" id="dobInput" name="dobInput" />
-    <span class="error" , aria-live="polite"></span>
   </div>
   <div class="div-padding">
     <label for="phoneNumberInput">Phone Number</label>
@@ -31,10 +28,8 @@
       type="tel"
       id="phoneNumberInput"
       name="phoneNumberInput"
-      pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
       placeholder="XXX-XXX-XXXX"
     />
-    <span class="error" , aria-live="polite"></span>
   </div>
   <div class="div-padding">
     <label for="emailAddressInput">Email Address</label>
@@ -44,7 +39,6 @@
       name="emailAddressInput"
       placeholder="email address"
     />
-    <span class="error" , aria-live="polite"></span>
   </div>
   <div class="div-padding">
     <label for="passwordInput">Password</label>
@@ -54,7 +48,6 @@
       name="passwordInput"
       placeholder="Password"
     />
-    <span class="error" , aria-live="polite"></span>
   </div>
   <div class="div-padding">
     <label for="confirmPasswordInput">Retype Password</label>
@@ -64,7 +57,6 @@
       name="confirmPasswordInput"
       placeholder="retype password"
     />
-    <span class="error" , aria-live="polite"></span>
   </div>
   <div class="div-padding">
     <label for="roleInput">Choose a role:</label>
@@ -74,14 +66,16 @@
     </select>
   </div>
 
-  <button
-    class="buttonSignup"
-    type="submit"
-    name="submitButton"
-    id="submitButton"
-  >
-    Create Account
-  </button>
+  <div class="btnDiv">
+    <button
+      class="buttonSignup"
+      type="submit"
+      name="submitButton"
+      id="submitButton"
+    >
+      Create Account
+    </button>
+  </div>
 </form>
 
 <p class="error" id="error">{{#if error}} {{error}} {{/if}}</p>

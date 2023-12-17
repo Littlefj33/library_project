@@ -16,42 +16,53 @@
       <option value="author">By Author</option>
     </select>
     <button type="submit">Search</button>
+    <div class="alert">{{error}}</div>
   </form>
 
-  {{!-- The attributes of the event like title, date_time, .... will be replaced
-  auto --}} {{!-- We do need to register a helper function
-  "getOrganizer(ObjectId var) return string " --}} {{#each events}}
-  <article class="event-list-item {{#if canceled}}canceled{{/if}}">
-    <h2>{{title}}</h2>
-    <p class="date-time">{{date_time}}</p>
-    <div class="location">
-      <p>{{location.address}}, {{location.state}}, {{location.zip}}</p>
-    </div>
-    <p class="description">{{description}}</p>
-    <p class="details">
-      Organized by: {{getOrganizer organizer_id}} <br />
-      Attending Fee: ${{attending_fee}} <br />
-      Capacity: {{capacity}} people <br />
-      Age Limit: {{age_limit}}+ years
+  <a class="newEventLink" id="newEventLink" href="/events/create"
+    >Create New Event</a
+  >
+
+  {{#each data}}
+  <article class="event-list-item">
+    <a class="toEventDetails" href="/events/{{this._id}}">{{this.title}}</a>
+    <p class="date-time">{{this.date_time}}</p>
+    <p class="location">
+      {{this.location.address}}, {{this.location.state}} {{this.location.zip}}
     </p>
-    <p class="attendees-count">{{attendees.length}} people attending</p>
-    <div class="comments-section">
-      <p>{{comments.length}} comments</p>
-      {{#if comments}}
-      <ul class="comments-list">
-        {{#each comments}}
-        <li>{{content}}</li>
-        {{/each}}
-      </ul>
-      {{/if}}
+    <p class="description">{{this.description}}</p>
+
+    <button class="openCommentForm" onclick="openCommentForm()">
+      Comment on Event
+    </button>
+    <div class="form-popup">
+      <form
+        action="/events/{{this._id}}/comment"
+        method="POST"
+        id="comment-event-form"
+        class="form-container"
+      >
+        <h3>New Comment</h3>
+        <label for="content">Content:</label>
+        <textarea
+          id="content"
+          name="content"
+          placeholder="content..."
+          required
+        ></textarea>
+        <button
+          type="submit"
+          class="submitAndCloseComment"
+          onclick="closeCommentForm()"
+        >
+          Submit Comment
+        </button>
+      </form>
     </div>
-    {{#unless canceled}} {{#ifCond capacity "gt" 0}}
-    <form action="/event/{{this._id}}" method="POST">
-      <button type="submit">RSVP Here</button>
+
+    <form action="/events/{{this._id}}/join" method="POST" id="join-event-form">
+      <button type="submit">Join Event</button>
     </form>
-    {{else}}
-    <p>Capacity Reached</p>
-    {{/ifCond}} {{/unless}}
   </article>
   {{/each}}
 </section>

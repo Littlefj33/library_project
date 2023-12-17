@@ -1,4 +1,47 @@
 <h1>{{title}}</h1>
 
-{{!-- For testing purposes only right now: --}}
-<p>ID:{{data._id}} Title:{{data.title}}</p>
+<p>Title: {{data.title}}</p>
+<p>Author: {{data.author_info.firstName}} {{data.author_info.lastName}}</p>
+<p>Blog: {{data.content}}</p>
+<p>Date Posted: {{data.date_posted}}</p>
+
+<div class="comments-section">
+  <p>{{data.comments.length}} comments</p>
+  {{#if comments}}
+  <ul class="comments-list">
+    {{#each comments}}
+    <li>{{data.content}}</li>
+    {{/each}}
+  </ul>
+  {{/if}}
+</div>
+
+<button class="openCommentForm" onclick="openCommentForm()">
+  Comment on Event
+</button>
+<div class="form-popup">
+  <form
+    action="/blogs/{{data._id}}/comment"
+    method="POST"
+    id="comment-blog-form"
+    class="form-container"
+  >
+    <h3>New Comment</h3>
+    <label for="content">Content:</label>
+    <textarea
+      id="content"
+      name="content"
+      placeholder="content..."
+      required
+    ></textarea>
+    <button
+      type="submit"
+      class="submitAndCloseComment"
+      onclick="closeCommentForm()"
+    >
+      Submit Comment
+    </button>
+  </form>
+</div>
+
+<a id="backToBlogs" href="/blogs">Back to Blogs</a>

@@ -43,6 +43,50 @@ a {
   font-size: 17px;
 }
 
-button {
+a.toEventDetails,
+a.toBlogDetails {
+  text-align: left;
+}
+
+.btnDiv {
   text-align: center;
+}
+
+.newEventLink,
+.newBlogLink {
+  text-align: left;
+}
+
+.welcomeDiv {
+  text-align: right;
+}
+
+.welcome {
+  font-size: 30px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.howTo {
+  text-align: center;
+  font-size: 18px;
+}
+
+.happyMsg {
+  font-size: 25px;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* The popup form - hidden by default */
+.form-popup {
+  /* display: none; */
+  position: absolute;
+  border: 3px solid #f1f1f1;
+}
+
+.form-container {
+  max-width: 200px;
+  padding: 3px;
+  background-color: white;
 }
