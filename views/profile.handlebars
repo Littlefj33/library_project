@@ -2,29 +2,17 @@
 
 {{!-- show saved information and give choice to edit info. this is not even a
 skeleton --}}
-<form method="POST" action="/profile" id="profile-form">
-  <div class="div-padding">
-    <label for="firstNameInput">First Name</label>
-    <input
-      type="text"
-      id="firstNameInput"
-      name="firstNameInput"
-      placeholder="First Name Here"
-    />
-    <span class="error" , aria-live="polite"></span>
-  </div>
 
-  <div class="btnDiv">
-    <button
-      class="updateProfile"
-      type="submit"
-      name="updateProfileButton"
-      id="updateProfileButton"
-    >
-      Update Details
-    </button>
-  </div>
-  <div class="alert">{{error}}</div>
+<p class="userInfo">User Information</p>
+<form method="GET" action="/home/profile">
+  <ul>
+    <li>First Name: {{ user.firstName }}</li>
+    <li>Last Name: {{ user.lastName }}</li>
+    <li>Date of Birth: {{ user.dateOfBirth }}</li>
+    <li>Phone Number: {{ user.phoneNumber }}</li>
+    <li>Email: {{ user.emailAddress }}</li>
+    <li>Role: {{ user.role }}</li>
+  </ul>
 </form>
 
 {{#if admin}}

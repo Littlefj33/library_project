@@ -2,10 +2,21 @@
 
 <form action="/blogs/create" method="POST" class="blog-form">
   <label for="blogTitle">Blog Title:</label>
-  <input type="text" id="blogTitle" name="blogTitle" required />
+  <input
+    type="text"
+    id="blogTitle"
+    name="blogTitle"
+    placeholder="Blog Title..."
+    required
+  />
 
   <label for="description">Description:</label>
-  <textarea id="description" name="description" required></textarea>
+  <textarea
+    id="description"
+    name="description"
+    placeholder="Description..."
+    required
+  ></textarea>
 
   <button type="submit">Create Blog</button>
 </form>

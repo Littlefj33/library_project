@@ -50,3 +50,24 @@ a {
 .eventBtnDiv {
   text-align: right;
 }
+
+.welcomeDiv {
+  text-align: right;
+}
+
+.welcome {
+  font-size: 30px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.howTo {
+  text-align: center;
+  font-size: 18px;
+}
+
+.happyMsg {
+  font-size: 25px;
+  text-align: center;
+  font-weight: 600;
+}
