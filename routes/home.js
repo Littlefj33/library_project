@@ -1,6 +1,8 @@
 import { Router } from "express";
 const router = Router();
-import * as users from "../data/users.js";
+import * as users_data from "../data/users.js";
+import { users } from "../config/mongoCollections.js";
+import { dbTool } from "../data/dbTools.js";
 
 router.route("/").get(async (req, res) => {
   return res.render("home", { title: "Home" });
@@ -22,7 +24,10 @@ router
   .post(async (req, res) => {
     const { emailAddressInput, passwordInput } = req.body;
     try {
-      const results = await users.loginUser(emailAddressInput, passwordInput);
+      const results = await users_data.loginUser(
+        emailAddressInput,
+        passwordInput
+      );
       req.session.user = {
         firstName: results.firstName,
         lastName: results.lastName,
@@ -59,7 +64,7 @@ router
         throw "ERROR: Must enter password confirmation";
       if (body.confirmPasswordInput.trim() !== body.passwordInput.trim())
         throw "ERROR: Password confirmation must be same as password";
-      const results = await users.registerUser(
+      const results = await users_data.registerUser(
         body.firstNameInput,
         body.lastNameInput,
         body.dobInput,
@@ -90,9 +95,30 @@ router.route("/profile").get(async (req, res) => {
   if (!user) {
     return res.redirect("/login");
   } else {
+    const userCollection = await users();
+    let userInfo = await dbTool(
+      userCollection,
+      "emailAddress",
+      user.emailAddress,
+      {
+        _id: 0,
+        firstName: 1,
+        lastName: 1,
+        emailAddress: 1,
+        dateOfBirth: 1,
+        phoneNumber: 1,
+        role: 1,
+        favorite_books: 1,
+        checked_out_books: 1,
+        current_checked_out_books: 1,
+        return_requests: 1,
+        date_joined: 1,
+      }
+    );
     return res.render("profile", {
       title: "Profile",
       admin: user.role === "admin",
+      user: userInfo[0],
     });
   }
 });
