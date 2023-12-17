@@ -1,8 +1,8 @@
 import { events, users } from "../config/mongoCollections.js";
 import { dbTool } from "./dbTools.js";
 import { ObjectId } from "mongodb";
-
 import * as helpers from "../helpers.js";
+
 export const createEvent = async (
   user_email_address,
   title,
