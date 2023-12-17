@@ -1,12 +1,7 @@
 <h1>{{title}}</h1>
 
 <form action="/books/search" method="GET" class="search-form">
-  <input
-    type="text"
-    name="search"
-    placeholder="Search books..."
-    aria-label="Search books"
-  />
+  <input type="text" name="search" placeholder="Search books..." aria-label="Search books" />
   <select name="filter" aria-label="Filter by">
     <option value="title">By Title</option>
     <option value="author">By Author</option>
@@ -23,7 +18,7 @@
     <p class="genre">Genre: {{join genre ", "}}</p>
     <p class="date-posted">{{publication_date}}</p>
     <p>ISBN: {{isbn}}</p>
-    <p>In Stock: {{in_stock}}</p>
+    <p>In Stock: {{current_stock}}</p>
     {{!-- in_stock field needs to be added --}}
     <div class="content-preview">{{truncatedContent summary}}...</div>
     <a href="/books/{{this._id}}" class="read-more">More details</a>
