@@ -149,13 +149,13 @@ if (createEventForm) {
     let badInput;
 
     try {
-      allInputs.forEach((input) => {
+      for (let input of allInputs) {
         isFormValid = validateInput(input);
         if (!isFormValid) {
           badInput = input;
           throw "Invalid Form";
         }
-      });
+      }
     } catch (e) {
       if (!isFormValid) {
         event.preventDefault();

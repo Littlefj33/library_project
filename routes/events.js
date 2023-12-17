@@ -17,11 +17,42 @@ router.route("/").get(async (req, res) => {
             date_time: 1,
             description: 1,
             location: 1,
+            attendees: 1,
+            comments: 1,
           },
         }
       )
       .toArray();
     if (!eventList) throw "ERROR: Could not get all events";
+
+    const user = req.session.user;
+    const userCollection = await users();
+    let eventIndex = 0;
+    for (const event of eventList) {
+      if (user) {
+        let userInfo = await dbTool(
+          userCollection,
+          "emailAddress",
+          user.emailAddress,
+          { _id: 1 }
+        );
+        let joinedBool = false;
+        for (let attendee of event["attendees"]) {
+          if (attendee.toString() === userInfo[0]["_id"].toString()) {
+            joinedBool = true;
+          }
+        }
+        if (joinedBool) {
+          eventList[eventIndex]["user_joined"] = true;
+        } else {
+          eventList[eventIndex]["user_joined"] = false;
+        }
+      } else {
+        eventList[eventIndex]["user_joined"] = false;
+      }
+      eventIndex++;
+    }
+
     return res.render("events", { title: "Events", data: eventList });
   } catch (e) {
     return res.status(500).render("error", {
@@ -79,6 +110,7 @@ router.route("/:eventId").get(async (req, res) => {
 
   let data;
   try {
+    /* Get event data */
     let eventData = await dbTool(eventCollection, "_id", eventId, {
       _id: 1,
       title: 1,
@@ -93,14 +125,34 @@ router.route("/:eventId").get(async (req, res) => {
       comments: 1,
       canceled: 1,
     });
+
+    /* Get organizer data */
     let organizerInfo = await dbTool(
       userCollection,
       "_id",
       eventData[0]["organizer_id"].toString(),
       { _id: 0, firstName: 1, lastName: 1, emailAddress: 1 }
     );
+
     delete eventData[0]["organizer_id"];
     eventData[0]["organizer_info"] = organizerInfo[0];
+
+    /* Get user data & update comment in local event's data */
+    let newComments = [];
+    for (let comment of eventData[0]["comments"]) {
+      let authorInfo = await dbTool(
+        userCollection,
+        "_id",
+        comment["authorId"].toString(),
+        { _id: 0, firstName: 1, lastName: 1 }
+      );
+      delete comment["authorId"];
+      comment["author_info"] = authorInfo[0];
+      newComments.push(comment);
+    }
+    eventData[0]["comments"] = newComments;
+
+    /* Send event data */
     data = eventData[0];
   } catch (e) {
     return res.status(404).render("error", {
