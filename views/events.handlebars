@@ -23,22 +23,26 @@
     >Create New Event</a
   >
 
-  {{#each events}}
+  {{#each data}}
   <article class="event-list-item">
-    <h2>{{this.title}}</h2>
+    <a class="toEventDetails" href="/events/{{this._id}}">{{this.title}}</a>
     <p class="date-time">{{this.date_time}}</p>
     <p class="location">
       {{this.location.address}}, {{this.location.state}} {{this.location.zip}}
     </p>
     <p class="description">{{this.description}}</p>
 
-    {{#ifCond this.capacity "gt" 0}}
-    <form action="/event/{{this._id}}" method="POST">
-      <button type="submit">RSVP Here</button>
+    <form
+      action="/events/{{this._id}}/comment"
+      method="POST"
+      id="comment-event-form"
+    >
+      <button type="submit">Comment on Event</button>
     </form>
-    {{else}}
-    <p>Capacity Reached</p>
-    {{/ifCond}}
+
+    <form action="/events/{{this._id}}/join" method="POST" id="join-event-form">
+      <button type="submit">Join Event</button>
+    </form>
   </article>
   {{/each}}
 </section>

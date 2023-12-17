@@ -28,12 +28,16 @@
 
 <p class="attendees-count">{{data.attendees.length}} people attending</p>
 
-{{#ifCond data.capacity "gt" 0}}
-<form action="/event/{{data._id}}" method="POST">
-  <button type="submit">RSVP Here</button>
+<form
+  action="/events/{{this._id}}/comment"
+  method="POST"
+  id="comment-event-form"
+>
+  <button type="submit">Comment on Event</button>
 </form>
-{{else}}
-<p>Capacity Reached</p>
-{{/ifCond}}
+
+<form action="/events/{{data._id}}/join" method="POST" id="join-event-form">
+  <button type="submit">Join Event</button>
+</form>
 
 <a id="backToEvents" href="/events">Back to Events</a>

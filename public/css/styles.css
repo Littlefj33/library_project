@@ -43,6 +43,10 @@ a {
   font-size: 17px;
 }
 
+a.toEventDetails {
+  text-align: left;
+}
+
 .btnDiv {
   text-align: center;
 }
