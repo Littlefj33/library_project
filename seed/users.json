@@ -1,6 +1,6 @@
 [
   {
-    "_id": { "$oid": "65428caf408f2a2f42f8cc17" },
+    "_id": "65428caf408f2a2f42f8cc17",
     "first_name": "John",
     "last_name": "Smith",
     "birth_date": "01/01/1970",
@@ -12,11 +12,11 @@
     "current_checked_out_books": [],
     "phone_number": "201-746-9265",
     "return_requests": [],
-    "date_joined": { "$date": "2023-12-03T00:00:00.000Z" },
+    "date_joined": "12-03-2023",
     "is_admin": false
   },
   {
-    "_id": { "$oid": "65428caf408f2a2f42f8cc18" },
+    "_id": "65428caf408f2a2f42f8cc18",
     "first_name": "Jane",
     "last_name": "Doe",
     "birth_date": "01/01/1970",
@@ -28,7 +28,7 @@
     "current_checked_out_books": [],
     "phone_number": "201-746-9266",
     "return_requests": [],
-    "date_joined": { "$date": "2023-12-03T00:00:00.000Z" },
+    "date_joined": "12-03-2023",
     "is_admin": true
   }
 ]
