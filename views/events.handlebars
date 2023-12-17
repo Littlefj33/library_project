@@ -23,40 +23,22 @@
     >Create New Event</a
   >
 
-  {{!-- The attributes of the event like title, date_time, .... will be replaced
-  auto --}} {{!-- We do need to register a helper function
-  "getOrganizer(ObjectId var) return string " --}} {{#each events}}
-  <article class="event-list-item {{#if canceled}}canceled{{/if}}">
-    <h2>{{title}}</h2>
-    <p class="date-time">{{date_time}}</p>
-    <div class="location">
-      <p>{{location.address}}, {{location.state}}, {{location.zip}}</p>
-    </div>
-    <p class="description">{{description}}</p>
-    <p class="details">
-      Organized by: {{getOrganizer organizer_id}} <br />
-      Attending Fee: ${{attending_fee}} <br />
-      Capacity: {{capacity}} people <br />
-      Age Limit: {{age_limit}}+ years
+  {{#each events}}
+  <article class="event-list-item">
+    <h2>{{this.title}}</h2>
+    <p class="date-time">{{this.date_time}}</p>
+    <p class="location">
+      {{this.location.address}}, {{this.location.state}} {{this.location.zip}}
     </p>
-    <p class="attendees-count">{{attendees.length}} people attending</p>
-    <div class="comments-section">
-      <p>{{comments.length}} comments</p>
-      {{#if comments}}
-      <ul class="comments-list">
-        {{#each comments}}
-        <li>{{content}}</li>
-        {{/each}}
-      </ul>
-      {{/if}}
-    </div>
-    {{#unless canceled}} {{#ifCond capacity "gt" 0}}
+    <p class="description">{{this.description}}</p>
+
+    {{#ifCond this.capacity "gt" 0}}
     <form action="/event/{{this._id}}" method="POST">
       <button type="submit">RSVP Here</button>
     </form>
     {{else}}
     <p>Capacity Reached</p>
-    {{/ifCond}} {{/unless}}
+    {{/ifCond}}
   </article>
   {{/each}}
 </section>
