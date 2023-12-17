@@ -1,7 +1,7 @@
 import { dbTool } from "../data/dbTools.js";
 import { events, users } from "../config/mongoCollections.js";
 import { Router } from "express";
-import { createEvent } from "../data/events.js";
+import { createEvent, addComment, addAttendee } from "../data/events.js";
 const router = Router();
 
 router.route("/").get(async (req, res) => {
@@ -80,7 +80,7 @@ router.route("/:eventId").get(async (req, res) => {
   let data;
   try {
     let eventData = await dbTool(eventCollection, "_id", eventId, {
-      _id: 0,
+      _id: 1,
       title: 1,
       organizer_id: 1,
       date_time: 1,
@@ -111,14 +111,55 @@ router.route("/:eventId").get(async (req, res) => {
   return res.render("eventDetails", { title: "Event Info", data });
 });
 
-/* Maybe remove?? */
-router.route("/:eventId/comment").get(async (req, res) => {
-  return res.render("eventComments", { title: "Events" });
+router.route("/:eventId/comment").post(async (req, res) => {
+  const user = req.session.user;
+  if (!user) {
+    return res.redirect("/login");
+  } else {
+    const { content } = req.body;
+    const eventId = req.params.eventId.trim();
+    try {
+      const results = await addComment(eventId, user.emailAddress, content);
+      if (results.insertedEvent === true) {
+        return res.redirect(`/events/${eventId}`);
+      } else {
+        return res.status(500).render("error", {
+          title: "ERROR Page",
+          error: "Internal Server Error",
+        });
+      }
+    } catch (e) {
+      return res.status(400).render("error", {
+        title: "ERROR Page",
+        error: e,
+      });
+    }
+  }
 });
 
-/* Maybe remove?? */
-router.route("/:eventId/join").get(async (req, res) => {
-  return res.render("joinEvent", { title: "Events" });
+router.route("/:eventId/join").post(async (req, res) => {
+  const user = req.session.user;
+  if (!user) {
+    return res.redirect("/login");
+  } else {
+    try {
+      const eventId = req.params.eventId.trim();
+      const results = await addAttendee(eventId, user.emailAddress);
+      if (results.insertedEvent === true) {
+        return res.redirect(`/events/${eventId}`);
+      } else {
+        return res.status(500).render("error", {
+          title: "ERROR Page",
+          error: "Internal Server Error",
+        });
+      }
+    } catch (e) {
+      return res.status(400).render("error", {
+        title: "ERROR Page",
+        error: e,
+      });
+    }
+  }
 });
 
 export default router;
