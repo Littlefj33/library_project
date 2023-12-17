@@ -1,28 +1,72 @@
 <h1>{{title}}</h1>
 
-<form action="/books/search" method="GET" class="search-form">
-  <input type="text" name="search" placeholder="Search books..." aria-label="Search books" />
-  <select name="filter" aria-label="Filter by">
-    <option value="title">By Title</option>
-    <option value="author">By Author</option>
-  </select>
-  <button type="submit">Search</button>
-</form>
+<section class="books-section">
+  <form action="/books/search" method="GET" class="search-form">
+    <input
+      type="text"
+      name="search"
+      placeholder="Search books..."
+      aria-label="Search books"
+    />
 
-{{!-- Need a helper a func join --}}
-<div id="book-list">
-  {{#each books}}
-  <div class="book" data-genre="{{genre}}">
-    <h3>{{title}}</h3>
-    <p class="author">Authors: {{join authors ", "}}</p>
-    <p class="genre">Genre: {{join genre ", "}}</p>
-    <p class="date-posted">{{publication_date}}</p>
-    <p>ISBN: {{isbn}}</p>
-    <p>In Stock: {{current_stock}}</p>
-    {{!-- in_stock field needs to be added --}}
-    <div class="content-preview">{{truncatedContent summary}}...</div>
-    <a href="/books/{{this._id}}" class="read-more">More details</a>
-    <!-- Add other book details if you want to display them -->
-  </div>
+    <select name="filter" aria-label="Filter by">
+      <option value="title">By Title</option>
+      <option value="author">By Author</option>
+    </select>
+
+    <button type="submit">Search</button>
+  </form>
+
+  {{#each data}}
+  <article class="books-list-item">
+    <a class="toBookDetails" href="/books/{{this._id}}">{{this.title}}</a>
+    <p>Authors:</p>
+    {{#if this.authors}}
+    <ul class="authors-list">
+      {{#each this.authors}}
+      <li>{{this}}</li>
+      {{/each}}
+    </ul>
+    {{/if}}
+    <p>Summary: {{this.summary}}</p>
+    <p>{{this.reviews.length}} reviews</p>
+
+    <p>
+      <button class="openReviewForm" onclick="toggleForm()">
+        Review on Book
+      </button>
+    </p>
+
+    <div id="form-popup" class="form-popup">
+      <form
+        action="/books/{{this._id}}/review"
+        method="POST"
+        id="review-book-form"
+        class="form-container"
+      >
+        <h3>New Review</h3>
+        <label for="content">Review:</label>
+        <textarea
+          id="content"
+          name="content"
+          placeholder="Review..."
+          required
+        ></textarea>
+
+        <label for="rating">Rating (0-5):</label>
+        <input
+          type="number"
+          id="rating"
+          name="rating"
+          placeholder="Rating..."
+          required
+        />
+
+        <button type="submit" class="submitAndCloseComment">
+          Submit Review
+        </button>
+      </form>
+    </div>
+  </article>
   {{/each}}
-</div>
+</section>
