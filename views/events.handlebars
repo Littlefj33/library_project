@@ -23,38 +23,16 @@
     >Create New Event</a
   >
 
-  {{!-- The attributes of the event like title, date_time, .... will be replaced
-  auto --}} {{!-- We do need to register a helper function
-  "getOrganizer(ObjectId var) return string " --}} {{#each events}}
+  {{#each events}}
   <article class="event-list-item">
-    <h2>{{title}}</h2>
+    <h2>{{this.title}}</h2>
     <p class="date-time">{{this.date_time}}</p>
-    <div class="location">
-      <p>
-        {{this.location.address}}, {{this.location.state}},
-        {{this.location.zip}}
-      </p>
-    </div>
-    <p class="description">{{this.description}}</p>
-    <p class="details">
-      Organized by: {{this.organizer_info.firstName}}
-      {{this.organizer_info.lastName}}<br />
-      Attending Fee: ${{this.attending_fee}} <br />
-      Capacity: {{this.capacity}} people <br />
-      Age Limit: {{this.age_limit}}+ years
+    <p class="location">
+      {{this.location.address}}, {{this.location.state}} {{this.location.zip}}
     </p>
-    <p class="attendees-count">{{this.attendees.length}} people attending</p>
-    <div class="comments-section">
-      <p>{{this.comments.length}} comments</p>
-      {{#if comments}}
-      <ul class="comments-list">
-        {{#each comments}}
-        <li>{{this.content}}</li>
-        {{/each}}
-      </ul>
-      {{/if}}
-    </div>
-    {{#ifCond capacity "gt" 0}}
+    <p class="description">{{this.description}}</p>
+
+    {{#ifCond this.capacity "gt" 0}}
     <form action="/event/{{this._id}}" method="POST">
       <button type="submit">RSVP Here</button>
     </form>
