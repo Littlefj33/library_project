@@ -4,8 +4,8 @@ import { Router } from "express";
 import xss from "xss";
 import { addReview, requestBook, approveRequest } from "../data/books.js";
 const router = Router();
-
-router.route("/").get(async (req, res) => {
+router.route("/")
+  .get(async (req, res) => {
   try {
     const booksCollection = await books();
     let booksList = await booksCollection
@@ -82,7 +82,22 @@ router.route("/").get(async (req, res) => {
       error: "Internal Server Error",
     });
   }
-});
+})
+.post(async (req, res) => {
+    const bookId = xss(req.body.bookId);
+    const userEmail = xss(req.body.userEmail);
+
+    if (!bookId || !userEmail) {
+      return res.status(400).render("error", { error: 'Book ID and user email are required' });
+    }
+
+    try {
+      await returnBook(bookId, userEmail);
+      return res.status(200).json({ message: 'Book returned successfully' });
+    } catch (error) {
+      return res.status(500).render("error", { error: error.toString() });
+    }
+  });
 
 router.route("/updateBook").post(async (req, res) => {
   if (!req.session.user || req.session.user.role !== 'admin') {
