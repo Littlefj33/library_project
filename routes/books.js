@@ -1,7 +1,7 @@
 import { dbTool } from "../data/dbTools.js";
 import { books } from "../config/mongoCollections.js";
 import { Router } from "express";
-import { addReview, requestBook } from "../data/books.js";
+import { addReview, requestBook, approveRequest } from "../data/books.js";
 const router = Router();
 
 router.route("/").get(async (req, res) => {
@@ -93,6 +93,36 @@ router.route("/:bookId/request").get(async (req, res) => {
       const results = await requestBook(bookId, user.emailAddress);
       if (results.insertedBook === true) {
         return res.redirect(`/books/${bookId}`);
+      } else {
+        return res.status(500).render("error", {
+          title: "ERROR Page",
+          error: "Internal Server Error",
+        });
+      }
+    } catch (e) {
+      return res.status(400).render("error", {
+        title: "ERROR Page",
+        error: e,
+      });
+    }
+  }
+});
+
+router.route("/admin/approveBookRequest").post(async (req, res) => {
+  const user = req.session.user;
+  if (!user) {
+    return res.redirect("/login");
+  } else if (user.role !== "admin") {
+    return res.status(403).render("error", {
+      title: "ERROR Page",
+      error: "Forbidden",
+    });
+  } else {
+    try {
+      const { bookId, requesterEmail } = req.body;
+      const results = await approveRequest(bookId, requesterEmail);
+      if (results.approved === true) {
+        return res.redirect(`/admin`);
       } else {
         return res.status(500).render("error", {
           title: "ERROR Page",
