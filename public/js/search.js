@@ -75,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return blogTitle.includes(query);
         } else if (filter === 'author') {
             authorName = blogItem.querySelector('.author').textContent.toLowerCase();
+            authorName = authorName.replace('Author:', '').trim();
             return authorName.includes(query);
         }
 
