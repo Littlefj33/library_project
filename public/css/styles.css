@@ -47,6 +47,7 @@ a.toEventDetails,
 a.toBlogDetails,
 a.toBookDetails {
   text-align: left;
+  font-size: 20px;
 }
 
 .btnDiv {

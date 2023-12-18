@@ -12,6 +12,7 @@
       <option value="title">By Title</option>
       <option value="author">By Author</option>
     </select>
+    <div class="alert">{{error}}</div>
 
     <button type="submit">Search</button>
   </form>
@@ -28,6 +29,7 @@
     </ul>
     {{/if}}
     <p>Summary: {{this.summary}}</p>
+    <p>Number in stock: {{this.current_stock}}</p>
     <p>{{this.reviews.length}} reviews</p>
 
     <p>
@@ -66,6 +68,16 @@
         </button>
       </form>
     </div>
+
+    {{#unless this.user_requested}}
+    <form
+      action="/books/{{this._id}}/request"
+      method="POST"
+      id="request-book-form"
+    >
+      <button type="submit">Request Book</button>
+    </form>
+    {{/unless}}
   </article>
   {{/each}}
 </section>

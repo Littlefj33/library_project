@@ -1,24 +1,79 @@
-<div id="book-details">
-  <h1>{{book.title}}</h1>
-  {{#ifCond book.in_stock "gt" 0}}
-  <form action="/borrow-book/{{book._id}}" method="POST">
-    <button type="submit">Borrow Book</button>
-  </form>
-  {{else}}
-  <p>Out of Stock!</p>
-  {{/ifCond}}
-  <p class="bookInfo">Author(s): {{join book.authors ", "}}</p>
-  <p class="bookInfo">Genre: {{join book.genre ", "}}</p>
-  <p class="bookInfo">Publication Date: {{book.publication_date}}</p>
-  <p class="bookInfo">ISBN: {{book.isbn}}</p>
-  <p class="bookInfo">Page Count: {{book.page_count}}</p>
-  <p class="bookInfo">Language: {{book.language}}</p>
-  <p class="bookInfo">In Stock: {{book.current_stock}}</p>
-  <p class="bookInfo">Summary: {{book.summary}}</p>
-  <h2>Reviews</h2>
-  {{#each book.reviews}}
-  <div class="review">
-    <p>{{content}}</p>
-  </div>
+<h1>{{title}}</h1>
+
+<p>Title: {{data.title}}</p>
+<p>ISBN: {{data.isbn}}</p>
+<p>Authors:</p>
+{{#if data.authors}}
+<ul class="authors-list">
+  {{#each data.authors}}
+  <li>{{this}}</li>
   {{/each}}
+</ul>
+{{/if}}
+<p>Publication Date: {{data.publication_date}}</p>
+<p>Summary: {{data.summary}}</p>
+<p>Language: {{data.language}}</p>
+<p>Genres:</p>
+{{#if data.genres}}
+<ul class="genres-list">
+  {{#each data.genres}}
+  <li>{{this}}</li>
+  {{/each}}
+</ul>
+{{/if}}
+<p>Page Count: {{data.page_count}}</p>
+<p>In stock: {{data.current_stock}}</p>
+<p>Liability Cost: {{data.liability_cost}}</p>
+<p>Condition Status: {{data.condition_status}}</p>
+
+<p>
+  <button class="openReviewForm" onclick="toggleForm()">Review on Book</button>
+</p>
+
+<div id="form-popup" class="form-popup">
+  <form
+    action="/books/{{data._id}}/review"
+    method="POST"
+    id="review-book-form"
+    class="form-container"
+  >
+    <h3>New Review</h3>
+    <label for="content">Review:</label>
+    <textarea
+      id="content"
+      name="content"
+      placeholder="Review..."
+      required
+    ></textarea>
+
+    <label for="rating">Rating (0-5):</label>
+    <input
+      type="number"
+      id="rating"
+      name="rating"
+      placeholder="Rating..."
+      required
+    />
+
+    <button type="submit" class="submitAndCloseComment">Submit Review</button>
+  </form>
 </div>
+
+<div class="reviews-section">
+  <p>{{data.reviews.length}} Reviews</p>
+  {{#if data.reviews}}
+  <ul class="reviews-list">
+    {{#each data.reviews}}
+    <li>{{this.content}} | Rating: {{this.review}}</li>
+    {{/each}}
+  </ul>
+  {{/if}}
+</div>
+
+{{#unless data.user_requested}}
+<form action="/books/{{data._id}}/request" method="POST" id="request-book-form">
+  <button type="submit">Request Book</button>
+</form>
+{{/unless}}
+
+<a id="backToBooks" href="/books">Back to Books</a>
