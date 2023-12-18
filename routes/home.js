@@ -137,7 +137,19 @@ router.route("/admin").get(async (req, res) => {
       .status(403)
       .render("error", { title: "ERROR Page", error: "Access Denied" });
   } else {
-    return res.render("admin", { title: "Admin" });
+    let returnBookRequests = [];
+    let bookApprovalRequests = [];
+    try {
+      const userCollection = await users();
+      returnBookRequests = await userCollection.find({ return_requests: { $exists: true, $not: { $size: 0 } } }, { "_id": 1, "return_requests": 1 }).toArray();
+      bookApprovalRequests = await userCollection.find({ requested_books: { $exists: true, $not: { $size: 0 } } }, { "_id": 1, " requested_books": 1 }).toArray();
+    } catch (e) {
+      return res.status(500).render("error", {
+        title: "ERROR Page",
+        error: "Internal Server Error",
+      });
+    }
+    return res.render("admin", { title: "Admin", bookRequests: bookApprovalRequests, returnedBookRequests: returnBookRequests });
   }
 });
 

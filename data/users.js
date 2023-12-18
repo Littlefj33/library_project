@@ -119,6 +119,7 @@ export const registerUser = async (
     phoneNumber,
     emailAddress,
     password: passwordHash,
+    date_joined: new Date(),
     role,
   };
   const insertUser = await userCollection.insertOne(newUserInfo);
