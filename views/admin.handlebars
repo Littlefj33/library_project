@@ -24,7 +24,7 @@
 <!-- Approving Book Section -->
 <section>
     <h2>Approve book requests:</h2>
-    {{#each bookRequests}}
+    {{#each bookApprovalRequests}}
     <div>
         <h3>User: {{getUser this.user_id}}</h3>
         <ul>
@@ -49,7 +49,7 @@
 <!-- Search and Update Section -->
 <section>
     <h2>Search and Update Book</h2>
-    <form id="searchForm" action="/" method="POST">
+    <form id="searchForm" action="/updateBook" method="POST">
         <label for="isbn">ISBN:</label>
         <input type="text" id="isbn" name="isbn" required>
 
