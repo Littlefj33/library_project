@@ -142,16 +142,18 @@ router.route("/admin").get(async (req, res) => {
     let bookApprovalRequests = [];
     try {
       const userCollection = await users();
-      returnBookRequests =
-        await userCollection.find(
+      returnBookRequests = await userCollection
+        .find(
           { return_requests: { $exists: true, $not: { $size: 0 } } },
           { _id: 1, return_requests: 1 }
-        ).toArray();
-      bookApprovalRequests =
-        await userCollection.find(
+        )
+        .toArray();
+      bookApprovalRequests = await userCollection
+        .find(
           { requested_books: { $exists: true, $not: { $size: 0 } } },
           { _id: 1, " requested_books": 1 }
-        ).toArray();
+        )
+        .toArray();
     } catch (e) {
       return res.status(500).render("error", {
         title: "ERROR Page",
@@ -161,9 +163,9 @@ router.route("/admin").get(async (req, res) => {
     returnBookRequests = returnBookRequests.map(async (field) => {
       field._id = await getUserName(field._id);
       field.return_requests.map(async (book) => {
-        book.book_name = await getBookName(book.book_id);
+        return await getBookName(book);
       });
-    })
+    });
     return res.render("admin", {
       title: "Admin",
       bookRequests: bookApprovalRequests,
