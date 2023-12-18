@@ -119,7 +119,8 @@ router.route("/admin/approveBookRequest").post(async (req, res) => {
     });
   } else {
     try {
-      const { bookId, requesterEmail } = req.body;
+      const requesterEmail = req.body.requesterEmail.trim().LowerCase();
+      const bookId = req.body.bookId.trim();
       const results = await approveRequest(bookId, requesterEmail);
       if (results.approved === true) {
         return res.redirect(`/admin`);
