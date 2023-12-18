@@ -49,7 +49,9 @@ router.route("/").get(async (req, res) => {
 router.route("/json").get(async (req, res) => {
   try {
     const blogsCollection = await blogs();
-    let blogsList = await blogsCollection
+    const userCollection = await users();
+
+    let blogList = await blogsCollection
       .find(
         {},
         {
@@ -60,8 +62,23 @@ router.route("/json").get(async (req, res) => {
         }
       )
       .toArray();
-    if (!blogsList) throw "ERROR: Could not get all books";
-    return res.json(blogsList);
+    if (!blogList) throw "ERROR: Could not get all books";
+
+    let blogIndex = 0;
+    for (const blog of blogList) {
+      let authorInfo = await dbTool(
+        userCollection,
+        "_id",
+        blog["author_id"].toString(),
+        { _id: 0, firstName: 1, lastName: 1 }
+      );
+
+      delete blogList[blogIndex]["author_id"];
+      blogList[blogIndex]["author_info"] = authorInfo[0];
+      blogIndex++;
+    }
+
+    return res.json(blogList);
   } catch (e) {
     return res.status(500).send(e);
   }

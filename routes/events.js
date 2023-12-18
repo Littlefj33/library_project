@@ -24,7 +24,6 @@ router.route("/").get(async (req, res) => {
       )
       .toArray();
     if (!eventList) throw "ERROR: Could not get all events";
-
     const user = req.session.user;
     const userCollection = await users();
     let eventIndex = 0;
@@ -69,7 +68,8 @@ router.route("/").get(async (req, res) => {
 router.route("/json").get(async (req, res) => {
   try {
     const eventsCollection = await events();
-    let eventsList = await eventsCollection
+    const userCollection = await users();
+    let eventList = await eventsCollection
       .find(
         {},
         {
@@ -80,8 +80,22 @@ router.route("/json").get(async (req, res) => {
         }
       )
       .toArray();
-    if (!eventsList) throw "ERROR: Could not get all books";
-    return res.json(eventsList);
+    if (!eventList) throw "ERROR: Could not get all books";
+    let eventIndex = 0;
+    for (const event of eventList) {
+      let organizerInfo = await dbTool(
+        userCollection,
+        "_id",
+        event["organizer_id"].toString(),
+        { _id: 0, firstName: 1, lastName: 1 }
+      );
+
+      delete eventList[eventIndex]["organizer_id"];
+      eventList[eventIndex]["organizer_info"] = organizerInfo[0];
+      eventIndex++;
+    }
+
+    return res.json(eventList);
   } catch (e) {
     return res.status(500).send(e);
   }
