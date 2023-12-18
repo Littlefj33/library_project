@@ -29,6 +29,12 @@ export const addReview = async (
 
   const bookCollection = await books();
   const userCollection = await users();
+
+  let bookData = await dbTool(bookCollection, "_id", bookId, {
+    _id: 1,
+    reviews: 1,
+  });
+
   let authorInfo;
   try {
     authorInfo = await dbTool(
@@ -40,7 +46,13 @@ export const addReview = async (
   } catch (e) {
     throw "ERROR: Cannot find author";
   }
+
   const authorId = authorInfo[0]["_id"];
+
+  for (let review of bookData["reviews"]) {
+    if (review["authorId"].toString() === authorId.toString())
+      throw "ERROR: User already made a review";
+  }
 
   const updatedBookInfo = await bookCollection.findOneAndUpdate(
     { _id: new ObjectId(bookId) },
@@ -88,9 +100,15 @@ export const requestBook = async (bookId, user_email_address) => {
     bookInfo = await dbTool(bookCollection, "_id", bookId, {
       _id: 1,
       current_stock: 1,
+      current_borrowers: 1,
     });
   } catch (e) {
     throw "ERROR: Cannot find user";
+  }
+
+  for (let borrower of bookInfo[0]["current_borrowers"]) {
+    if (borrower.toString() === userInfo[0]["_id"].toString())
+      throw "ERROR: User already is borrowing book";
   }
 
   if (bookInfo[0]["current_stock"] > 0) {
@@ -154,9 +172,15 @@ export const returnBook = async (bookId, user_email_address) => {
     bookInfo = await dbTool(bookCollection, "_id", bookId, {
       _id: 1,
       current_stock: 1,
+      current_borrowers: 1,
     });
   } catch (e) {
-    throw "ERROR: Cannot find user";
+    throw "ERROR: Cannot find book";
+  }
+
+  for (let borrower of bookInfo[0]["current_borrowers"]) {
+    if (borrower.toString() === userId.toString())
+      throw "ERROR: User is not currently borrowing book";
   }
 
   if (bookInfo[0]["current_stock"] < bookInfo[0]["total_stock"]) {
@@ -218,12 +242,11 @@ export const approveRequest = async (bookId, user_email_address) => {
     throw "ERROR: Cannot find user";
   }
   const userId = userInfo[0]["_id"];
-  console.log(userId)
   const updatedUserInfo = await userCollection.findOneAndUpdate(
     { _id: userId },
     {
       $pull: { requested_books: new ObjectId(bookId) },
-      $push: { current_checked_out_books: new ObjectId(bookId) }
+      $push: { current_checked_out_books: new ObjectId(bookId) },
     },
     { returnDocument: "after" }
   );
