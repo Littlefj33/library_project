@@ -144,6 +144,7 @@ router.route("/updateBook").post(async (req, res) => {
   isbn = xss(isbn);
   stock = xss(stock);
   quality = xss(quality);
+  stock = stock === "" || parseInt(stock) < 0 ? 0 : parseInt(stock);
   if (!isbn || isNaN(stock) || !["good", "fair", "bad"].includes(quality)) {
     return res.status(400).render("error", {
       title: "ERROR Page",
@@ -154,7 +155,10 @@ router.route("/updateBook").post(async (req, res) => {
     const bookCollection = await books();
     const updateInfo = await bookCollection.updateOne(
       { isbn: isbn },
-      { $set: { current_stock: parseInt(stock), condition_status: quality } }
+      {
+        $set: { condition_status: quality },
+        $inc: { total_stock: parseInt(stock), current_stock: parseInt(stock) }
+      }
     );
 
     if (updateInfo.modifiedCount === 0) {
