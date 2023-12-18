@@ -161,7 +161,7 @@ router.route("/admin").get(async (req, res) => {
     returnBookRequests = returnBookRequests.map(async (field) => {
       field._id = await getUserName(field._id);
       field.return_requests.map(async (book) => {
-        book.book_name = await getBookName(book.book_id);
+        book.book_id = await getBookName(book.book_id);
       });
     })
     return res.render("admin", {
