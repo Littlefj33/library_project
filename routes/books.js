@@ -363,7 +363,7 @@ router.route("/:bookId/return").post(async (req, res) => {
   }
 });
 
-router.route("/admin/approveBookRequest").post(async (req, res) => {
+router.route("/admin/approveReturnRequest").post(async (req, res) => {
   const user = req.session.user;
   if (!user) {
     return res.redirect("/login");
@@ -374,9 +374,10 @@ router.route("/admin/approveBookRequest").post(async (req, res) => {
     });
   } else {
     try {
-      let requesterEmail = req.body.requesterEmail.trim().toLowerCase();
-      let bookId = req.body.bookId.trim();
-      bookId = xss(bookId);
+      let requesterEmail = xss(req.body.requesterEmail).trim().toLowerCase();
+      let bookId = xss(req.body.bookId);
+      bookId =
+        bookId = xss(bookId);
       requesterEmail = xss(requesterEmail);
       const results = await approveRequest(bookId, requesterEmail);
       if (results.approved === true) {
