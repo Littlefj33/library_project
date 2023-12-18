@@ -33,16 +33,19 @@
     <p>{{this.comments.length}} comments</p>
 
     <p>
-      <button class="openCommentForm" onclick="toggleForm()">
+      <button
+        class="openCommentForm"
+        onclick="toggleForm('form-popup-{{this._id}}')"
+      >
         Comment on Blog
       </button>
     </p>
 
-    <div id="form-popup" class="form-popup">
+    <div id="form-popup-{{this._id}}" class="form-popup">
       <form
         action="/blogs/{{this._id}}/comment"
         method="POST"
-        id="comment-blog-form"
+        id="comment-blog-form-{{this._id}}"
         class="form-container"
       >
         <h3>New Comment</h3>

@@ -17,12 +17,15 @@
 
 <p class="attendees-count">{{data.attendees.length}} people attending</p>
 
-<button class="openCommentForm" onclick="toggleForm()">Comment on Event</button>
-<div id="form-popup" class="form-popup">
+<button class="openCommentForm" onclick="toggleForm('form-popup-{{data._id}}')">
+  Comment on Event
+</button>
+
+<div id="form-popup-{{data._id}}" class="form-popup">
   <form
     action="/events/{{data._id}}/comment"
     method="POST"
-    id="comment-event-form"
+    id="comment-event-form-{{data._id}}"
     class="form-container"
   >
     <h3>New Comment</h3>

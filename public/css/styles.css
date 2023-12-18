@@ -87,14 +87,17 @@ a.toBookDetails {
   border: 3px solid #f1f1f1;
 }
 
-.show-form {
+/* .show-form {
   display: block;
-  position: absolute;
   border: 3px solid #f1f1f1;
-}
+} */
 
 .form-container {
   max-width: 200px;
   padding: 3px;
   background-color: white;
+}
+
+.hidden {
+  display: block;
 }
