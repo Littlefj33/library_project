@@ -68,16 +68,16 @@ export async function usersBlogsEventsSeed() { // add the parameter bookIds if w
     await blogsCollection.drop();
     await eventsCollection.drop();
     try {
-        const seedDataRaw1 = JSON.parse(await readFile('users.json', 'utf8'))
+        const seedDataRaw1 = JSON.parse(await readFile('./seed/users.json', 'utf8'))
         let seedData1 = seedDataRaw1.map(convertToObjectId);
         // seedData1 = seedData1.map(doc => addingBookIds(doc, bookIds));
         seedData1 = seedData1.map(convertToDate);
         await usersCollection.insertMany(seedData1)
-        const seedDataRaw2 = JSON.parse(await readFile('blogs.json', 'utf8'))
+        const seedDataRaw2 = JSON.parse(await readFile('./seed/blogs.json', 'utf8'))
         let seedData2 = seedDataRaw2.map(convertToObjectId);
         seedData2 = seedData2.map(convertToDate);
         await blogsCollection.insertMany(seedData2)
-        const seedDataRaw3 = JSON.parse(await readFile('events.json', 'utf8'))
+        const seedDataRaw3 = JSON.parse(await readFile('./seed/events.json', 'utf8'))
         let seedData3 = seedDataRaw3.map(convertToObjectId);
         seedData3 = seedData3.map(convertToDate);
         await eventsCollection.insertMany(seedData3)
