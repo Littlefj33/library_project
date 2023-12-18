@@ -259,3 +259,41 @@ export const approveRequest = async (bookId, user_email_address) => {
   if (!updatedBookInfo) throw "ERROR: Book update failed";
   return { approved: true };
 };
+
+export const favoriteBook = async (bookId, user_email_address) => {
+  if (!user_email_address || typeof user_email_address !== "string" || user_email_address.trim().length === 0) {
+    throw "Author email missing or invalid";
+  }
+
+  bookId = bookId.trim();
+  if (!ObjectId.isValid(bookId)) {
+    throw "Invalid book ID";
+  }
+
+  user_email_address = user_email_address.toLowerCase().trim();
+
+  const bookCollection = await books();
+  const userCollection = await users();
+
+  // Check if the book exists
+  const book = await dbTool(bookCollection, "_id", bookId, { _id: 1 });
+  if (!book) {
+    throw new "Book not found";
+  }
+
+  // Check if the user exists and update their favorite_books list
+  const updateResult = await userCollection.updateOne(
+    { emailAddress: user_email_address },
+    { $addToSet: { favorite_books: new ObjectId(bookId) } }
+  );
+
+  if (!updateResult.matchedCount) {
+    throw new "User not found";
+  }
+
+  if (!updateResult.modifiedCount) {
+    throw new "Book already in favorites or update failed";
+  }
+
+  return { favoritedBook: true };
+}
