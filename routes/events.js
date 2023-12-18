@@ -24,7 +24,6 @@ router.route("/").get(async (req, res) => {
       )
       .toArray();
     if (!eventList) throw "ERROR: Could not get all events";
-
     const user = req.session.user;
     const userCollection = await users();
     let eventIndex = 0;
@@ -53,12 +52,52 @@ router.route("/").get(async (req, res) => {
       eventIndex++;
     }
 
-    return res.render("events", { title: "Events", data: eventList, partial:"search" });
+    return res.render("events", {
+      title: "Events",
+      data: eventList,
+      partial: "search",
+    });
   } catch (e) {
     return res.status(500).render("error", {
       title: "ERROR Page",
       error: "Internal Server Error",
     });
+  }
+});
+
+router.route("/json").get(async (req, res) => {
+  try {
+    const eventsCollection = await events();
+    const userCollection = await users();
+    let eventList = await eventsCollection
+      .find(
+        {},
+        {
+          projection: {
+            _id: 1,
+            organizer_id: 1,
+          },
+        }
+      )
+      .toArray();
+    if (!eventList) throw "ERROR: Could not get all books";
+    let eventIndex = 0;
+    for (const event of eventList) {
+      let organizerInfo = await dbTool(
+        userCollection,
+        "_id",
+        event["organizer_id"].toString(),
+        { _id: 0, firstName: 1, lastName: 1 }
+      );
+
+      delete eventList[eventIndex]["organizer_id"];
+      eventList[eventIndex]["organizer_info"] = organizerInfo[0];
+      eventIndex++;
+    }
+
+    return res.json(eventList);
+  } catch (e) {
+    return res.status(500).send(e);
   }
 });
 

@@ -12,33 +12,6 @@ import {
 const router = Router();
 
 router.route("/").get(async (req, res) => {
-  const booksCollection = await books();
-  let booksList = await booksCollection
-    .find(
-      {},
-      {
-        projection: {
-          _id: 1,
-          title: 1,
-          authors: 1,
-          publication_date: 1,
-          summary: 1,
-          language: 1,
-          genres: 1,
-          page_count: 1,
-          isbn: 1,
-          condition_status: 1,
-          liability_cost: 1,
-          total_stock: 1,
-          current_stock: 1,
-          current_borrowers: 1,
-          reviews: 1,
-          comments: 1,
-        },
-      }
-    )
-    .toArray();
-  if (!booksList) throw "ERROR: Could not get all books";
   try {
     const booksCollection = await books();
     let booksList = await booksCollection
@@ -130,6 +103,28 @@ router.route("/").get(async (req, res) => {
       title: "ERROR Page",
       error: "Internal Server Error",
     });
+  }
+});
+
+router.route("/json").get(async (req, res) => {
+  try {
+    const booksCollection = await books();
+    let booksList = await booksCollection
+      .find(
+        {},
+        {
+          projection: {
+            _id: 1,
+            title: 1,
+            authors: 1,
+          },
+        }
+      )
+      .toArray();
+    if (!booksList) throw "ERROR: Could not get all books";
+    return res.json(booksList);
+  } catch (e) {
+    return res.status(500).send(e);
   }
 });
 
