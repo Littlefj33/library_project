@@ -185,3 +185,54 @@ export const returnBook = async (bookId, user_email_address) => {
   }
   return { insertedBook: true };
 };
+
+export const approveRequest = async (bookId, user_email_address) => {
+  if (
+    user_email_address === undefined ||
+    typeof user_email_address !== "string" ||
+    user_email_address.trim().length === 0
+  )
+    throw "Author email missing or invalid";
+
+  bookId = bookId.trim();
+  if (!ObjectId.isValid(bookId)) throw "ERROR: Invalid object ID";
+
+  user_email_address = user_email_address.toLowerCase().trim();
+
+  const bookCollection = await books();
+  const userCollection = await users();
+
+  let userInfo;
+  try {
+    userInfo = await dbTool(
+      userCollection,
+      "emailAddress",
+      user_email_address,
+      {
+        _id: 1,
+        current_checked_out_books: 1,
+        requested_books: 1,
+      }
+    );
+  } catch (e) {
+    throw "ERROR: Cannot find user";
+  }
+  const userId = userInfo[0]["_id"];
+  console.log(userId)
+  const updatedUserInfo = await userCollection.findOneAndUpdate(
+    { _id: userId },
+    {
+      $pull: { requested_books: new ObjectId(bookId) },
+      $push: { current_checked_out_books: new ObjectId(bookId) }
+    },
+    { returnDocument: "after" }
+  );
+  if (!updatedUserInfo) throw "ERROR: User update failed";
+  const updatedBookInfo = await bookCollection.findOneAndUpdate(
+    { _id: new ObjectId(bookId) },
+    { $push: { current_borrowers: userId } },
+    { returnDocument: "after" }
+  );
+  if (!updatedBookInfo) throw "ERROR: Book update failed";
+  return { approved: true };
+};

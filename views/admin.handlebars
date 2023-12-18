@@ -5,13 +5,13 @@
     <h2>Returned Book Requests</h2>
     {{#each returnedBookRequests}}
     <div>
-        <h3>User: {{getReturnee this.user_id}}</h3>
+        <h3>User: {{getReturnee this._id}}</h3>
         <ul>
-            {{#each this.books_ids}}
+            {{#each this.return_requests}}
             <li>
                 <p>Book: {{getBookTitle this}}</p>
                 <!-- Add a button or link to process the return for each book -->
-                <button onclick="processReturn('{{this}}', '{{getReturnee ../user_id}}')">Process Return</button>
+                <button onclick="processReturn('{{this}}', '{{getReturnee ../_id}}')">Process Return</button>
             </li>
             {{/each}}
         </ul>
@@ -21,10 +21,35 @@
     {{/each}}
 </section>
 
+<!-- Approving Book Section -->
+<section>
+    <h2>Approve book requests:</h2>
+    {{#each bookApprovalRequests}}
+    <div>
+        <h3>User: {{getUser this._id}}</h3>
+        <ul>
+            {{#each this.requested_books}}
+            <li>
+                <p>Book: {{getBookTitle this}}</p>
+                <!-- Add a button or link to approve each book -->
+                <form action="/admin/approveBookRequest" method="POST">
+                    <input type="hidden" name="bookId" value="{{this}}" />
+                    <input type="hidden" name="requesterEmail" value="{{getReturnee ../_id}}" />
+                    <button type="submit">Approve Request</button>
+                </form>
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+    {{else}}
+    <p>No book requests.</p>
+    {{/each}}
+</section>
+
 <!-- Search and Update Section -->
 <section>
     <h2>Search and Update Book</h2>
-    <form id="searchForm" action="/" method="POST">
+    <form id="searchForm" action="/updateBook" method="POST">
         <label for="isbn">ISBN:</label>
         <input type="text" id="isbn" name="isbn" required>
 
