@@ -21,6 +21,31 @@
     {{/each}}
 </section>
 
+<!-- Approving Book Section -->
+<section>
+    <h2>Approve book requests:</h2>
+    {{#each bookRequests}}
+    <div>
+        <h3>User: {{getUser this.user_id}}</h3>
+        <ul>
+            {{#each this.books_ids}}
+            <li>
+                <p>Book: {{getBookTitle this}}</p>
+                <!-- Add a button or link to approve each book -->
+                <form action="/admin/approveBookRequest" method="POST">
+                    <input type="hidden" name="bookId" value="{{this}}" />
+                    <input type="hidden" name="requesterEmail" value="{{getReturnee ../user_id}}" />
+                    <button type="submit">Approve Request</button>
+                </form>
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+    {{else}}
+    <p>No book requests.</p>
+    {{/each}}
+</section>
+
 <!-- Search and Update Section -->
 <section>
     <h2>Search and Update Book</h2>
