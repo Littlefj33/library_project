@@ -162,8 +162,9 @@ router.route("/:blogId/comment").post(async (req, res) => {
   if (!user) {
     return res.redirect("/login");
   } else {
-    const { content } = req.body;
+    const body = req.body;
     const blogId = req.params.blogId.trim();
+    const content = body[`content-${blogId}`];
     try {
       const results = await addComment(blogId, user.emailAddress, content);
       if (results.insertedBlog === true) {
