@@ -16,10 +16,10 @@
     class="form-container"
   >
     <h3>New Comment</h3>
-    <label for="content">Content:</label>
+    <label for="content-{{data._id}}">Content:</label>
     <textarea
-      id="content"
-      name="content"
+      id="content-{{data._id}}"
+      name="content-{{data._id}}"
       placeholder="content..."
       required
     ></textarea>

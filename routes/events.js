@@ -208,8 +208,9 @@ router.route("/:eventId/comment").post(async (req, res) => {
   if (!user) {
     return res.redirect("/login");
   } else {
-    const { content } = req.body;
+    const body = req.body;
     const eventId = req.params.eventId.trim();
+    const content = body[`content-${eventId}`];
     try {
       const results = await addComment(eventId, user.emailAddress, content);
       if (results.insertedEvent === true) {

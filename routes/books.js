@@ -152,7 +152,7 @@ router.route("/updateBook").post(async (req, res) => {
       { isbn: isbn },
       {
         $set: { condition_status: quality },
-        $inc: { total_stock: parseInt(stock), current_stock: parseInt(stock) }
+        $inc: { total_stock: parseInt(stock), current_stock: parseInt(stock) },
       }
     );
 
@@ -228,7 +228,7 @@ router.route("/:bookId").get(async (req, res) => {
         data["user_requested"] = false;
       }
       if (user_reviewed) {
-        data["user_reviewed"] = false;
+        data["user_reviewed"] = true;
       } else {
         data["user_reviewed"] = false;
       }
@@ -257,8 +257,12 @@ router.route("/:bookId/review").post(async (req, res) => {
   if (!user) {
     return res.redirect("/login");
   } else {
-    const { content, rating } = req.body;
+    const body = req.body;
     const bookId = req.params.bookId.trim();
+
+    const content = body[`content-${bookId}`];
+    const rating = body[`rating-${bookId}`];
+
     try {
       const results = await addReview(
         bookId,
@@ -371,8 +375,7 @@ router.route("/admin/approveReturnRequest").post(async (req, res) => {
     try {
       let requesterEmail = xss(req.body.requesterEmail).trim().toLowerCase();
       let bookId = xss(req.body.bookId);
-      bookId =
-        bookId = xss(bookId);
+      bookId = bookId = xss(bookId);
       requesterEmail = xss(requesterEmail);
       const results = await approveRequest(bookId, requesterEmail);
       if (results.approved === true) {
