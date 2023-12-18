@@ -2,11 +2,18 @@ import { dbTool } from "../data/dbTools.js";
 import { books, users } from "../config/mongoCollections.js";
 import { Router } from "express";
 import xss from "xss";
-import { addReview, requestBook, approveRequest } from "../data/books.js";
+import {
+  addReview,
+  requestBook,
+  approveRequest,
+  returnBook,
+  favoriteBook,
+} from "../data/books.js";
 const router = Router();
-router.route("/")
+
+router
+  .route("/")
   .get(async (req, res) => {
-  try {
     const booksCollection = await books();
     let booksList = await booksCollection
       .find(
@@ -34,73 +41,120 @@ router.route("/")
       )
       .toArray();
     if (!booksList) throw "ERROR: Could not get all books";
+    try {
+      const booksCollection = await books();
+      let booksList = await booksCollection
+        .find(
+          {},
+          {
+            projection: {
+              _id: 1,
+              title: 1,
+              authors: 1,
+              publication_date: 1,
+              summary: 1,
+              language: 1,
+              genres: 1,
+              page_count: 1,
+              isbn: 1,
+              condition_status: 1,
+              liability_cost: 1,
+              total_stock: 1,
+              current_stock: 1,
+              current_borrowers: 1,
+              reviews: 1,
+              comments: 1,
+            },
+          }
+        )
+        .toArray();
+      if (!booksList) throw "ERROR: Could not get all books";
 
-    const user = req.session.user;
-    const userCollection = await users();
-    let bookIndex = 0;
-    for (const book of booksList) {
-      if (user) {
-        let userInfo = await dbTool(
-          userCollection,
-          "emailAddress",
-          user.emailAddress,
-          { _id: 1 }
-        );
-        let user_requested = false;
-        let user_reviewed = false;
-        for (let borrower of book["current_borrowers"]) {
-          if (borrower.toString() === userInfo[0]["_id"].toString()) {
-            user_requested = true;
+      const user = req.session.user;
+      const userCollection = await users();
+      let bookIndex = 0;
+      for (const book of booksList) {
+        if (user) {
+          let userInfo = await dbTool(
+            userCollection,
+            "emailAddress",
+            user.emailAddress,
+            { _id: 1, favorite_books: 1 }
+          );
+          let user_requested = false;
+          let user_reviewed = false;
+          let user_favorited = false;
+          for (let borrower of book["current_borrowers"]) {
+            if (borrower.toString() === userInfo[0]["_id"].toString()) {
+              user_requested = true;
+            }
           }
-        }
-        for (let review of book["reviews"]) {
-          if (review["authorId"].toString() === userInfo[0]["_id"].toString()) {
-            user_reviewed = true;
+          for (let review of book["reviews"]) {
+            if (
+              review["authorId"].toString() === userInfo[0]["_id"].toString()
+            ) {
+              user_reviewed = true;
+            }
           }
-        }
-        if (user_requested) {
-          booksList[bookIndex]["user_requested"] = true;
+
+          for (let favoriteBook of userInfo[0]["favorite_books"]) {
+            if (favoriteBook.toString() === book["_id"].toString()) {
+              user_favorited = true;
+            }
+          }
+
+          if (user_requested) {
+            booksList[bookIndex]["user_requested"] = true;
+          } else {
+            booksList[bookIndex]["user_requested"] = false;
+          }
+
+          if (user_reviewed) {
+            booksList[bookIndex]["user_reviewed"] = true;
+          } else {
+            booksList[bookIndex]["user_reviewed"] = false;
+          }
+
+          if (user_favorited) {
+            booksList[bookIndex]["user_favorited"] = true;
+          } else {
+            booksList[bookIndex]["user_favorited"] = false;
+          }
         } else {
           booksList[bookIndex]["user_requested"] = false;
-        }
-        if (user_reviewed) {
-          booksList[bookIndex]["user_reviewed"] = true;
-        } else {
           booksList[bookIndex]["user_reviewed"] = false;
         }
-      } else {
-        booksList[bookIndex]["user_requested"] = false;
-        booksList[bookIndex]["user_reviewed"] = false;
+        bookIndex++;
       }
-      bookIndex++;
-    }
 
-    return res.render("books", { title: "Books", data: booksList, partial:"search" });
-  } catch (e) {
-    return res.status(500).render("error", {
-      title: "ERROR Page",
-      error: "Internal Server Error",
-    });
-  }
-})
-.post(async (req, res) => {
+      return res.render("books", { title: "Books", data: booksList });
+    } catch (e) {
+      return res.status(500).render("error", {
+        title: "ERROR Page",
+        error: "Internal Server Error",
+      });
+    }
+  })
+  .post(async (req, res) => {
     const bookId = xss(req.body.bookId);
     const userEmail = xss(req.body.userEmail);
 
     if (!bookId || !userEmail) {
-      return res.status(400).render("error", { error: 'Book ID and user email are required' });
+      return res
+        .status(400)
+        .render("error", { error: "Book ID and user email are required" });
     }
 
     try {
       await returnBook(bookId, userEmail);
-      return res.status(200).json({ message: 'Book returned successfully' });
+      return res.status(200).json({ message: "Book returned successfully" });
     } catch (error) {
       return res.status(500).render("error", { error: error.toString() });
     }
   });
 
 router.route("/updateBook").post(async (req, res) => {
-  if (!req.session.user || req.session.user.role !== 'admin') {
+  if (!req.session.user || req.session.user.role !== "admin") {
     return res.status(403).render("error", {
       title: "ERROR Page",
       error: "Forbidden",
@@ -110,7 +164,7 @@ router.route("/updateBook").post(async (req, res) => {
   isbn = xss(isbn);
   stock = xss(stock);
   quality = xss(quality);
-  if (!isbn || isNaN(stock) || !['good', 'fair', 'bad'].includes(quality)) {
+  if (!isbn || isNaN(stock) || !["good", "fair", "bad"].includes(quality)) {
     return res.status(400).render("error", {
       title: "ERROR Page",
       error: "Invalid input",
@@ -128,7 +182,7 @@ router.route("/updateBook").post(async (req, res) => {
     }
 
     // Redirect or send a response upon successful update
-    res.redirect('/admin'); // Redirect to a confirmation page or back to the form
+    res.redirect("/admin"); // Redirect to a confirmation page or back to the form
   } catch (error) {
     res.status(500).render("error", {
       title: "ERROR Page",
@@ -246,6 +300,31 @@ router.route("/:bookId/request").post(async (req, res) => {
       const bookId = req.params.bookId.trim();
       const results = await requestBook(bookId, user.emailAddress);
       if (results.insertedBook === true) {
+        return res.redirect(`/books/${bookId}`);
+      } else {
+        return res.status(500).render("error", {
+          title: "ERROR Page",
+          error: "Internal Server Error",
+        });
+      }
+    } catch (e) {
+      return res.status(400).render("error", {
+        title: "ERROR Page",
+        error: e,
+      });
+    }
+  }
+});
+
+router.route("/:bookId/favorite").post(async (req, res) => {
+  const user = req.session.user;
+  if (!user) {
+    return res.redirect("/login");
+  } else {
+    try {
+      const bookId = req.params.bookId.trim();
+      const results = await favoriteBook(bookId, user.emailAddress);
+      if (results.favoritedBook === true) {
         return res.redirect(`/books/${bookId}`);
       } else {
         return res.status(500).render("error", {

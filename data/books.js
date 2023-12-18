@@ -49,7 +49,7 @@ export const addReview = async (
 
   const authorId = authorInfo[0]["_id"];
 
-  for (let review of bookData["reviews"]) {
+  for (let review of bookData[0]["reviews"]) {
     if (review["authorId"].toString() === authorId.toString())
       throw "ERROR: User already made a review";
   }
@@ -128,10 +128,17 @@ export const requestBook = async (bookId, user_email_address) => {
 
     const updatedUserInfo = await userCollection.findOneAndUpdate(
       { _id: userId },
-      { $push: { return_requests: new ObjectId(bookId) } },
+      { $push: { current_checked_out_books: new ObjectId(bookId) } },
       { returnDocument: "after" }
     );
     if (!updatedUserInfo) throw "ERROR: User update failed";
+
+    const updatedUserInfo2 = await userCollection.findOneAndUpdate(
+      { _id: userId },
+      { $push: { checked_out_books: new ObjectId(bookId) } },
+      { returnDocument: "after" }
+    );
+    if (!updatedUserInfo2) throw "ERROR: User update failed";
   } else {
     throw "ERROR: Book currently out of stock";
   }
@@ -183,30 +190,13 @@ export const returnBook = async (bookId, user_email_address) => {
       throw "ERROR: User is not currently borrowing book";
   }
 
-  if (bookInfo[0]["current_stock"] < bookInfo[0]["total_stock"]) {
-    const updatedBookInfo = await bookCollection.findOneAndUpdate(
-      { _id: new ObjectId(bookId) },
-      { $inc: { current_stock: 1 } },
-      { returnDocument: "after" }
-    );
-    if (!updatedBookInfo) throw "ERROR: User update failed";
+  const updatedUserInfo = await userCollection.findOneAndUpdate(
+    { _id: userId },
+    { $push: { return_requests: new ObjectId(bookId) } },
+    { returnDocument: "after" }
+  );
+  if (!updatedUserInfo) throw "ERROR: User update failed";
 
-    const updatedBookInfo2 = await bookCollection.findOneAndUpdate(
-      { _id: new ObjectId(bookId) },
-      { $pull: { current_borrowers: userId } },
-      { returnDocument: "after" }
-    );
-    if (!updatedBookInfo2) throw "ERROR: User update failed";
-
-    const updatedUserInfo = await userCollection.findOneAndUpdate(
-      { _id: userId },
-      { $pull: { return_requests: new ObjectId(bookId) } },
-      { returnDocument: "after" }
-    );
-    if (!updatedUserInfo) throw "ERROR: User update failed";
-  } else {
-    throw "ERROR: This book is already fully stocked";
-  }
   return { insertedBook: true };
 };
 
@@ -235,7 +225,7 @@ export const approveRequest = async (bookId, user_email_address) => {
       {
         _id: 1,
         current_checked_out_books: 1,
-        requested_books: 1,
+        return_requests: 1,
       }
     );
   } catch (e) {
@@ -245,17 +235,76 @@ export const approveRequest = async (bookId, user_email_address) => {
   const updatedUserInfo = await userCollection.findOneAndUpdate(
     { _id: userId },
     {
-      $pull: { requested_books: new ObjectId(bookId) },
-      $push: { current_checked_out_books: new ObjectId(bookId) },
+      $pull: { return_requests: new ObjectId(bookId) },
     },
     { returnDocument: "after" }
   );
   if (!updatedUserInfo) throw "ERROR: User update failed";
+
+  const updatedUserInfo2 = await userCollection.findOneAndUpdate(
+    { _id: userId },
+    {
+      $pull: { current_checked_out_books: new ObjectId(bookId) },
+    },
+    { returnDocument: "after" }
+  );
+  if (!updatedUserInfo2) throw "ERROR: User update failed";
+
   const updatedBookInfo = await bookCollection.findOneAndUpdate(
     { _id: new ObjectId(bookId) },
-    { $push: { current_borrowers: userId } },
+    { $pull: { current_borrowers: userId } },
     { returnDocument: "after" }
   );
   if (!updatedBookInfo) throw "ERROR: Book update failed";
+
+  const updatedBookInfo2 = await bookCollection.findOneAndUpdate(
+    { _id: new ObjectId(bookId) },
+    { $inc: { current_stock: 1 } },
+    { returnDocument: "after" }
+  );
+  if (!updatedBookInfo2) throw "ERROR: Book update failed";
+
   return { approved: true };
+};
+
+export const favoriteBook = async (bookId, user_email_address) => {
+  if (
+    !user_email_address ||
+    typeof user_email_address !== "string" ||
+    user_email_address.trim().length === 0
+  ) {
+    throw "Author email missing or invalid";
+  }
+
+  bookId = bookId.trim();
+  if (!ObjectId.isValid(bookId)) {
+    throw "Invalid book ID";
+  }
+
+  user_email_address = user_email_address.toLowerCase().trim();
+
+  const bookCollection = await books();
+  const userCollection = await users();
+
+  // Check if the book exists
+  const book = await dbTool(bookCollection, "_id", bookId, { _id: 1 });
+  if (!book) {
+    throw "Book not found";
+  }
+
+  // Check if the user exists and update their favorite_books list
+  const updateResult = await userCollection.updateOne(
+    { emailAddress: user_email_address },
+    { $addToSet: { favorite_books: new ObjectId(bookId) } }
+  );
+
+  if (!updateResult.matchedCount) {
+    throw "User not found";
+  }
+
+  if (!updateResult.modifiedCount) {
+    throw "Book already in favorites or update failed";
+  }
+
+  return { favoritedBook: true };
 };
