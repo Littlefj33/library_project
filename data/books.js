@@ -6,7 +6,7 @@ export const addReview = async (
   bookId,
   user_email_address,
   content,
-  review
+  rating
 ) => {
   if (
     user_email_address === undefined ||
@@ -18,8 +18,9 @@ export const addReview = async (
   if (!content || typeof content !== "string" || content.trim().length === 0)
     throw "Content missing or invalid";
 
-  if (isNaN(review)) throw "ERROR: Review must be number";
-  if (review < 0 || review > 5) throw "ERROR: Review must be between 0 and 5";
+  if (isNaN(Number(rating))) throw "ERROR: Review must be number";
+  rating = Number(rating);
+  if (rating < 0 || rating > 5) throw "ERROR: Review must be between 0 and 5";
 
   bookId = bookId.trim();
   if (!ObjectId.isValid(bookId)) throw "ERROR: Invalid object ID";
@@ -56,7 +57,7 @@ export const addReview = async (
 
   const updatedBookInfo = await bookCollection.findOneAndUpdate(
     { _id: new ObjectId(bookId) },
-    { $push: { reviews: { authorId, content, review } } },
+    { $push: { reviews: { authorId, content, rating } } },
     { returnDocument: "after" }
   );
   if (!updatedBookInfo) throw "ERROR: User update failed";
