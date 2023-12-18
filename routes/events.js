@@ -53,7 +53,7 @@ router.route("/").get(async (req, res) => {
       eventIndex++;
     }
 
-    return res.render("events", { title: "Events", data: eventList });
+    return res.render("events", { title: "Events", data: eventList, partial:"search" });
   } catch (e) {
     return res.status(500).render("error", {
       title: "ERROR Page",
