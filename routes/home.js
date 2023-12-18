@@ -174,4 +174,33 @@ router.route("/admin").get(async (req, res) => {
   }
 });
 
+router.route("/admin/processReturn").post(async (req, res) => {
+  const user = req.session.user;
+  if (!user) {
+    return res.redirect("/login");
+  } else if (user.role !== "admin") {
+    return res
+      .status(403)
+      .render("error", { title: "ERROR Page", error: "Access Denied" });
+  } else {
+    const { bookId, userEmailAddress } = req.body;
+    try {
+      const results = await approveRequest(bookId, userEmailAddress);
+      if (results.approved === true) {
+        return res.redirect("/admin");
+      } else {
+        return res.status(500).render("error", {
+          title: "ERROR Page",
+          error: "Internal Server Error",
+        });
+      }
+    } catch (e) {
+      return res.status(400).render("error", {
+        title: "ERROR Page",
+        error: e,
+      });
+    }
+  }
+});
+
 export default router;

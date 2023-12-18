@@ -243,7 +243,7 @@ export const addAttendee = async (eventId, user_email_address) => {
 
   const updatedUserInfo = await userCollection.findOneAndUpdate(
     { _id: userId },
-    { $push: { events_joined: eventId } },
+    { $push: { events_joined: new ObjectId(eventId) } },
     { returnDocument: "after" }
   );
   if (!updatedUserInfo) throw "ERROR: User update failed";
