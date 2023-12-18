@@ -262,72 +262,42 @@ export const approveRequest = async (bookId, user_email_address) => {
 
 export const favoriteBook = async (bookId, user_email_address) => {
   if (
-    user_email_address === undefined ||
+    !user_email_address ||
     typeof user_email_address !== "string" ||
     user_email_address.trim().length === 0
-  )
+  ) {
     throw "Author email missing or invalid";
+  }
 
   bookId = bookId.trim();
-  if (!ObjectId.isValid(bookId)) throw "ERROR: Invalid object ID";
+  if (!ObjectId.isValid(bookId)) {
+    throw "Invalid book ID";
+  }
 
   user_email_address = user_email_address.toLowerCase().trim();
 
   const bookCollection = await books();
   const userCollection = await users();
 
-  let userInfo;
-  try {
-    userInfo = await dbTool(
-      userCollection,
-      "emailAddress",
-      user_email_address,
-      { _id: 1 }
-    );
-  } catch (e) {
-    throw "ERROR: Cannot find user";
-  }
-  const userId = userInfo[0]["_id"];
-
-  let bookInfo;
-  try {
-    bookInfo = await dbTool(bookCollection, "_id", bookId, {
-      _id: 1,
-      current_stock: 1,
-      current_borrowers: 1,
-    });
-  } catch (e) {
-    throw "ERROR: Cannot find user";
+  // Check if the book exists
+  const book = await dbTool(bookCollection, "_id", bookId, { _id: 1 });
+  if (!book) {
+    throw new "Book not found"();
   }
 
-  for (let borrower of bookInfo[0]["current_borrowers"]) {
-    if (borrower.toString() === userInfo[0]["_id"].toString())
-      throw "ERROR: User already is borrowing book";
+  // Check if the user exists and update their favorite_books list
+  const updateResult = await userCollection.updateOne(
+    { emailAddress: user_email_address },
+    { $addToSet: { favorite_books: new ObjectId(bookId) } }
+  );
+
+  if (!updateResult.matchedCount) {
+    throw new "User not found"();
   }
 
-  if (bookInfo[0]["current_stock"] > 0) {
-    const updatedBookInfo = await bookCollection.findOneAndUpdate(
-      { _id: new ObjectId(bookId) },
-      { $inc: { current_stock: -1 } },
-      { returnDocument: "after" }
-    );
-    if (!updatedBookInfo) throw "ERROR: User update failed";
-
-    const updatedBookInfo2 = await bookCollection.findOneAndUpdate(
-      { _id: new ObjectId(bookId) },
-      { $push: { current_borrowers: userId } },
-      { returnDocument: "after" }
-    );
-    if (!updatedBookInfo2) throw "ERROR: User update failed";
-
-    const updatedUserInfo = await userCollection.findOneAndUpdate(
-      { _id: userId },
-      { $push: { return_requests: new ObjectId(bookId) } },
-      { returnDocument: "after" }
-    );
-    if (!updatedUserInfo) throw "ERROR: User update failed";
-  } else {
-    throw "ERROR: Book currently out of stock";
+  if (!updateResult.modifiedCount) {
+    throw new "Book already in favorites or update failed"();
   }
-  return { insertedBook: true };
+
+  return { favoritedBook: true };
 };
