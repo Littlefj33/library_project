@@ -88,9 +88,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (filter === 'title') {
             eventTitle = eventItem.querySelector('.toEventDetails').textContent.toLowerCase();
             return eventTitle.includes(query);
-        } else if (filter === 'description') {
-            eventDescription = eventItem.querySelector('.description').textContent.toLowerCase();
-            return eventDescription.includes(query);
         }
 
         return false;
