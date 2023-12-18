@@ -45,11 +45,34 @@ router.route("/").get(async (req, res) => {
 router.route("/:bookId").get(async (req, res) => {
   const bookId = req.params.bookId.trim();
   const bookCollection = await books();
-  const data = await dbTool(bookCollection, "_id", bookId, {
-    _id: 1,
-    title: 1,
-  });
-  return res.render("bookInfo", { title: "Book Info", data });
+  let data;
+  try {
+    let bookData = await dbTool(bookCollection, "_id", bookId, {
+      _id: 1,
+      title: 1,
+      authors: 1,
+      publication_date: 1,
+      summary: 1,
+      language: 1,
+      genres: 1,
+      page_count: 1,
+      isbn: 1,
+      condition_status: 1,
+      liability_cost: 1,
+      total_stock: 1,
+      current_stock: 1,
+      current_borrowers: 1,
+      reviews: 1,
+      comments: 1,
+    });
+    data = bookData[0];
+  } catch (e) {
+    return res.status(404).render("error", {
+      title: "ERROR Page",
+      error: "Page not found",
+    });
+  }
+  return res.render("bookDetails", { title: "Book Info", data });
 });
 
 router.route("/:bookId/review").post(async (req, res) => {
