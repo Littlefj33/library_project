@@ -106,7 +106,7 @@ router.route("/:bookId/review").post(async (req, res) => {
   }
 });
 
-router.route("/:bookId/request").get(async (req, res) => {
+router.route("/:bookId/request").post(async (req, res) => {
   const user = req.session.user;
   if (!user) {
     return res.redirect("/login");
