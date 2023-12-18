@@ -53,12 +53,37 @@ router.route("/").get(async (req, res) => {
       eventIndex++;
     }
 
-    return res.render("events", { title: "Events", data: eventList, partial:"search" });
+    return res.render("events", {
+      title: "Events",
+      data: eventList,
+      partial: "search",
+    });
   } catch (e) {
     return res.status(500).render("error", {
       title: "ERROR Page",
       error: "Internal Server Error",
     });
+  }
+});
+
+router.route("/json").get(async (req, res) => {
+  try {
+    const eventsCollection = await events();
+    let eventsList = await eventsCollection
+      .find(
+        {},
+        {
+          projection: {
+            _id: 1,
+            organizer_id: 1,
+          },
+        }
+      )
+      .toArray();
+    if (!eventsList) throw "ERROR: Could not get all books";
+    return res.json(eventsList);
+  } catch (e) {
+    return res.status(500).send(e);
   }
 });
 

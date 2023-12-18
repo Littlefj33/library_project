@@ -46,6 +46,27 @@ router.route("/").get(async (req, res) => {
   }
 });
 
+router.route("/json").get(async (req, res) => {
+  try {
+    const blogsCollection = await blogs();
+    let blogsList = await blogsCollection
+      .find(
+        {},
+        {
+          projection: {
+            _id: 1,
+            author_id: 1,
+          },
+        }
+      )
+      .toArray();
+    if (!blogsList) throw "ERROR: Could not get all books";
+    return res.json(blogsList);
+  } catch (e) {
+    return res.status(500).send(e);
+  }
+});
+
 router
   .route("/create")
   .get(async (req, res) => {
