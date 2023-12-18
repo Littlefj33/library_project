@@ -1,0 +1,29 @@
+[
+  {
+    "_id": "65428caf408f2a2f42f8cc89",
+    "author_id": "65428caf408f2a2f42f8cc17",
+    "title": "Reading at the Beach",
+    "content": "Today I read my favorite book at the beach and enjoyed the sun…",
+    "date_posted": "07/03/2021",
+    "comments": [
+      {
+        "_id": "65428caf408f2a2f42f8cc17",
+        "content": "comment content here"
+      }
+    ]
+  },
+
+  {
+    "_id": "65428caf408f2a2f42f8cc90",
+    "author_id": "65428caf408f2a2f42f8cc18",
+    "title": "My Favorite Book",
+    "content": "My favorite book is Harry Potter and the Sorcerer's Stone",
+    "date_posted": "07/03/2021",
+    "comments": [
+      {
+        "_id": "65428caf408f2a2f42f8cc18",
+        "content": "comment content here2"
+      }
+    ]
+  }
+]
