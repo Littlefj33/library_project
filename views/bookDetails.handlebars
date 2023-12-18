@@ -27,14 +27,19 @@
 <p>Condition Status: {{data.condition_status}}</p>
 
 <p>
-  <button class="openReviewForm" onclick="toggleForm()">Review on Book</button>
+  <button
+    class="openReviewForm"
+    onclick="toggleForm('form-popup-{{data._id}}')"
+  >
+    Review on Book
+  </button>
 </p>
 
-<div id="form-popup" class="form-popup">
+<div id="form-popup-{{data._id}}" class="form-popup">
   <form
     action="/books/{{data._id}}/review"
     method="POST"
-    id="review-book-form"
+    id="review-book-form-{{data._id}}"
     class="form-container"
   >
     <h3>New Review</h3>
