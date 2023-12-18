@@ -17,7 +17,7 @@
   </form>
 
   {{#each data}}
-  <article class="books-list-item">
+  <article class="books-list-item" id="{{this._id}}">
     <a class="toBookDetails" href="/books/{{this._id}}">{{this.title}}</a>
     <p>Authors:</p>
     {{#if this.authors}}

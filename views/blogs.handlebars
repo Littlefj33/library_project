@@ -25,7 +25,7 @@
   >
 
   {{#each data}}
-  <article class="blog-list-item">
+  <article class="blog-list-item" id="{{this._id}}">
     <a class="toBlogDetails" href="/blogs/{{this._id}}">{{this.title}}</a>
     <p class="author">
       Author: {{this.author_info.firstName}} {{this.author_info.lastName}}
