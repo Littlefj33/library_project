@@ -167,7 +167,7 @@ export const returnBook = async (bookId, user_email_address) => {
       userCollection,
       "emailAddress",
       user_email_address,
-      { _id: 1 }
+      { _id: 1, return_requests: 1 }
     );
   } catch (e) {
     throw "ERROR: Cannot find user";
@@ -185,9 +185,17 @@ export const returnBook = async (bookId, user_email_address) => {
     throw "ERROR: Cannot find book";
   }
 
+  let borrowing = false;
   for (let borrower of bookInfo[0]["current_borrowers"]) {
-    if (borrower.toString() === userId.toString())
-      throw "ERROR: User is not currently borrowing book";
+    if (borrower.toString() === userId.toString()) {
+      borrowing = true;
+    }
+  }
+  if (!borrowing) throw "ERROR: User is not currently borrowing book";
+
+  for (let requests of userInfo[0]["return_requests"]) {
+    if (requests.toString() === bookId)
+      throw "ERROR: User already is returning book";
   }
 
   const updatedUserInfo = await userCollection.findOneAndUpdate(
