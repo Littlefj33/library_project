@@ -18,9 +18,10 @@ function convertToObjectId(doc) {
             doc._id = new ObjectId(doc._id);
         }
         if (doc.comments) {
-            doc.comments.forEach(comment => {
-                if (comment._id) {
-                    comment._id = new ObjectId(comment._id);
+            doc.comments = doc.comments.map(comment => {
+                return {
+                    authorId: new ObjectId(comment._id),
+                    content: comment.content
                 }
             });
         }
