@@ -5,12 +5,14 @@
 <p>Blog: {{data.content}}</p>
 <p>Date Posted: {{data.date_posted}}</p>
 
-<button class="openCommentForm" onclick="toggleForm()">Comment on Event</button>
-<div id="form-popup" class="form-popup">
+<button class="openCommentForm" onclick="toggleForm('form-popup-{{data._id}}')">
+  Comment on Event
+</button>
+<div id="form-popup-{{data._id}}" class="form-popup">
   <form
     action="/blogs/{{data._id}}/comment"
     method="POST"
-    id="comment-blog-form"
+    id="comment-blog-form-{{data._id}}"
     class="form-container"
   >
     <h3>New Comment</h3>

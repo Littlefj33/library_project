@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-function toggleForm() {
+/* function toggleForm() {
   const formElem = document.getElementById("form-popup");
   if (formElem.classList.contains("form-popup")) {
     formElem.classList.remove("form-popup");
@@ -8,4 +8,9 @@ function toggleForm() {
     formElem.classList.remove("show-form");
     formElem.classList.add("form-popup");
   }
+} */
+
+function toggleForm(formId) {
+  const formPopup = document.getElementById(formId);
+  formPopup.classList.toggle("hidden");
 }

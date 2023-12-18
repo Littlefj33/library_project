@@ -1,5 +1,5 @@
 import { dbTool } from "../data/dbTools.js";
-import { books } from "../config/mongoCollections.js";
+import { books, users } from "../config/mongoCollections.js";
 import { Router } from "express";
 import xss from "xss";
 import { addReview, requestBook, approveRequest } from "../data/books.js";
@@ -34,6 +34,47 @@ router.route("/").get(async (req, res) => {
       )
       .toArray();
     if (!booksList) throw "ERROR: Could not get all books";
+
+    const user = req.session.user;
+    const userCollection = await users();
+    let bookIndex = 0;
+    for (const book of booksList) {
+      if (user) {
+        let userInfo = await dbTool(
+          userCollection,
+          "emailAddress",
+          user.emailAddress,
+          { _id: 1 }
+        );
+        let user_requested = false;
+        let user_reviewed = false;
+        for (let borrower of book["current_borrowers"]) {
+          if (borrower.toString() === userInfo[0]["_id"].toString()) {
+            user_requested = true;
+          }
+        }
+        for (let review of book["reviews"]) {
+          if (review["authorId"].toString() === userInfo[0]["_id"].toString()) {
+            user_reviewed = true;
+          }
+        }
+        if (user_requested) {
+          booksList[bookIndex]["user_requested"] = true;
+        } else {
+          booksList[bookIndex]["user_requested"] = false;
+        }
+        if (user_reviewed) {
+          booksList[bookIndex]["user_reviewed"] = true;
+        } else {
+          booksList[bookIndex]["user_reviewed"] = false;
+        }
+      } else {
+        booksList[bookIndex]["user_requested"] = false;
+        booksList[bookIndex]["user_reviewed"] = false;
+      }
+      bookIndex++;
+    }
+
     return res.render("books", { title: "Books", data: booksList });
   } catch (e) {
     return res.status(500).render("error", {
@@ -105,13 +146,49 @@ router.route("/:bookId").get(async (req, res) => {
       comments: 1,
     });
     data = bookData[0];
+    const user = req.session.user;
+    const userCollection = await users();
+    if (user) {
+      let userInfo = await dbTool(
+        userCollection,
+        "emailAddress",
+        user.emailAddress,
+        { _id: 1 }
+      );
+      let user_requested = false;
+      let user_reviewed = false;
+      for (let borrower of data["current_borrowers"]) {
+        if (borrower.toString() === userInfo[0]["_id"].toString()) {
+          user_requested = true;
+        }
+      }
+      for (let review of data["reviews"]) {
+        if (review["authorId"].toString() === userInfo[0]["_id"].toString()) {
+          user_reviewed = true;
+        }
+      }
+      if (user_requested) {
+        data["user_requested"] = true;
+      } else {
+        data["user_requested"] = false;
+      }
+      if (user_reviewed) {
+        data["user_reviewed"] = false;
+      } else {
+        data["user_reviewed"] = false;
+      }
+    } else {
+      data["user_requested"] = false;
+      data["user_reviewed"] = false;
+    }
+
+    return res.render("bookDetails", { title: "Book Info", data });
   } catch (e) {
     return res.status(404).render("error", {
       title: "ERROR Page",
       error: "Page not found",
     });
   }
-  return res.render("bookDetails", { title: "Book Info", data });
 });
 
 router.route("/:bookId/review").post(async (req, res) => {

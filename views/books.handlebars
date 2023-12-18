@@ -12,9 +12,8 @@
       <option value="title">By Title</option>
       <option value="author">By Author</option>
     </select>
-    <div class="alert">{{error}}</div>
-
     <button type="submit">Search</button>
+    <div class="alert">{{error}}</div>
   </form>
 
   {{#each data}}
@@ -33,16 +32,19 @@
     <p>{{this.reviews.length}} reviews</p>
 
     <p>
-      <button class="openReviewForm" onclick="toggleForm()">
+      <button
+        class="openReviewForm"
+        onclick="toggleForm('form-popup-{{this._id}}')"
+      >
         Review on Book
       </button>
     </p>
 
-    <div id="form-popup" class="form-popup">
+    <div id="form-popup-{{this._id}}" class="form-popup">
       <form
         action="/books/{{this._id}}/review"
         method="POST"
-        id="review-book-form"
+        id="review-book-form-{{this._id}}"
         class="form-container"
       >
         <h3>New Review</h3>
