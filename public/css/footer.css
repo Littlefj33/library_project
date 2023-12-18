@@ -33,7 +33,7 @@ body {
   color: black;
 }
 
-.footerData ul li.nav:not(#logoutNav) {
+.footerData ul li.nav:not(#logoutNavFooter) {
   border: 1px solid black;
   border-width: 0 1px 0 0;
 }

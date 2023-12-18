@@ -48,19 +48,19 @@
         class="form-container"
       >
         <h3>New Review</h3>
-        <label for="content">Review:</label>
+        <label for="content-{{this._id}}">Review:</label>
         <textarea
-          id="content"
-          name="content"
+          id="content-{{this._id}}"
+          name="content-{{this._id}}"
           placeholder="Review..."
           required
         ></textarea>
 
-        <label for="rating">Rating (0-5):</label>
+        <label for="rating-{{this._id}}">Rating (0-5):</label>
         <input
           type="number"
-          id="rating"
-          name="rating"
+          id="rating-{{this._id}}"
+          name="rating-{{this._id}}"
           placeholder="Rating..."
           required
         />
@@ -75,7 +75,7 @@
     <form
       action="/books/{{this._id}}/favorite"
       method="POST"
-      id="favorite-book-form"
+      id="favorite-book-form-{{this._id}}"
     >
       <button type="submit">Favorite Book</button>
     </form>
@@ -83,7 +83,7 @@
     <form
       action="/books/{{this._id}}/request"
       method="POST"
-      id="request-book-form"
+      id="request-book-form-{{this._id}}"
     >
       <button type="submit">Request Book</button>
     </form>
@@ -91,7 +91,7 @@
     <form
       action="/books/{{this._id}}/return"
       method="POST"
-      id="return-book-form"
+      id="return-book-form-{{this._id}}"
     >
       <button type="submit">Return Book</button>
     </form>
