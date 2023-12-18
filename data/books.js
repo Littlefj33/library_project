@@ -282,7 +282,7 @@ export const favoriteBook = async (bookId, user_email_address) => {
   // Check if the book exists
   const book = await dbTool(bookCollection, "_id", bookId, { _id: 1 });
   if (!book) {
-    throw new "Book not found"();
+    throw "Book not found";
   }
 
   // Check if the user exists and update their favorite_books list
@@ -292,11 +292,11 @@ export const favoriteBook = async (bookId, user_email_address) => {
   );
 
   if (!updateResult.matchedCount) {
-    throw new "User not found"();
+    throw "User not found";
   }
 
   if (!updateResult.modifiedCount) {
-    throw new "Book already in favorites or update failed"();
+    throw "Book already in favorites or update failed";
   }
 
   return { favoritedBook: true };
