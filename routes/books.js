@@ -1,6 +1,7 @@
 import { dbTool } from "../data/dbTools.js";
 import { books, users } from "../config/mongoCollections.js";
 import { Router } from "express";
+import xss from "xss";
 import { addReview, requestBook, approveRequest } from "../data/books.js";
 const router = Router();
 
@@ -79,6 +80,44 @@ router.route("/").get(async (req, res) => {
     return res.status(500).render("error", {
       title: "ERROR Page",
       error: "Internal Server Error",
+    });
+  }
+});
+
+router.route("/updateBook").post(async (req, res) => {
+  if (!req.session.user || req.session.user.role !== 'admin') {
+    return res.status(403).render("error", {
+      title: "ERROR Page",
+      error: "Forbidden",
+    });
+  }
+  let { isbn, stock, quality } = req.body;
+  isbn = xss(isbn);
+  stock = xss(stock);
+  quality = xss(quality);
+  if (!isbn || isNaN(stock) || !['good', 'fair', 'bad'].includes(quality)) {
+    return res.status(400).render("error", {
+      title: "ERROR Page",
+      error: "Invalid input",
+    });
+  }
+  try {
+    const bookCollection = await books();
+    const updateInfo = await bookCollection.updateOne(
+      { isbn: isbn },
+      { $set: { current_stock: parseInt(stock), condition_status: quality } }
+    );
+
+    if (updateInfo.modifiedCount === 0) {
+      throw new Error("Book update failed or no changes made.");
+    }
+
+    // Redirect or send a response upon successful update
+    res.redirect('/admin'); // Redirect to a confirmation page or back to the form
+  } catch (error) {
+    res.status(500).render("error", {
+      title: "ERROR Page",
+      error: error.message || "Internal Server Error",
     });
   }
 });
@@ -219,8 +258,10 @@ router.route("/admin/approveBookRequest").post(async (req, res) => {
     });
   } else {
     try {
-      const requesterEmail = req.body.requesterEmail.trim().LowerCase();
-      const bookId = req.body.bookId.trim();
+      let requesterEmail = req.body.requesterEmail.trim().toLowerCase();
+      let bookId = req.body.bookId.trim();
+      bookId = xss(bookId);
+      requesterEmail = xss(requesterEmail);
       const results = await approveRequest(bookId, requesterEmail);
       if (results.approved === true) {
         return res.redirect(`/admin`);
