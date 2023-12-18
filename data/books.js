@@ -49,7 +49,7 @@ export const addReview = async (
 
   const authorId = authorInfo[0]["_id"];
 
-  for (let review of bookData["reviews"]) {
+  for (let review of bookData[0]["reviews"]) {
     if (review["authorId"].toString() === authorId.toString())
       throw "ERROR: User already made a review";
   }
@@ -258,4 +258,76 @@ export const approveRequest = async (bookId, user_email_address) => {
   );
   if (!updatedBookInfo) throw "ERROR: Book update failed";
   return { approved: true };
+};
+
+export const favoriteBook = async (bookId, user_email_address) => {
+  if (
+    user_email_address === undefined ||
+    typeof user_email_address !== "string" ||
+    user_email_address.trim().length === 0
+  )
+    throw "Author email missing or invalid";
+
+  bookId = bookId.trim();
+  if (!ObjectId.isValid(bookId)) throw "ERROR: Invalid object ID";
+
+  user_email_address = user_email_address.toLowerCase().trim();
+
+  const bookCollection = await books();
+  const userCollection = await users();
+
+  let userInfo;
+  try {
+    userInfo = await dbTool(
+      userCollection,
+      "emailAddress",
+      user_email_address,
+      { _id: 1 }
+    );
+  } catch (e) {
+    throw "ERROR: Cannot find user";
+  }
+  const userId = userInfo[0]["_id"];
+
+  let bookInfo;
+  try {
+    bookInfo = await dbTool(bookCollection, "_id", bookId, {
+      _id: 1,
+      current_stock: 1,
+      current_borrowers: 1,
+    });
+  } catch (e) {
+    throw "ERROR: Cannot find user";
+  }
+
+  for (let borrower of bookInfo[0]["current_borrowers"]) {
+    if (borrower.toString() === userInfo[0]["_id"].toString())
+      throw "ERROR: User already is borrowing book";
+  }
+
+  if (bookInfo[0]["current_stock"] > 0) {
+    const updatedBookInfo = await bookCollection.findOneAndUpdate(
+      { _id: new ObjectId(bookId) },
+      { $inc: { current_stock: -1 } },
+      { returnDocument: "after" }
+    );
+    if (!updatedBookInfo) throw "ERROR: User update failed";
+
+    const updatedBookInfo2 = await bookCollection.findOneAndUpdate(
+      { _id: new ObjectId(bookId) },
+      { $push: { current_borrowers: userId } },
+      { returnDocument: "after" }
+    );
+    if (!updatedBookInfo2) throw "ERROR: User update failed";
+
+    const updatedUserInfo = await userCollection.findOneAndUpdate(
+      { _id: userId },
+      { $push: { return_requests: new ObjectId(bookId) } },
+      { returnDocument: "after" }
+    );
+    if (!updatedUserInfo) throw "ERROR: User update failed";
+  } else {
+    throw "ERROR: Book currently out of stock";
+  }
+  return { insertedBook: true };
 };
