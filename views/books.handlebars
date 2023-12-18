@@ -87,7 +87,15 @@
     >
       <button type="submit">Request Book</button>
     </form>
-    {{/unless}}
+    {{/unless}} {{#if this.user_requested}}
+    <form
+      action="/books/{{this._id}}/return"
+      method="POST"
+      id="return-book-form"
+    >
+      <button type="submit">Return Book</button>
+    </form>
+    {{/if}}
   </article>
   {{/each}}
 </section>
