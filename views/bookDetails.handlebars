@@ -75,7 +75,15 @@
   {{/if}}
 </div>
 
-{{#unless data.user_requested}}
+{{#unless data.user_favorited}}
+<form
+  action="/books/{{data._id}}/favorite"
+  method="POST"
+  id="favorite-book-form"
+>
+  <button type="submit">Favorite Book</button>
+</form>
+{{/unless}} {{#unless data.user_requested}}
 <form action="/books/{{data._id}}/request" method="POST" id="request-book-form">
   <button type="submit">Request Book</button>
 </form>

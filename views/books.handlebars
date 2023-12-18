@@ -71,7 +71,15 @@
       </form>
     </div>
 
-    {{#unless this.user_requested}}
+    {{#unless this.user_favorited}}
+    <form
+      action="/books/{{this._id}}/favorite"
+      method="POST"
+      id="favorite-book-form"
+    >
+      <button type="submit">Favorite Book</button>
+    </form>
+    {{/unless}} {{#unless this.user_requested}}
     <form
       action="/books/{{this._id}}/request"
       method="POST"
