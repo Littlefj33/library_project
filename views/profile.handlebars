@@ -4,16 +4,47 @@
 skeleton --}}
 
 <p class="userInfo">User Information</p>
-<form method="GET" action="/home/profile">
-  <ul>
-    <li>First Name: {{ user.firstName }}</li>
-    <li>Last Name: {{ user.lastName }}</li>
-    <li>Date of Birth: {{ user.dateOfBirth }}</li>
-    <li>Phone Number: {{ user.phoneNumber }}</li>
-    <li>Email: {{ user.emailAddress }}</li>
-    <li>Role: {{ user.role }}</li>
-  </ul>
-</form>
+<ul>
+  <li>First Name: {{ user.firstName }}</li>
+  <li>Last Name: {{ user.lastName }}</li>
+  <li>Date of Birth: {{ user.dateOfBirth }}</li>
+  <li>Phone Number: {{ user.phoneNumber }}</li>
+  <li>Email: {{ user.emailAddress }}</li>
+  <li>Role: {{ user.role }}</li>
+  <li>Date Joined: {{ user.date_joined }}</li>
+  <li>
+    Favorited Books:
+    <ul>
+      {{#each user.favorite_books}}
+      <li>{{this}}</li>
+      {{/each}}
+    </ul>
+  </li>
+  <li>
+    Current Checked Out Books:
+    <ul>
+      {{#each user.current_checked_out_books}}
+      <li>{{this}}</li>
+      {{/each}}
+    </ul>
+  </li>
+  <li>
+    Checked Out Books:
+    <ul>
+      {{#each user.checked_out_books}}
+      <li>{{this}}</li>
+      {{/each}}
+    </ul>
+  </li>
+  <li>
+    Return Requests:
+    <ul>
+      {{#each user.return_requests}}
+      <li>{{this}}</li>
+      {{/each}}
+    </ul>
+  </li>
+</ul>
 
 {{#if admin}}
 <a href="/admin">Link to Admin Page</a>
