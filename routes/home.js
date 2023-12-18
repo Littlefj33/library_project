@@ -3,7 +3,9 @@ const router = Router();
 import * as users_data from "../data/users.js";
 import { users } from "../config/mongoCollections.js";
 import { dbTool } from "../data/dbTools.js";
-import { getBookName, getUserName } from "../helpers.js";
+import { getBookName, getUserName, getUserEmail } from "../helpers.js";
+import { approveRequest } from "../data/books.js";
+import xss from "xss";
 
 router.route("/").get(async (req, res) => {
   return res.render("home", { title: "Home" });
@@ -145,13 +147,7 @@ router.route("/admin").get(async (req, res) => {
       returnBookRequests = await userCollection
         .find(
           { return_requests: { $exists: true, $not: { $size: 0 } } },
-          { _id: 1, return_requests: 1 }
-        )
-        .toArray();
-      bookApprovalRequests = await userCollection
-        .find(
-          { requested_books: { $exists: true, $not: { $size: 0 } } },
-          { _id: 1, " requested_books": 1 }
+          { projection: { _id: 1, return_requests: 1 } }
         )
         .toArray();
     } catch (e) {
@@ -160,12 +156,17 @@ router.route("/admin").get(async (req, res) => {
         error: "Internal Server Error",
       });
     }
-    returnBookRequests = returnBookRequests.map(async (field) => {
-      field._id = await getUserName(field._id);
-      field.return_requests.map(async (book) => {
-        return await getBookName(book);
-      });
-    });
+    returnBookRequests = await Promise.all(returnBookRequests.map(async (requester) => {
+      const userName = await getUserName(requester._id.toString());
+      const userEmail = await getUserEmail(requester._id.toString());
+      const books = await Promise.all(requester.return_requests.map(async (bookId) => {
+        const bookTitle = await getBookName(bookId.toString());
+        return { _id: bookId, title: bookTitle };
+      }));
+
+      return { _id: requester._id, user: userName, emailAddress: userEmail, return_requests: books };
+    }));
+
     return res.render("admin", {
       title: "Admin",
       bookRequests: bookApprovalRequests,
@@ -183,7 +184,11 @@ router.route("/admin/processReturn").post(async (req, res) => {
       .status(403)
       .render("error", { title: "ERROR Page", error: "Access Denied" });
   } else {
-    const { bookId, userEmailAddress } = req.body;
+    let bookId = req.body.bookId;
+    let userEmailAddress = req.body.requesterEmail;
+    bookId = xss(bookId).trim();
+    userEmailAddress = xss(userEmailAddress).trim().toLowerCase();
+    bookId = (typeof bookId === 'string') ? bookId : bookId.toString();
     try {
       const results = await approveRequest(bookId, userEmailAddress);
       if (results.approved === true) {
