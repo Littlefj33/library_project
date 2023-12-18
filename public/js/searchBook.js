@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchForm = document.querySelector('.search-form');
     const booksSection = document.querySelector('.books-section');
     const booksListItems = booksSection.querySelectorAll('.books-list-item');
+    let errorContainer = $('#error-container')
+    let errorText = errorContainer.find('.text-goes-here')
     
     booksListItems.forEach(function (bookItem) {
         bookItem.style.display = 'none';
@@ -9,8 +11,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     searchForm.addEventListener('submit', function (event) {
         event.preventDefault();
+        errorContainer.hide()
 
-        const query = document.querySelector('input[name="search"]').value.trim().toLowerCase();
+        const query = document.querySelector('input[name="search"]').value.trim()
+        if (!query || query.length <= 1) {
+            errorText.text('Error: The search term should at least be 2 characters.')
+            errorContainer.show()
+            return
+        }
+        query = query.toLowerCase();
         const filter = document.querySelector('select[name="filter"]').value;
 
         filterBooks(query, filter);
