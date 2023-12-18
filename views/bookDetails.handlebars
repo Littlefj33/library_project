@@ -70,8 +70,10 @@
   {{/if}}
 </div>
 
+{{#unless data.user_requested}}
 <form action="/books/{{data._id}}/request" method="POST" id="request-book-form">
   <button type="submit">Request Book</button>
 </form>
+{{/unless}}
 
 <a id="backToBooks" href="/books">Back to Books</a>

@@ -57,9 +57,11 @@
       </form>
     </div>
 
+    {{#unless this.user_joined}}
     <form action="/events/{{this._id}}/join" method="POST" id="join-event-form">
       <button type="submit">Join Event</button>
     </form>
+    {{/unless}}
   </article>
   {{/each}}
 </section>

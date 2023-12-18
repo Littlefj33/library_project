@@ -48,8 +48,10 @@
   {{/if}}
 </div>
 
+{{#unless data.user_joined}}
 <form action="/events/{{data._id}}/join" method="POST" id="join-event-form">
   <button type="submit">Join Event</button>
 </form>
+{{/unless}}
 
 <a id="backToEvents" href="/events">Back to Events</a>
