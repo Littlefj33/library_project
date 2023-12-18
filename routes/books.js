@@ -124,7 +124,7 @@ router.route("/").get(async (req, res) => {
       bookIndex++;
     }
 
-    return res.render("books", { title: "Books", data: booksList });
+    return res.render("books", { title: "Books", data: booksList, partial: "search" });
   } catch (e) {
     return res.status(500).render("error", {
       title: "ERROR Page",

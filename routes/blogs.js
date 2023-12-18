@@ -37,7 +37,7 @@ router.route("/").get(async (req, res) => {
       blogIndex++;
     }
 
-    return res.render("blogs", { title: "Blogs", data: blogList });
+    return res.render("blogs", { title: "Blogs", data: blogList, partial: "search" });
   } catch (e) {
     return res.status(500).render("error", {
       title: "ERROR Page",
