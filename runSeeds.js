@@ -1,5 +1,5 @@
-import { booksAuthorsSeed } from "./booksAuthorsSeed.js";
-import { seedData } from "./seedFunction.js";
+import { booksAuthorsSeed } from "./seeds/booksAuthorsSeed.js";
+import { seedData } from "./seeds/seedFunction.js";
 
 try {
   await booksAuthorsSeed();

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { books, authors } from "./config/mongoCollections.js";
+import { books, authors } from "../config/mongoCollections.js";
 
 export async function booksAuthorsSeed() {
   //Caution! This function will drop the books database first
