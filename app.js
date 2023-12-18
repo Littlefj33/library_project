@@ -8,13 +8,12 @@ import configRoutes from "./routes/index.js";
 import { getUserName, getBookName, getUserEmail } from "./helpers.js";
 import Handlebars from "handlebars";
 
-
 const app = express();
 
-Handlebars.registerHelper("getAuthor", getUserName);
-Handlebars.registerHelper("getReturnee", getUserEmail);
-Handlebars.registerHelper("getOrganizer", getUserName);
-Handlebars.registerHelper("getBookTitle", getBookName);
+Handlebars.registerHelper("getAuthor", await getUserName);
+Handlebars.registerHelper("getReturnee", await getUserEmail);
+Handlebars.registerHelper("getOrganizer", await getUserName);
+Handlebars.registerHelper("getBookTitle", await getBookName);
 Handlebars.registerHelper("join", function (array, separator) {
   return array.join(separator);
 });
