@@ -23,7 +23,7 @@ router.route("/").get(async (req, res) => {
       )
       .toArray();
     if (!blogList) throw "ERROR: Could not get all blogs";
-    return res.render("blogs", { title: "Blogs", data: blogList });
+    return res.render("blogs", { title: "Blogs", data: blogList, partial:"search" });
   } catch (e) {
     return res.status(500).render("error", {
       title: "ERROR Page",
