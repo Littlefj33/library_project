@@ -24,7 +24,7 @@
   >
 
   {{#each data}}
-  <article class="event-list-item">
+  <article class="event-list-item" id="{{this._id}}">
     <a class="toEventDetails" href="/events/{{this._id}}">{{this.title}}</a>
     <p class="date-time">{{this.date_time}}</p>
     <p class="location">
