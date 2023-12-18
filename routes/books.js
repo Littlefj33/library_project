@@ -139,6 +139,7 @@ router.route("/updateBook").post(async (req, res) => {
   isbn = xss(isbn);
   stock = xss(stock);
   quality = xss(quality);
+  stock = stock === "" || parseInt(stock) < 0 ? 0 : parseInt(stock);
   if (!isbn || isNaN(stock) || !["good", "fair", "bad"].includes(quality)) {
     return res.status(400).render("error", {
       title: "ERROR Page",
@@ -149,7 +150,10 @@ router.route("/updateBook").post(async (req, res) => {
     const bookCollection = await books();
     const updateInfo = await bookCollection.updateOne(
       { isbn: isbn },
-      { $set: { current_stock: parseInt(stock), condition_status: quality } }
+      {
+        $set: { condition_status: quality },
+        $inc: { total_stock: parseInt(stock), current_stock: parseInt(stock) }
+      }
     );
 
     if (updateInfo.modifiedCount === 0) {
@@ -354,7 +358,7 @@ router.route("/:bookId/return").post(async (req, res) => {
   }
 });
 
-router.route("/admin/approveBookRequest").post(async (req, res) => {
+router.route("/admin/approveReturnRequest").post(async (req, res) => {
   const user = req.session.user;
   if (!user) {
     return res.redirect("/login");
@@ -365,9 +369,10 @@ router.route("/admin/approveBookRequest").post(async (req, res) => {
     });
   } else {
     try {
-      let requesterEmail = req.body.requesterEmail.trim().toLowerCase();
-      let bookId = req.body.bookId.trim();
-      bookId = xss(bookId);
+      let requesterEmail = xss(req.body.requesterEmail).trim().toLowerCase();
+      let bookId = xss(req.body.bookId);
+      bookId =
+        bookId = xss(bookId);
       requesterEmail = xss(requesterEmail);
       const results = await approveRequest(bookId, requesterEmail);
       if (results.approved === true) {

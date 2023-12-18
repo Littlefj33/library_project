@@ -5,12 +5,14 @@ export const getUserName = async (id) => {
   if (!id || !ObjectId.isValid(id)) {
     throw new Error("getUser: not a valid ID provided!");
   }
+  id = (typeof id === 'string') ? new ObjectId(id) : id;
   const userCollection = await users();
-  const queryResult = await userCollection.findOne({ _id: id });
-  if (queryResult.count === 0) {
+  const queryResult = await userCollection.findOne({ _id: id }, { projection: { firstName: 1, lastName: 1 } });
+  if (queryResult === null) {
+    console.log(id)
     throw new Error("getUser: No User Found!");
   }
-  const name = queryResult.first_name + " " + queryResult.last_name;
+  const name = queryResult.firstName + " " + queryResult.lastName;
   return name;
 };
 
@@ -18,21 +20,25 @@ export const getUserEmail = async (id) => {
   if (!id || !ObjectId.isValid(id)) {
     throw new Error("getUser: not a valid ID provided!");
   }
+  // Convert string back to ObjectId if necessary
+  id = (typeof id === 'string') ? new ObjectId(id) : id;
   const userCollection = await users();
   const queryResult = await userCollection.findOne({ _id: id });
-  if (queryResult.count === 0) {
+  if (queryResult === null) {
     throw new Error("getUser: No User Found!");
   }
-  return queryResult.email;
+  return queryResult.emailAddress;
 };
 
 export const getBookName = async (bookId) => {
+  // Convert string back to ObjectId if necessary
+  bookId = (typeof bookId === 'string') ? new ObjectId(bookId) : bookId;
   if (!bookId || !ObjectId.isValid(bookId)) {
     throw new Error("getBookName: not a valid ID provided!");
   }
   const bookCollection = await books();
   const queryResult = await bookCollection.findOne({ _id: bookId });
-  if (queryResult.count === 0) {
+  if (queryResult === null) {
     throw new Error("getBookName: No Book Found!");
   }
   return queryResult.title;

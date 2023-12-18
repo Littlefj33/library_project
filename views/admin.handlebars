@@ -5,13 +5,17 @@
     <h2>Returned Book Requests</h2>
     {{#each returnedBookRequests}}
     <div>
-        <h3>User: {{this._id}}</h3>
+        <h3>User: {{this.user}} Email Address: {{this.emailAddress}}</h3>
         <ul>
             {{#each this.return_requests}}
             <li>
-                <p>Book: {{getBookTitle this}}</p>
+                <p>Book: {{this.title}}</p>
                 <!-- Add a button or link to process the return for each book -->
-                <button onclick="processReturn('{{this}}', '{{../_id}}')">Process Return</button>
+                <form action="/admin/processReturn" method="POST">
+                    <input type="hidden" name="bookId" value="{{this._id}}" />
+                    <input type="hidden" name="requesterEmail" value="{{../emailAddress}}" />
+                    <button type="submit">Process Return</button>
+                </form>
             </li>
             {{/each}}
         </ul>
@@ -21,7 +25,7 @@
     {{/each}}
 </section>
 
-<!-- Approving Book Section -->
+{{!-- <!-- Approving Book Section -->
 <section>
     <h2>Approve book requests:</h2>
     {{#each bookApprovalRequests}}
@@ -44,16 +48,16 @@
     {{else}}
     <p>No book requests.</p>
     {{/each}}
-</section>
+</section> --}}
 
 <!-- Search and Update Section -->
 <section>
     <h2>Search and Update Book</h2>
-    <form id="searchForm" action="/updateBook" method="POST">
+    <form id="searchForm" action="/books/updateBook" method="POST">
         <label for="isbn">ISBN:</label>
         <input type="text" id="isbn" name="isbn" required>
 
-        <label for="stock">Stock:</label>
+        <label for="stock">Inc Stock:</label>
         <input type="number" id="stock" name="stock" min="0">
 
         <label for="quality">Quality:</label>
@@ -66,4 +70,5 @@
         <button type="submit">Update Book</button>
     </form>
 </section>
+{{!-- Ajax Script --}}
 <script src="/public/js/processReturn.js"></script>

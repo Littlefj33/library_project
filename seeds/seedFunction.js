@@ -11,7 +11,7 @@ import {
 } from "../data/books.js";
 
 export async function seedData() {
-  const emailAddress1 = "test1@gamil.com";
+  const emailAddress1 = "test1@gmail.com";
   const emailAddress2 = "test2@gmail.com";
   const password = "Test1234!";
   const userCollection = await users();
