@@ -1,9 +1,9 @@
-import { booksAuthorsSeed } from "./seed/booksAuthorsSeed.js";
-import { usersBlogsEventsSeed } from "./seed/seedFunction.js";
+import { booksAuthorsSeed } from "./booksAuthorsSeed.js";
+import { seedData } from "./seedFunction.js";
 
 try {
   await booksAuthorsSeed();
-  await usersBlogsEventsSeed();
+  await seedData();
   console.log("COMPLETE");
   process.exit(0);
 } catch (e) {

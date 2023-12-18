@@ -1,4 +1,4 @@
-import { users, blogs, events } from "../config/mongoCollections.js"
+import { users, blogs, events } from "./config/mongoCollections.js"
 import { readFile } from 'fs/promises';
 import { ObjectId } from 'mongodb';
 
@@ -86,18 +86,21 @@ export async function usersBlogsEventsSeed() { // add the parameter bookIds if w
         throw "Error: inserting seed content failed!"
     }
 }
-// const booksId = {
-//     insertedIds: {
-//         "0": new ObjectId("60a0f7d6e1e9e3b4e8f1b0a1"),
-//         "1": new ObjectId("60a0f7d6e1e9e3b4e8f1b0a2"),
-//         "2": new ObjectId("60a0f7d6e1e9e3b4e8f1b0a3"),
-//         "3": new ObjectId("60a0f7d6e1e9e3b4e8f1b0a4"),
-//         "4": new ObjectId("60a0f7d6e1e9e3b4e8f1b0a5"),
-//         "5": new ObjectId("60a0f7d6e1e9e3b4e8f1b0a6"),
-//         "6": new ObjectId("60a0f7d6e1e9e3b4e8f1b0a7"),
-//         "7": new ObjectId("60a0f7d6e1e9e3b4e8f1b0a8"),
-//         "8": new ObjectId("60a0f7d6e1e9e3b4e8f1b0a9"),
-//         "9": new ObjectId("60a0f7d6e1e9e3b4e8f1b0aa"),
-//     }
-// };
-// await usersBlogsEventsSeed(booksId).catch(console.error).then(() => { console.log("Done seeding database"); process.exit(0); });
+const booksId = {
+    insertedIds: {
+        "0": new ObjectId("60a0f7d6e1e9e3b4e8f1b0a1"),
+        "1": new ObjectId("60a0f7d6e1e9e3b4e8f1b0a2"),
+        "2": new ObjectId("60a0f7d6e1e9e3b4e8f1b0a3"),
+        "3": new ObjectId("60a0f7d6e1e9e3b4e8f1b0a4"),
+        "4": new ObjectId("60a0f7d6e1e9e3b4e8f1b0a5"),
+        "5": new ObjectId("60a0f7d6e1e9e3b4e8f1b0a6"),
+        "6": new ObjectId("60a0f7d6e1e9e3b4e8f1b0a7"),
+        "7": new ObjectId("60a0f7d6e1e9e3b4e8f1b0a8"),
+        "8": new ObjectId("60a0f7d6e1e9e3b4e8f1b0a9"),
+        "9": new ObjectId("60a0f7d6e1e9e3b4e8f1b0aa"),
+    }
+};
+
+export async function seedData() {
+    await usersBlogsEventsSeed(booksId).catch(console.error).then(() => { console.log("Done seeding database"); process.exit(0); });
+}
