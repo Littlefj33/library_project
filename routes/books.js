@@ -11,9 +11,35 @@ import {
 } from "../data/books.js";
 const router = Router();
 
-router
-  .route("/")
-  .get(async (req, res) => {
+router.route("/").get(async (req, res) => {
+  const booksCollection = await books();
+  let booksList = await booksCollection
+    .find(
+      {},
+      {
+        projection: {
+          _id: 1,
+          title: 1,
+          authors: 1,
+          publication_date: 1,
+          summary: 1,
+          language: 1,
+          genres: 1,
+          page_count: 1,
+          isbn: 1,
+          condition_status: 1,
+          liability_cost: 1,
+          total_stock: 1,
+          current_stock: 1,
+          current_borrowers: 1,
+          reviews: 1,
+          comments: 1,
+        },
+      }
+    )
+    .toArray();
+  if (!booksList) throw "ERROR: Could not get all books";
+  try {
     const booksCollection = await books();
     let booksList = await booksCollection
       .find(
@@ -41,117 +67,71 @@ router
       )
       .toArray();
     if (!booksList) throw "ERROR: Could not get all books";
-    try {
-      const booksCollection = await books();
-      let booksList = await booksCollection
-        .find(
-          {},
-          {
-            projection: {
-              _id: 1,
-              title: 1,
-              authors: 1,
-              publication_date: 1,
-              summary: 1,
-              language: 1,
-              genres: 1,
-              page_count: 1,
-              isbn: 1,
-              condition_status: 1,
-              liability_cost: 1,
-              total_stock: 1,
-              current_stock: 1,
-              current_borrowers: 1,
-              reviews: 1,
-              comments: 1,
-            },
-          }
-        )
-        .toArray();
-      if (!booksList) throw "ERROR: Could not get all books";
 
-      const user = req.session.user;
-      const userCollection = await users();
-      let bookIndex = 0;
-      for (const book of booksList) {
-        if (user) {
-          let userInfo = await dbTool(
-            userCollection,
-            "emailAddress",
-            user.emailAddress,
-            { _id: 1, favorite_books: 1 }
-          );
-          let user_requested = false;
-          let user_reviewed = false;
-          let user_favorited = false;
-          for (let borrower of book["current_borrowers"]) {
-            if (borrower.toString() === userInfo[0]["_id"].toString()) {
-              user_requested = true;
-            }
+    const user = req.session.user;
+    const userCollection = await users();
+    let bookIndex = 0;
+    for (const book of booksList) {
+      if (user) {
+        let userInfo = await dbTool(
+          userCollection,
+          "emailAddress",
+          user.emailAddress,
+          { _id: 1, favorite_books: 1 }
+        );
+        let user_requested = false;
+        let user_reviewed = false;
+        let user_favorited = false;
+        for (let borrower of book["current_borrowers"]) {
+          if (borrower.toString() === userInfo[0]["_id"].toString()) {
+            user_requested = true;
           }
-          for (let review of book["reviews"]) {
-            if (
-              review["authorId"].toString() === userInfo[0]["_id"].toString()
-            ) {
-              user_reviewed = true;
-            }
+        }
+        for (let review of book["reviews"]) {
+          if (review["authorId"].toString() === userInfo[0]["_id"].toString()) {
+            user_reviewed = true;
           }
+        }
 
-          for (let favoriteBook of userInfo[0]["favorite_books"]) {
-            if (favoriteBook.toString() === book["_id"].toString()) {
-              user_favorited = true;
-            }
+        for (let favoriteBook of userInfo[0]["favorite_books"]) {
+          if (favoriteBook.toString() === book["_id"].toString()) {
+            user_favorited = true;
           }
+        }
 
-          if (user_requested) {
-            booksList[bookIndex]["user_requested"] = true;
-          } else {
-            booksList[bookIndex]["user_requested"] = false;
-          }
-
-          if (user_reviewed) {
-            booksList[bookIndex]["user_reviewed"] = true;
-          } else {
-            booksList[bookIndex]["user_reviewed"] = false;
-          }
-
-          if (user_favorited) {
-            booksList[bookIndex]["user_favorited"] = true;
-          } else {
-            booksList[bookIndex]["user_favorited"] = false;
-          }
+        if (user_requested) {
+          booksList[bookIndex]["user_requested"] = true;
         } else {
           booksList[bookIndex]["user_requested"] = false;
+        }
+
+        if (user_reviewed) {
+          booksList[bookIndex]["user_reviewed"] = true;
+        } else {
           booksList[bookIndex]["user_reviewed"] = false;
         }
-        bookIndex++;
+
+        if (user_favorited) {
+          booksList[bookIndex]["user_favorited"] = true;
+        } else {
+          booksList[bookIndex]["user_favorited"] = false;
+        }
+      } else {
+        booksList[bookIndex]["user_requested"] = false;
+        booksList[bookIndex]["user_reviewed"] = false;
+        booksList[bookIndex]["user_favorited"] = false;
       }
-
-      return res.render("books", { title: "Books", data: booksList });
-    } catch (e) {
-      return res.status(500).render("error", {
-        title: "ERROR Page",
-        error: "Internal Server Error",
-      });
-    }
-  })
-  .post(async (req, res) => {
-    const bookId = xss(req.body.bookId);
-    const userEmail = xss(req.body.userEmail);
-
-    if (!bookId || !userEmail) {
-      return res
-        .status(400)
-        .render("error", { error: "Book ID and user email are required" });
+      bookIndex++;
     }
 
-    try {
-      await returnBook(bookId, userEmail);
-      return res.status(200).json({ message: "Book returned successfully" });
-    } catch (error) {
-      return res.status(500).render("error", { error: error.toString() });
-    }
-  });
+    return res.render("books", { title: "Books", data: booksList });
+  } catch (e) {
+    return res.status(500).render("error", {
+      title: "ERROR Page",
+      error: "Internal Server Error",
+    });
+  }
+});
 
 router.route("/updateBook").post(async (req, res) => {
   if (!req.session.user || req.session.user.role !== "admin") {
@@ -222,10 +202,11 @@ router.route("/:bookId").get(async (req, res) => {
         userCollection,
         "emailAddress",
         user.emailAddress,
-        { _id: 1 }
+        { _id: 1, favorite_books: 1 }
       );
       let user_requested = false;
       let user_reviewed = false;
+      let user_favorited = false;
       for (let borrower of data["current_borrowers"]) {
         if (borrower.toString() === userInfo[0]["_id"].toString()) {
           user_requested = true;
@@ -234,6 +215,12 @@ router.route("/:bookId").get(async (req, res) => {
       for (let review of data["reviews"]) {
         if (review["authorId"].toString() === userInfo[0]["_id"].toString()) {
           user_reviewed = true;
+        }
+      }
+
+      for (let favoriteBook of userInfo[0]["favorite_books"]) {
+        if (favoriteBook.toString() === bookId) {
+          user_favorited = true;
         }
       }
       if (user_requested) {
@@ -246,9 +233,15 @@ router.route("/:bookId").get(async (req, res) => {
       } else {
         data["user_reviewed"] = false;
       }
+      if (user_favorited) {
+        data["user_favorited"] = true;
+      } else {
+        data["user_favorited"] = false;
+      }
     } else {
       data["user_requested"] = false;
       data["user_reviewed"] = false;
+      data["user_favorited"] = false;
     }
 
     return res.render("bookDetails", { title: "Book Info", data });
@@ -325,6 +318,31 @@ router.route("/:bookId/favorite").post(async (req, res) => {
       const bookId = req.params.bookId.trim();
       const results = await favoriteBook(bookId, user.emailAddress);
       if (results.favoritedBook === true) {
+        return res.redirect(`/books/${bookId}`);
+      } else {
+        return res.status(500).render("error", {
+          title: "ERROR Page",
+          error: "Internal Server Error",
+        });
+      }
+    } catch (e) {
+      return res.status(400).render("error", {
+        title: "ERROR Page",
+        error: e,
+      });
+    }
+  }
+});
+
+router.route("/:bookId/return").post(async (req, res) => {
+  const user = req.session.user;
+  if (!user) {
+    return res.redirect("/login");
+  } else {
+    try {
+      const bookId = req.params.bookId.trim();
+      const results = await returnBook(bookId, user.emailAddress);
+      if (results.insertedBook === true) {
         return res.redirect(`/books/${bookId}`);
       } else {
         return res.status(500).render("error", {
