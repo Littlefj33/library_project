@@ -3,6 +3,7 @@ const router = Router();
 import * as users_data from "../data/users.js";
 import { users } from "../config/mongoCollections.js";
 import { dbTool } from "../data/dbTools.js";
+import { getBookName, getUserName } from "../helpers.js";
 
 router.route("/").get(async (req, res) => {
   return res.render("home", { title: "Home" });
@@ -157,7 +158,12 @@ router.route("/admin").get(async (req, res) => {
         error: "Internal Server Error",
       });
     }
-    console.log(returnBookRequests);
+    returnBookRequests = returnBookRequests.map(async (field) => {
+      field._id = await getUserName(field._id);
+      field.return_requests.map(async (book) => {
+        book.book_name = await getBookName(book.book_id);
+      });
+    })
     return res.render("admin", {
       title: "Admin",
       bookRequests: bookApprovalRequests,

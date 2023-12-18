@@ -5,13 +5,13 @@
     <h2>Returned Book Requests</h2>
     {{#each returnedBookRequests}}
     <div>
-        <h3>User: {{getReturnee this._id}}</h3>
+        <h3>User: {{this._id}}</h3>
         <ul>
             {{#each this.return_requests}}
             <li>
                 <p>Book: {{getBookTitle this}}</p>
                 <!-- Add a button or link to process the return for each book -->
-                <button onclick="processReturn('{{this}}', '{{getReturnee ../_id}}')">Process Return</button>
+                <button onclick="processReturn('{{this}}', '{{../_id}}')">Process Return</button>
             </li>
             {{/each}}
         </ul>
@@ -26,15 +26,15 @@
     <h2>Approve book requests:</h2>
     {{#each bookApprovalRequests}}
     <div>
-        <h3>User: {{getUser this._id}}</h3>
+        <h3>User: {{this._id}}</h3>
         <ul>
             {{#each this.requested_books}}
             <li>
-                <p>Book: {{getBookTitle this}}</p>
+                <p>Book: {{this}}</p>
                 <!-- Add a button or link to approve each book -->
                 <form action="/admin/approveBookRequest" method="POST">
                     <input type="hidden" name="bookId" value="{{this}}" />
-                    <input type="hidden" name="requesterEmail" value="{{getReturnee ../_id}}" />
+                    <input type="hidden" name="requesterEmail" value="{{../_id}}" />
                     <button type="submit">Approve Request</button>
                 </form>
             </li>
