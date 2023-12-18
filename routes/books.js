@@ -74,7 +74,6 @@ router.route("/").get(async (req, res) => {
       bookIndex++;
     }
 
-    console.log(booksList[0]);
     return res.render("books", { title: "Books", data: booksList });
   } catch (e) {
     return res.status(500).render("error", {
@@ -144,7 +143,6 @@ router.route("/:bookId").get(async (req, res) => {
       data["user_reviewed"] = false;
     }
 
-    console.log(data);
     return res.render("bookDetails", { title: "Book Info", data });
   } catch (e) {
     return res.status(404).render("error", {
