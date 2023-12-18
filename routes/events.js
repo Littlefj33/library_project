@@ -75,6 +75,7 @@ router.route("/json").get(async (req, res) => {
         {
           projection: {
             _id: 1,
+            title: 1,
             organizer_id: 1,
           },
         }
