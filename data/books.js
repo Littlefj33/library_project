@@ -128,10 +128,17 @@ export const requestBook = async (bookId, user_email_address) => {
 
     const updatedUserInfo = await userCollection.findOneAndUpdate(
       { _id: userId },
-      { $push: { return_requests: new ObjectId(bookId) } },
+      { $push: { current_checked_out_books: new ObjectId(bookId) } },
       { returnDocument: "after" }
     );
     if (!updatedUserInfo) throw "ERROR: User update failed";
+
+    const updatedUserInfo2 = await userCollection.findOneAndUpdate(
+      { _id: userId },
+      { $push: { checked_out_books: new ObjectId(bookId) } },
+      { returnDocument: "after" }
+    );
+    if (!updatedUserInfo2) throw "ERROR: User update failed";
   } else {
     throw "ERROR: Book currently out of stock";
   }
@@ -183,30 +190,13 @@ export const returnBook = async (bookId, user_email_address) => {
       throw "ERROR: User is not currently borrowing book";
   }
 
-  if (bookInfo[0]["current_stock"] < bookInfo[0]["total_stock"]) {
-    const updatedBookInfo = await bookCollection.findOneAndUpdate(
-      { _id: new ObjectId(bookId) },
-      { $inc: { current_stock: 1 } },
-      { returnDocument: "after" }
-    );
-    if (!updatedBookInfo) throw "ERROR: User update failed";
+  const updatedUserInfo = await userCollection.findOneAndUpdate(
+    { _id: userId },
+    { $push: { return_requests: new ObjectId(bookId) } },
+    { returnDocument: "after" }
+  );
+  if (!updatedUserInfo) throw "ERROR: User update failed";
 
-    const updatedBookInfo2 = await bookCollection.findOneAndUpdate(
-      { _id: new ObjectId(bookId) },
-      { $pull: { current_borrowers: userId } },
-      { returnDocument: "after" }
-    );
-    if (!updatedBookInfo2) throw "ERROR: User update failed";
-
-    const updatedUserInfo = await userCollection.findOneAndUpdate(
-      { _id: userId },
-      { $pull: { return_requests: new ObjectId(bookId) } },
-      { returnDocument: "after" }
-    );
-    if (!updatedUserInfo) throw "ERROR: User update failed";
-  } else {
-    throw "ERROR: This book is already fully stocked";
-  }
   return { insertedBook: true };
 };
 
@@ -235,7 +225,7 @@ export const approveRequest = async (bookId, user_email_address) => {
       {
         _id: 1,
         current_checked_out_books: 1,
-        requested_books: 1,
+        return_requests: 1,
       }
     );
   } catch (e) {
@@ -245,18 +235,35 @@ export const approveRequest = async (bookId, user_email_address) => {
   const updatedUserInfo = await userCollection.findOneAndUpdate(
     { _id: userId },
     {
-      $pull: { requested_books: new ObjectId(bookId) },
-      $push: { current_checked_out_books: new ObjectId(bookId) },
+      $pull: { return_requests: new ObjectId(bookId) },
     },
     { returnDocument: "after" }
   );
   if (!updatedUserInfo) throw "ERROR: User update failed";
+
+  const updatedUserInfo2 = await userCollection.findOneAndUpdate(
+    { _id: userId },
+    {
+      $pull: { current_checked_out_books: new ObjectId(bookId) },
+    },
+    { returnDocument: "after" }
+  );
+  if (!updatedUserInfo2) throw "ERROR: User update failed";
+
   const updatedBookInfo = await bookCollection.findOneAndUpdate(
     { _id: new ObjectId(bookId) },
-    { $push: { current_borrowers: userId } },
+    { $pull: { current_borrowers: userId } },
     { returnDocument: "after" }
   );
   if (!updatedBookInfo) throw "ERROR: Book update failed";
+
+  const updatedBookInfo2 = await bookCollection.findOneAndUpdate(
+    { _id: new ObjectId(bookId) },
+    { $inc: { current_stock: 1 } },
+    { returnDocument: "after" }
+  );
+  if (!updatedBookInfo2) throw "ERROR: Book update failed";
+
   return { approved: true };
 };
 
