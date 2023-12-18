@@ -60,7 +60,7 @@ function convertToDate(doc) {
 
 }
 
-export async function usersBlogsEventsSeed(bookIds) {
+export async function usersBlogsEventsSeed() { // add the parameter bookIds if want to populate the bookIds
     const usersCollection = await users();
     const blogsCollection = await blogs();
     const eventsCollection = await events();
