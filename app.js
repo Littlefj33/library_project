@@ -8,7 +8,6 @@ import configRoutes from "./routes/index.js";
 import { getUserName, getBookName, getUserEmail } from "./helpers.js";
 import Handlebars from "handlebars";
 
-
 const app = express();
 
 Handlebars.registerHelper("getAuthor", getUserName);

@@ -115,12 +115,18 @@ export const registerUser = async (
   const newUserInfo = {
     firstName,
     lastName,
-    dateOfBirth,
+    dateOfBirth: DOB,
     phoneNumber,
     emailAddress,
     password: passwordHash,
     date_joined: new Date(),
     role,
+    blogs_created: [],
+    events_joined: [],
+    return_requests: [],
+    favorite_books: [],
+    current_checked_out_books: [],
+    checked_out_books: [],
   };
   const insertUser = await userCollection.insertOne(newUserInfo);
   if (!insertUser.acknowledged || !insertUser.insertedId)
