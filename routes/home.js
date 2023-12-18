@@ -4,6 +4,8 @@ import * as users_data from "../data/users.js";
 import { users } from "../config/mongoCollections.js";
 import { dbTool } from "../data/dbTools.js";
 import { getBookName, getUserName, getUserEmail } from "../helpers.js";
+import { approveRequest } from "../data/books.js";
+import xss from "xss";
 
 router.route("/").get(async (req, res) => {
   return res.render("home", { title: "Home" });
@@ -182,7 +184,11 @@ router.route("/admin/processReturn").post(async (req, res) => {
       .status(403)
       .render("error", { title: "ERROR Page", error: "Access Denied" });
   } else {
-    const { bookId, userEmailAddress } = req.body;
+    let bookId = req.body.bookId;
+    let userEmailAddress = req.body.requesterEmail;
+    bookId = xss(bookId).trim();
+    userEmailAddress = xss(userEmailAddress).trim().toLowerCase();
+    bookId = (typeof bookId === 'string') ? bookId : bookId.toString();
     try {
       const results = await approveRequest(bookId, userEmailAddress);
       if (results.approved === true) {
