@@ -1,11 +1,12 @@
 <h1>{{title}}</h1>
+
 <p>Title: {{data.title}}</p>
 <p>ISBN: {{data.isbn}}</p>
 <p>Authors:</p>
 {{#if data.authors}}
 <ul class="authors-list">
   {{#each data.authors}}
-  <li>{{this.authors}}</li>
+  <li>{{this}}</li>
   {{/each}}
 </ul>
 {{/if}}
@@ -16,7 +17,7 @@
 {{#if data.genres}}
 <ul class="genres-list">
   {{#each data.genres}}
-  <li>{{this.genres}}</li>
+  <li>{{this}}</li>
   {{/each}}
 </ul>
 {{/if}}
@@ -31,7 +32,7 @@
 
 <div id="form-popup" class="form-popup">
   <form
-    action="/books/{{this._id}}/review"
+    action="/books/{{data._id}}/review"
     method="POST"
     id="review-book-form"
     class="form-container"
@@ -63,8 +64,14 @@
   {{#if data.reviews}}
   <ul class="reviews-list">
     {{#each data.reviews}}
-    <li>{{this.content}}</li>
+    <li>{{this.content}} | Rating: {{this.review}}</li>
     {{/each}}
   </ul>
   {{/if}}
 </div>
+
+<form action="/books/{{data._id}}/request" method="POST" id="request-book-form">
+  <button type="submit">Request Book</button>
+</form>
+
+<a id="backToBooks" href="/books">Back to Books</a>
