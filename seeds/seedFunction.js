@@ -78,7 +78,7 @@ export async function seedData() {
     await addReview(book4_Id.toString(), emailAddress2, "Review 2 Here", 2);
 
     const eventCollection = await events();
-    await eventCollection.drop();
+    await eventCollection.deleteMany({});
     await createEvent(
       emailAddress1,
       "Title 1 Here",
@@ -117,7 +117,7 @@ export async function seedData() {
     await addComment(event1_Id.toString(), emailAddress2, "Comment 2 Here");
 
     const blogCollection = await blogs();
-    await blogCollection.drop();
+    await blogCollection.deleteMany({});
 
     await blogFunc.createBlog(emailAddress1, "Title 1 Here", "Content 1 Here");
     await blogFunc.createBlog(emailAddress2, "Title 2 Here", "Content 2 Here");

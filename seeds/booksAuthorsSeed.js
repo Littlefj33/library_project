@@ -38,7 +38,7 @@ export async function booksAuthorsSeed() {
     };
   });
   const booksCollection = await books();
-  await booksCollection.drop();
+  await booksCollection.deleteMany({});
   const bookResult = await booksCollection.insertMany(booksData.slice(0, 500));
   //Caution! This function will drop the authors database first
   //Set the seed authors file from the json given in lab5
@@ -65,7 +65,7 @@ export async function booksAuthorsSeed() {
   const authorsCollection = await authors();
   //Drop the database before insert
 
-  await authorsCollection.drop();
+  await authorsCollection.deleteMany({});
   const authorResult = await authorsCollection.insertMany(authorsData);
   // Remove book former_id field
   await booksCollection.updateMany({}, { $unset: { former_id: "" } });
