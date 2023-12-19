@@ -268,8 +268,8 @@ router.route("/:bookId/review").post(async (req, res) => {
     const body = req.body;
     const bookId = req.params.bookId.trim();
 
-    const content = body[`content-${bookId}`];
-    const rating = body[`rating-${bookId}`];
+    const content = xss(body[`content-${bookId}`]);
+    const rating = xss(body[`rating-${bookId}`]);
 
     try {
       const results = await addReview(
@@ -383,7 +383,7 @@ router.route("/admin/approveReturnRequest").post(async (req, res) => {
     try {
       let requesterEmail = xss(req.body.requesterEmail).trim().toLowerCase();
       let bookId = xss(req.body.bookId);
-      bookId = bookId = xss(bookId);
+      bookId = xss(bookId);
       requesterEmail = xss(requesterEmail);
       const results = await approveRequest(bookId, requesterEmail);
       if (results.approved === true) {

@@ -2,6 +2,7 @@ import { dbTool } from "../data/dbTools.js";
 import { blogs, users } from "../config/mongoCollections.js";
 import { Router } from "express";
 import { createBlog, addComment } from "../data/blogs.js";
+import xss from "xss";
 const router = Router();
 
 router.route("/").get(async (req, res) => {
@@ -108,7 +109,9 @@ router
       return res.redirect("/login");
     } else {
       // prettier-ignore
-      const { blogTitle, content } = req.body;
+      let { blogTitle, content } = req.body;
+      blogTitle = xss(blogTitle);
+      content = xss(content);
       try {
         // prettier-ignore
         const results = await createBlog(user.emailAddress, blogTitle, content);
@@ -173,7 +176,7 @@ router.route("/:blogId/comment").post(async (req, res) => {
   } else {
     const body = req.body;
     const blogId = req.params.blogId.trim();
-    const content = body[`content-${blogId}`];
+    const content = xss(body[`content-${blogId}`]);
     try {
       const results = await addComment(blogId, user.emailAddress, content);
       if (results.insertedBlog === true) {
