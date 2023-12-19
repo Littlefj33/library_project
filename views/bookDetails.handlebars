@@ -26,6 +26,7 @@
 <p>Liability Cost: {{data.liability_cost}}</p>
 <p>Condition Status: {{data.condition_status}}</p>
 
+{{#unless data.user_reviewed}}
 <p>
   <button
     class="openReviewForm"
@@ -34,6 +35,7 @@
     Review on Book
   </button>
 </p>
+{{/unless}}
 
 <div id="form-popup-{{data._id}}" class="form-popup">
   <form

@@ -31,6 +31,7 @@
     <p>Number in stock: {{this.current_stock}}</p>
     <p>{{this.reviews.length}} reviews</p>
 
+    {{#unless this.user_reviewed}}
     <p>
       <button
         class="openReviewForm"
@@ -39,6 +40,7 @@
         Review on Book
       </button>
     </p>
+    {{/unless}}
 
     <div id="form-popup-{{this._id}}" class="form-popup">
       <form
