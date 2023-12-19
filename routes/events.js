@@ -192,6 +192,29 @@ router.route("/:eventId").get(async (req, res) => {
     }
     eventData[0]["comments"] = newComments;
 
+    const user = req.session.user;
+    if (user) {
+      let userInfo = await dbTool(
+        userCollection,
+        "emailAddress",
+        user.emailAddress,
+        { _id: 1 }
+      );
+      let joinedBool = false;
+      for (let attendee of eventData[0]["attendees"]) {
+        if (attendee.toString() === userInfo[0]["_id"].toString()) {
+          joinedBool = true;
+        }
+      }
+      if (joinedBool) {
+        eventData[0]["user_joined"] = true;
+      } else {
+        eventData[0]["user_joined"] = false;
+      }
+    } else {
+      eventData[0]["user_joined"] = false;
+    }
+
     /* Send event data */
     data = eventData[0];
   } catch (e) {
@@ -200,7 +223,11 @@ router.route("/:eventId").get(async (req, res) => {
       error: "Page not found",
     });
   }
-  return res.render("eventDetails", { title: "Event Info", data });
+  return res.render("eventDetails", {
+    title: "Event Info",
+    data,
+    partial: "search",
+  });
 });
 
 router.route("/:eventId/comment").post(async (req, res) => {

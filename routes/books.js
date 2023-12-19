@@ -97,7 +97,11 @@ router.route("/").get(async (req, res) => {
       bookIndex++;
     }
 
-    return res.render("books", { title: "Books", data: booksList, partial: "search" });
+    return res.render("books", {
+      title: "Books",
+      data: booksList,
+      partial: "search",
+    });
   } catch (e) {
     return res.status(500).render("error", {
       title: "ERROR Page",
@@ -243,7 +247,11 @@ router.route("/:bookId").get(async (req, res) => {
       data["user_favorited"] = false;
     }
 
-    return res.render("bookDetails", { title: "Book Info", data });
+    return res.render("bookDetails", {
+      title: "Book Info",
+      data,
+      partial: "search",
+    });
   } catch (e) {
     return res.status(404).render("error", {
       title: "ERROR Page",
