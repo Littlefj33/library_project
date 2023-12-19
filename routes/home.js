@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import * as users_data from "../data/users.js";
-import { users } from "../config/mongoCollections.js";
+import { users, books } from "../config/mongoCollections.js";
 import { dbTool } from "../data/dbTools.js";
 import { getBookName, getUserName, getUserEmail } from "../helpers.js";
 import { approveRequest } from "../data/books.js";
@@ -99,6 +99,8 @@ router.route("/profile").get(async (req, res) => {
     return res.redirect("/login");
   } else {
     const userCollection = await users();
+    const bookCollection = await books();
+
     let userInfo = await dbTool(
       userCollection,
       "emailAddress",
@@ -118,6 +120,51 @@ router.route("/profile").get(async (req, res) => {
         date_joined: 1,
       }
     );
+    let favorite_books = [];
+    for (let favorite of userInfo[0]["favorite_books"]) {
+      let bookInfo = await dbTool(bookCollection, "_id", favorite.toString(), {
+        _id: 0,
+        title: 1,
+      });
+      favorite_books.push(bookInfo[0]["title"]);
+    }
+
+    let checked_out_books = [];
+    for (let book of userInfo[0]["checked_out_books"]) {
+      let bookInfo = await dbTool(bookCollection, "_id", book.toString(), {
+        _id: 0,
+        title: 1,
+      });
+      checked_out_books.push(bookInfo[0]["title"]);
+    }
+
+    let current_checked_out_books = [];
+    for (let book of userInfo[0]["current_checked_out_books"]) {
+      let bookInfo = await dbTool(bookCollection, "_id", book.toString(), {
+        _id: 0,
+        title: 1,
+      });
+      current_checked_out_books.push(bookInfo[0]["title"]);
+    }
+
+    let return_requests = [];
+    for (let book of userInfo[0]["return_requests"]) {
+      let bookInfo = await dbTool(bookCollection, "_id", book.toString(), {
+        _id: 0,
+        title: 1,
+      });
+      return_requests.push(bookInfo[0]["title"]);
+    }
+
+    delete userInfo[0]["favorite_books"];
+    delete userInfo[0]["checked_out_books"];
+    delete userInfo[0]["current_checked_out_books"];
+    delete userInfo[0]["return_requests"];
+    userInfo[0]["favorite_books"] = favorite_books;
+    userInfo[0]["checked_out_books"] = checked_out_books;
+    userInfo[0]["current_checked_out_books"] = current_checked_out_books;
+    userInfo[0]["return_requests"] = return_requests;
+
     return res.render("profile", {
       title: "Profile",
       admin: user.role === "admin",
@@ -156,16 +203,25 @@ router.route("/admin").get(async (req, res) => {
         error: "Internal Server Error",
       });
     }
-    returnBookRequests = await Promise.all(returnBookRequests.map(async (requester) => {
-      const userName = await getUserName(requester._id.toString());
-      const userEmail = await getUserEmail(requester._id.toString());
-      const books = await Promise.all(requester.return_requests.map(async (bookId) => {
-        const bookTitle = await getBookName(bookId.toString());
-        return { _id: bookId, title: bookTitle };
-      }));
+    returnBookRequests = await Promise.all(
+      returnBookRequests.map(async (requester) => {
+        const userName = await getUserName(requester._id.toString());
+        const userEmail = await getUserEmail(requester._id.toString());
+        const books = await Promise.all(
+          requester.return_requests.map(async (bookId) => {
+            const bookTitle = await getBookName(bookId.toString());
+            return { _id: bookId, title: bookTitle };
+          })
+        );
 
-      return { _id: requester._id, user: userName, emailAddress: userEmail, return_requests: books };
-    }));
+        return {
+          _id: requester._id,
+          user: userName,
+          emailAddress: userEmail,
+          return_requests: books,
+        };
+      })
+    );
 
     return res.render("admin", {
       title: "Admin",
@@ -188,7 +244,7 @@ router.route("/admin/processReturn").post(async (req, res) => {
     let userEmailAddress = req.body.requesterEmail;
     bookId = xss(bookId).trim();
     userEmailAddress = xss(userEmailAddress).trim().toLowerCase();
-    bookId = (typeof bookId === 'string') ? bookId : bookId.toString();
+    bookId = typeof bookId === "string" ? bookId : bookId.toString();
     try {
       const results = await approveRequest(bookId, userEmailAddress);
       if (results.approved === true) {
