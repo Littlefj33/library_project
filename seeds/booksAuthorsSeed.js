@@ -39,14 +39,18 @@ export async function booksAuthorsSeed() {
   });
   const booksCollection = await books();
   await booksCollection.drop();
-  const bookResult = await booksCollection.insertMany(booksData);
+  const bookResult = await booksCollection.insertMany(booksData.slice(0, 999));
   //Caution! This function will drop the authors database first
   //Set the seed authors file from the json given in lab5
   let authorsPromise = rawAuthorsData.map(async (author) => {
     //Get the books id by find the former id
     let booksIdPromise = author.books.map(async (former_id) => {
-      let book = await booksCollection.findOne({ former_id: former_id });
-      return book._id;
+      try {
+        let book = await booksCollection.findOne({ former_id: former_id });
+        return book._id;
+      } catch (e) {
+        return;
+      }
     });
     let booksId = await Promise.all(booksIdPromise);
     return {
