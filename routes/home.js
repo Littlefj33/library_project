@@ -25,7 +25,9 @@ router
     }
   })
   .post(async (req, res) => {
-    const { emailAddressInput, passwordInput } = req.body;
+    let { emailAddressInput, passwordInput } = req.body;
+    emailAddressInput = xss(emailAddressInput);
+    passwordInput = xss(passwordInput);
     try {
       const results = await users_data.loginUser(
         emailAddressInput,
@@ -68,13 +70,13 @@ router
       if (body.confirmPasswordInput.trim() !== body.passwordInput.trim())
         throw "ERROR: Password confirmation must be same as password";
       const results = await users_data.registerUser(
-        body.firstNameInput,
-        body.lastNameInput,
-        body.dobInput,
-        body.phoneNumberInput,
-        body.emailAddressInput,
-        body.passwordInput,
-        body.roleInput
+        xss(body.firstNameInput),
+        xss(body.lastNameInput),
+        xss(body.dobInput),
+        xss(body.phoneNumberInput),
+        xss(body.emailAddressInput),
+        xss(body.passwordInput),
+        xss(body.roleInput)
       );
       if (results.insertedUser === true) {
         return res.redirect("/login");
@@ -240,8 +242,8 @@ router.route("/admin/processReturn").post(async (req, res) => {
       .status(403)
       .render("error", { title: "ERROR Page", error: "Access Denied" });
   } else {
-    let bookId = req.body.bookId;
-    let userEmailAddress = req.body.requesterEmail;
+    let bookId = xss(req.body.bookId);
+    let userEmailAddress = xss(req.body.requesterEmail);
     bookId = xss(bookId).trim();
     userEmailAddress = xss(userEmailAddress).trim().toLowerCase();
     bookId = typeof bookId === "string" ? bookId : bookId.toString();

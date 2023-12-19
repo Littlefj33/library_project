@@ -2,6 +2,8 @@ import { dbTool } from "../data/dbTools.js";
 import { events, users } from "../config/mongoCollections.js";
 import { Router } from "express";
 import { createEvent, addComment, addAttendee } from "../data/events.js";
+import xss from "xss";
+
 const router = Router();
 
 router.route("/").get(async (req, res) => {
@@ -121,7 +123,17 @@ router
       return res.redirect("/login");
     } else {
       // prettier-ignore
-      const { title, date_time, address, state, zip, description, attending_fee, capacity, age_limit } = req.body;
+      let { title, date_time, address, state, zip, description, attending_fee, capacity, age_limit } = req.body;
+      title = xss(title);
+      date_time = xss(date_time);
+      address = xss(address);
+      state = xss(state);
+      zip = xss(zip);
+      description = xss(description);
+      attending_fee = xss(attending_fee);
+      capacity = xss(capacity);
+      age_limit = xss(age_limit);
+
       try {
         // prettier-ignore
         const results = await createEvent(user.emailAddress, title, date_time, address, state, zip, description, attending_fee, capacity, age_limit);
@@ -237,7 +249,7 @@ router.route("/:eventId/comment").post(async (req, res) => {
   } else {
     const body = req.body;
     const eventId = req.params.eventId.trim();
-    const content = body[`content-${eventId}`];
+    const content = xss(body[`content-${eventId}`]);
     try {
       const results = await addComment(eventId, user.emailAddress, content);
       if (results.insertedEvent === true) {
