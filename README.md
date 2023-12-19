@@ -1,10 +1,10 @@
 # library_project
-Read Me Notes
 Welcome to The Library! Here you will find the information you need in order to become a member and access our community.
 
 Running the project:
 Download the zip file, unzip the file
 Open the project in your code editor
+Run `npm i` in the command line
 Run `npm run seed` in the command line
 Run `npm start` in the command line
 Copy and paste the link to our website in your browser
