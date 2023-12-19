@@ -37,7 +37,11 @@ router.route("/").get(async (req, res) => {
       blogIndex++;
     }
 
-    return res.render("blogs", { title: "Blogs", data: blogList, partial: "search" });
+    return res.render("blogs", {
+      title: "Blogs",
+      data: blogList,
+      partial: "search",
+    });
   } catch (e) {
     return res.status(500).render("error", {
       title: "ERROR Page",
@@ -155,7 +159,11 @@ router.route("/:blogId").get(async (req, res) => {
       error: "Page not found",
     });
   }
-  return res.render("blogDetails", { title: "Blog Info", data });
+  return res.render("blogDetails", {
+    title: "Blog Info",
+    data,
+    partial: "search",
+  });
 });
 
 router.route("/:blogId/comment").post(async (req, res) => {
